@@ -1,36 +1,36 @@
-## Fonts
+## 字体
 
-The Mapbox Fonts API accepts fonts as raw binary data, allows those fonts to be deleted, and generates encoded letters for map renderers. Two types of fonts are supported: TrueType fonts, usually with `.ttf` file extensions, and OpenType fonts, with `.otf` extensions.
+Mapbox字体API接受形式为原始二进制码的字体，允许删除这些字体，并且为地图渲染器生成代码。它支持两种类型的字体：TrueType字体，文件后缀名通常为`.ttf`，以及OpenType字体，后缀名为`.otf`。
 
-Fonts are managed on a per-account basis. Styles can use any font from the same account.
+字体按账户来管理。同一账户可以在样式中使用任何字体。
 
-**Restrictions and limits**
+**限制和约束**
 
-- Fonts must be smaller than 30MB.
-- Accounts are limited to 100 fonts.
+- 字体必须小于30MB。
+- 每个账户最多使用100个字体。
 
-### Retrieve font glyph ranges
+### 检索字体字形范围
 
 ```endpoint
 GET /fonts/v1/{username}/{font}/{start}-{end}.pbf fonts:read
 ```
 
-While glyph ranges are usually not of interest unless you're building a map renderer, this is the endpoint you can use to access them.
+虽然字形范围一般不被关注，除非你正在建立一个地图渲染器，但这是访问它们的端点。
 
-Font glyph ranges are protocol buffer-encoded signed distance fields. They can be used to show fonts at a variety of scales and rotations. One glyph is used at all scales.
+字体字形范围是协议缓冲编码的带符号距离字段。它们可用于显示各种比例和旋转的字体。一个字形支持所有比例。
 
-URL Parameter | Description
+URL参数 | 描述
 --- | ---
-`username` | The username of the account to which the font belongs.
-`font` | The name of the font. This endpoint supports queries with multiple comma-separated font names.
-`start` | A multiple of `256` between `0` and `65280`.
-`end` | The number indicated by `start`, plus `255`.
+`username` | 该字体所属账户的用户名。
+`font` | 字体的名称。此端点支持查询多个字体名称，名称间用逗号隔开。
+`start` | `0`到`65280`之间`256`的倍数。
+`end` | `start`显示的数字加上`255`。
 
-**Response body**
+**响应体**
 
-A successful request will return `HTTP 200 Success`. The response body will be a buffer of the glyphs with `Content-Type: application/x-protobuf`.
+一个成功的请求将会返回`HTTP 200 Success`。响应体将会是字形的一个缓存，字形带有`Content-Type: application/x-protobuf`。
 
-#### Example request
+#### 请求示例
 
 ```curl
 # Query contains 2 comma-separated font names
@@ -71,6 +71,6 @@ This API cannot be accessed with Mapbox CLI
 ```
 
 
-#### Response
+#### 响应
 
 > `HTTP 200 Success`
