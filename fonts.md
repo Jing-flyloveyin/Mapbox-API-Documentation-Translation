@@ -26,14 +26,14 @@ URL参数 | 描述
 `start` | `0`到`65280`之间`256`的倍数。
 `end` | `start`显示的数字加上`255`。
 
-**响应体**
+**响应主体**
 
-一个成功的请求将会返回`HTTP 200 Success`。响应体将会是字形的一个缓存，字形带有`Content-Type: application/x-protobuf`。
+一个成功的请求将会返回`HTTP 200 Success`。响应主体将会是字形的一个缓存，字形带有`Content-Type: application/x-protobuf`。
 
-#### 请求示例
+#### 示例请求
 
 ```curl
-# Query contains 2 comma-separated font names
+# 查询包含两个由逗号分隔的字体名
 curl "https://api.mapbox.com/fonts/v1/examples/DIN Offc Pro Medium,Arial Unicode MS Regular/0-255?access_token={your_access_token}"
 ```
 
@@ -51,23 +51,23 @@ stylesClient
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+# 无法使用Python SDK访问此API
 ```
 
 ```bash
-This API cannot be accessed with Mapbox CLI
+无法使用Mapbox CLI访问此API
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 无法使用Mapbox Java SDK访问此API
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 无法使用Mapbox Objective-C 库访问此API
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 无法使用Mapbox Swift库访问此API
 ```
 
 
