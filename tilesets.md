@@ -1,33 +1,34 @@
 ## Tilesets
 
-The Mapbox Tilesets API supports reading metadata for raster and vector [tilesets](https://www.mapbox.com/help/define-tileset/). To request tiles, use the [Maps API](#maps) instead.
+Mapbox Tilesets API可以用来读取栅格和矢量[tilesets](https://www.mapbox.com/help/define-tileset/)的元数据。如果想要请求瓦片，请使用[Maps API](#maps)。
 
-**Restrictions and limits**
+**约束与限制**
 
-- The Tilesets API is limited to 50 requests per minute.
-- Requests must be made over HTTPS. HTTP is not supported.
+- Tilesets API每分钟最多请求50次。
+
+- 必须使用HTTPS来请求，不支持HTTP。
 
 ```javascript
 const mbxTilesets = require('@mapbox/mapbox-sdk/services/tilesets');
 const tilesetsClient = mbxTilesets({ accessToken: '{your_access_token}' });
 ```
+### 瓦片集对象
 
-### The tileset object
+请求Tilesets API返回一个或多个瓦片集对象，每个瓦片集对象都包含以下属性：
 
-A request to the Tilesets API returns one or more tileset objects. Each tileset object contains the following properties:
-
-Property | Description
+属性 | 描述
 --- | ---
-`type` | The kind of data contained, either `raster` or `vector`.
-`center` | The longitude, latitude, and zoom level for the center of the contained data, given in the format `[lon, lat, zoom]`.
-`created` | A timestamp indicating when the tileset was created.
-`description` | A human-readable description of the tileset.
-`filesize` | The storage in bytes consumed by the tileset.
-`id` | The unique identifier for the tileset.
-`modified` | A timestamp indicating when the tileset was last modified.
-`name` | The name of the tileset.
-`visibility` | The access control for the tileset, either `public` or `private`.
-`status` | The processing status of the tileset, one of: `available`, `pending`, or `invalid`.
+`type` | 所含数据的类型，`raster` 或 `vector`。
+`center` | 所含数据中心所在的经纬度和缩放级别，格式为 `[lon, lat, zoom]`。
+`created` | 瓦片集创建时的时间戳。
+`description` | 瓦片集的描述信息。
+`filesize` | 瓦片集所占用的字节数。
+`id` | 瓦片集的唯一标识。
+`modified` | 瓦片集最近一次修改时的时间戳
+`name` | 瓦片集的名称。
+`visibility` | 瓦片集的访问权限，`public` 或 `private`。
+`status` | 瓦片集的处理状态，值包含： `available`、 `pending` 和 `invalid`。
+
 
 #### The tileset object
 
