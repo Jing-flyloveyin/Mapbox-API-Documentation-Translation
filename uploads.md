@@ -254,50 +254,50 @@ mapbox upload username.data data.geojson
 }
 ```
 
-**Response body**
+**返回内容**
 
-The response body is a JSON object that contains the following properties:
+返回的内容是一个包含以下属性的JSON对象
 
-Property | Description
+属性 | 描述
 ---- | -----------
-`complete` | Whether the upload is complete (`true`) or not complete (`false`).
-`tileset` | The ID of the tileset that will be created or replaced if upload is successful.
-`error` | If `null`, the upload is in progress or has successfully completed. Otherwise, provides a brief explanation of the error.
-`id` | The unique identifier for the upload.
-`name` | The name of the upload.
-`modified` | A timestamp indicating when the upload resource was last modified.
-`created` | A timestamp indicating when the upload resource was created.
-`owner` | The unique identifier for the owner's account.
-`progress` | The progress of the upload, expressed as a float between `0` (started) and `1` (completed).
+`complete` | 判断“upload”是否完整，完整则为“true”，否则为“false”
+`tileset` | 如果该upload成功了，tileset的ID将会被创建或替换
+`error` | 如果结果为“null”，表示upload正在执行或者已经成功，否则提示一个简洁的错误解释
+`id` | upload的唯一标识
+`name` | upload的名称
+`modified` | upload最后一次被修改的时间戳
+`created` | upload被创建的时间戳
+`owner` | 用户账号的唯一标识
+`progress` | 通过一个0和1之间的小数描述的upload的进程状态
 
-### Retrieve upload status
+### 获取 upload 状态
 
 ```endpoint
 GET /uploads/v1/{username}/{upload_id} uploads:read
 ```
 
-Upload processing is fast but not immediate. Once an upload is created, you can track its status. Uploads have a `progress` property that start at `0` and end at `1` when an upload is complete. If there's an error processing an upload, the `error` property will include an [error message](https://www.mapbox.com/help/uploads/#errors).
+Upload 进程很快但不是瞬间完成的，每一次创建upload，你都可以追踪他的状态。当一个upload完成后，它都会有一个“progress”参数（介于0和1之间的小数）。假如一个upload中产生了错误，那么“error”属性将会包含一个[error message](https://www.mapbox.com/help/uploads/#errors)。
 
-URL parameters | Description
+URL 参数 | 描述
 --- | ---
-`username` | The username of the account for which you are requesting an upload status.
-`upload_id` | The ID of the upload. Provided in the response body to a successful upload request.
+`username` | 你所请求upload状态的账号的用户名
+`upload_id` | upload的ID（假设你在请求一个成功upload）
 
-**Response body**
+**返回内容**
 
-The response body is a JSON object containing the following properties:
+返回的内容是一个包含以下属性的JSON对象
 
-Property | Description
+属性 | 描述
 ---- | -----------
-`complete` | Boolean. Indicates whether the upload is complete (`true`) or not complete (`false`).
-`tileset` | The ID of the tileset that will be created or replaced if upload is successful.
-`error` | If `null`, the upload is in progress or has successfully completed. Otherwise, provides a brief explanation of the error.
-`id` | The unique identifier for the upload.
-`name` | The name of the upload.
-`modified` | The timestamp for when the upload resource was last modified.
-`created` | The timestamp for when the upload resource was created.
-`owner` | The unique identifier for the owner's account.
-`progress` | The progress of the upload, expressed as a float between `0` (started) and `1` (completed).
+`complete` | 判断“upload”是否完整，完整则为“true”，否则为“false”
+`tileset` | 如果该upload成功了，tileset的ID将会被创建或替换
+`error` | 如果结果为“null”，表示upload正在执行或者已经成功，否则提示一个简洁的错误解释
+`id` | upload的唯一标识
+`name` | upload的名称
+`modified` | upload最后一次被修改的时间戳
+`created` | upload被创建的时间戳
+`owner` | 用户账号的唯一标识
+`progress` | 通过一个0和1之间的小数描述的upload的进程状态
 
 #### Example request
 
@@ -352,26 +352,26 @@ uploadsClient
 }
 ```
 
-### Retrieve recent upload statuses
+### 获取最近的upload状态
 
 ```endpoint
 GET /uploads/v1/{username} uploads:list
 ```
 
-Retrieve multiple upload statuses at the same time, sorted by the most recently created. This request returns the same information as an individual upload status request does, but for all an account's recent uploads. The list is limited to 1MB of JSON.
+一次获取多个按照最近创建时间顺序排列的upload状态，存放在列表。这种请求返回的信息和一次单独的upload状态请求类似，但是对于同一个账户，这个列表的大小不能大于1MB
 
-This endpoint supports [pagination](#pagination) so that you can list many uploads.
+因为端点支持[pagination](#pagination)，所以你可以在列表中存放很多upload
 
-URL parameters | Description
+URL 参数 | 描述
 --- | ---
-`username` | The username of the account for which you are requesting upload statuses.
+`username` | 你所请求upload状态的账号的用户名
 
-The results from this endpoint can be further modified with the following optional parameters:
+从这个端点获得结果将能够通过如下参数进行修改
 
-Query parameter | Description
+Query 参数 | 描述
 --- | ---
-`reverse`<br>(optional) | Set to `true` to reverse the default sort order of the results listing.
-`limit`<br>(optional) | The maximum number of statuses to return, up to `100`.
+`reverse`<br>(optional) | 设置为“true”将结果列表的默认排列顺序颠倒。
+`limit`<br>(optional) | 返回状态数量的最大值，最大为“100”。
 
 #### Example request
 
@@ -437,20 +437,20 @@ This method cannot be accessed with Mapbox CLI
 }]
 ```
 
-### Remove an upload status
+### 删除一个upload状态
 
 ```endpoint
 DELETE /uploads/v1/{username}/{upload_id} uploads:write
 ```
 
-Remove the status of a completed upload from the upload listing.
+从upload列表中删除一个完整upload的状态。
 
-Uploads are only statuses, so removing an upload from the listing doesn't delete the associated tileset. Tilesets can only be deleted from within Mapbox Studio. An upload status cannot be removed from the upload listing until after it has completed.
+upload里只有状态（statue），因此从列表中删除upload并不会删除相关联的瓦片集。瓦片集只能通过Mapbox工作台删除。另外，一个upload的状态只有完整以后才能从upload列表中删除。
 
-URL parameters | Description
+URL 参数 | 描述
 --- | ---
-`username` | The username of the associated account.
-`upload_id` | The ID of the upload. Provided in the response body to a successful upload request.
+`username` | 相关账户的用户名
+`upload_id` | upload的ID（假设你在请求一个成功upload）
 
 #### Example request
 
