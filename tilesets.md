@@ -20,17 +20,17 @@ const tilesetsClient = mbxTilesets({ accessToken: '{your_access_token}' });
 --- | ---
 `type` | 所含数据的类型，`raster` 或 `vector`。
 `center` | 所含数据中心所在的经纬度和缩放级别，格式为 `[lon, lat, zoom]`。
-`created` | 瓦片集创建时的时间戳。
+`created` | 表示瓦片集创建时间的时间戳。
 `description` | 瓦片集的描述信息。
 `filesize` | 瓦片集所占用的字节数。
 `id` | 瓦片集的唯一标识。
-`modified` | 瓦片集最近一次修改时的时间戳
+`modified` | 表示瓦片集最近一次修改时间的时间戳。
 `name` | 瓦片集的名称。
 `visibility` | 瓦片集的访问权限，`public` 或 `private`。
 `status` | 瓦片集的处理状态，值包含： `available`、 `pending` 和 `invalid`。
 
 
-#### The tileset object
+#### 瓦片集对象示例
 
 ```json
 {
@@ -47,21 +47,21 @@ const tilesetsClient = mbxTilesets({ accessToken: '{your_access_token}' });
 }
 ```
 
-### List tilesets
+### 瓦片集列表
 
 ```endpoint
 GET /tilesets/v1/{username} tilesets:list
 ```
 
-List all the tilesets that belong to a specific account. This endpoint supports [pagination](#pagination).
+列出归属于指定账户的所有瓦片集。此端点支持[分页](#pagination)。
 
-URL parameters | Description
+URL参数 | 描述
 --- | ---
-`username` | The username of the account for which to list tilesets
+`username` | 要列出瓦片集的账户的用户名
 
-You can further refine the results from this endpoint with the following optional parameters:
+你可以使用以下可选参数进一步细化这个端点的结果：
 
-Query Parameter | Description
+查询参数 | 描述
 ----------|------------
 `type` | Filter results by tileset type, either `raster` or `vector`.
 `visibility` | Filter results by visibility, either `public` or `private`. Private tilesets require an access token that belong to the owner. Public tilesets can be requested with any user's access token.
@@ -69,7 +69,7 @@ Query Parameter | Description
 `limit` | The maximum number of tilesets to return, from `1` to `500`. The default is `100`.
 `start` | The tileset after which to start the listing. The key is found in the `Link` header of a response. See the [pagination](#pagination) section for details.
 
-#### Example request
+#### 请求示例
 
 ```curl
 curl "https://api.mapbox.com/tilesets/v1/{username}?access_token={your_access_token}"
@@ -115,7 +115,7 @@ tilesetsClient
 // This API cannot be accessed with the Mapbox Swift libraries
 ```
 
-#### Example response
+#### 响应示例
 
 ```json
 [
