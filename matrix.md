@@ -1,8 +1,8 @@
 ## Matrix
 
-The Matrix API returns travel times between many points.
+Matrix API 返回多点之间的移动时间信息。
 
-例如, given 3 locations A, B, and C, the Matrix API will return a matrix of all travel times in seconds between the locations:
+例如, 给出3个位置 A， B，和C， Matrix API 将返回这些位置之间以秒为单位的时间信息矩阵:
 
 | |   A   |   B   |   C
 --| ----- | ----- | -----
@@ -10,21 +10,21 @@ A | A → A | A → B | A → C
 B | B → A | B → B | B → C
 C | C → A | C → B | C → C
 
-The Matrix API will always return the duration or the distance on the fastest route for each element in the matrix, where an element is an origin-destination pair in the matrix. The Matrix API returns durations in seconds and distances in meters. It does not return route geometries.
+Matrix API将始终返回每个元素的持续时间或最快的路径距离，其中元素是矩阵中的原点-目标点。 Matrix API会返回以秒为单位的持续时间和以米为单位的距离信息。不会返回路径的几何信息。
 
-Durations or distances between points may not be symmetric, since the routes may differ by direction due to one-way streets or turn restrictions. For example, A to B may have a different duration than B to A.
+点与点之间的时间或距离信息可能不是对称的，因为路线可能因单行道或转弯限制而方向不同。例如，A到B可能不同于B到A的持续时间。
 
-The Matrix API allows you to efficiently check the reachability of coordinates from each other, filter points by travel time, or run your own algorithms for solving optimization problems.
+Matrix API允许您有效地检查彼此坐标的可达性，根据移动时间过滤点，或者运行您自己的算法来解决问题并优化。
 
-**Restrictions and limits**
+**约束与限制**
 - For the `mapbox/driving`, `mapbox/walking`, and `mapbox/cycling` profiles:
-    - Maximum 25 input coordinates per request
-    - Maximum 60 requests per minute
+    - 每次请求最多输入25个坐标
+    - 每分钟最多60次请求
 - For the `mapbox/driving-traffic` profile:   
-    - Maximum 10 input coordinates per request
-    - Maximum 30 requests per minute
+    - 每次请求最多输入10个坐标
+    - 每分钟最多30次请求
 
-For higher volumes, [contact us](https://www.mapbox.com/contact/).
+获取更多信息, [联系我们](https://www.mapbox.com/contact/).
 
 ```python
 from mapbox import DirectionsMatrix
@@ -40,7 +40,7 @@ const matrixClient = mbxMatrix({ accessToken: '{your_access_token}' });
 GET /directions-matrix/v1/{profile}/{coordinates}
 ```
 
-Returns a duration matrix, a distance matrix, or both, showing travel times and distances between coordinates. In the default case, this endpoint returns a symmetric matrix that uses all the input coordinates as sources and destinations. Using the optional `sources` and `destination` parameters, you can also generate an asymmetric matrix that uses only some coordinates as sources or destinations.
+返回一个时间矩阵，或一个距离矩阵，或两者都返回，显示坐标之间移动时间和距离信息。在默认情况下，输入坐标作为源点和目标点，此服务端点返回一个对称矩阵。使用`sources` and `destination`作为可选参数，您还可以使用一些源点和目标点坐标生成非对称矩阵。
 
 URL parameter | Description
 --- | ---
