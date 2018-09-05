@@ -2,7 +2,7 @@
 
 The Matrix API returns travel times between many points.
 
-For example, given 3 locations A, B, and C, the Matrix API will return a matrix of all travel times in seconds between the locations:
+例如, given 3 locations A, B, and C, the Matrix API will return a matrix of all travel times in seconds between the locations:
 
 | |   A   |   B   |   C
 --| ----- | ----- | -----
