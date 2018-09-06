@@ -9,6 +9,7 @@ The Mapbox Directions API will show you how to get where you're going. With the 
 - Produce routes with up to 25 coordinates anywhere on earth
 
 This API supports 4 different routing profiles:
+这个API支持以下四种不同的路径：
 
 Profile | Description
 --- | ---
@@ -486,15 +487,23 @@ Property | Description
 ```
 
 ### Waypoint object
+### 路点对象
 
 The response body of a Directions API query contains a **waypoint object**, the input coordinates snapped to the roads network. A waypoint object contains the following properties:
+Directions API查询的响应主体包含一个**路点对象**， 输入的坐标将会被捕捉到路网上，一个路点对象包含以下属性：
 
 Property | Description
 --- | ---
 `name` | A string with the name of the road or path to which the input coordinate has been snapped.
 `location` | An array containing the `[longitude, latitude]` of the snapped coordinate.
 
+属性 | 描述
+--- | ---
+`name` | 一个字符串，其中包含输入坐标捕捉到的道路或路径的名称。
+`location` |一个数组包括输入坐标捕捉到的经纬度 `[longitude, latitude]`。
+
 #### Example waypoint object
+#### 路点对象举例
 
 ```json
 {
@@ -504,8 +513,10 @@ Property | Description
 ```
 
 ### Route object
+### 路径对象
 
 The response body of a Directions API query also contains an array of **route objects**. A route object describes a route through multiple waypoints. A route object contains the following properties:
+Directions API查询的响应主体包含一个数组组成的**路径对象**。一个路径对象描述了一条通过多个路点的路径。路径对象包括以下属性:
 
 Property | Description
 --- | ---
@@ -517,7 +528,18 @@ Property | Description
 `legs` | An array of [route leg](#routeleg-object) objects.
 `voiceLocale` | A string of the locale used for voice instructions. Defaults to `en` (English). Can be any [accepted instruction language](#instructions-languages). `voiceLocale` is only present in the response when `voice_instructions=true`.
 
+属性 | 描述
+--- | ---
+`duration` | 一个浮点数，表示通过路点的估计行程时间（以秒为单位）。
+`distance` | 一个浮点数，表示通过航点的行程距离（以米为单位）。
+`weight_name` | 一个字符串表示选择的权重。 默认值是 `routability`，这是基于持续时间的，对不太理想的路线有额外的惩罚。
+`weight` |  一个浮点数，表述以`weight_name`的单位表示的权重。
+`geometry` | 基于查询参数： `geometries` ，这是一个 [GeoJSON LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2) 或 [Polyline string](https://developers.google.com/maps/documentation/utilities/polylinealgorithm). 基于查询参数 `overview` ，这可能是一个完整的路线几何体 (`full`), 一个在能显示完整路径的缩放比例上的简化几何图形 (`simplified`), 或者没有 (`false`).
+`legs` | 一个数组关于： [route leg](#routeleg-object) 。
+`voiceLocale` | 一个字符串，设定用于语音指令的语言环境. 默认是 `en` (英语). 可以改为任何 [accepted instruction language](#instructions-languages). `voiceLocale` 仅在 `voice_instructions=true`时出现。
+
 #### Example route object
+#### 路径对象举例
 
 ```json
 {
@@ -532,10 +554,12 @@ Property | Description
 ```
 
 ### Route leg object
+### 路段对象
 
 A route object contains a nested **route leg** object for each leg of the journey, which is one fewer than the number of input coordinates. A route leg object contains the following properties:
+包含路程中的每一个路段，形成一个**路段**网，比输入的坐标少一个。路段对象包括以下属性:
 
-Property | Description
+属性 | 描述
 --- | ---
 `distance` | A number indicating the distance traveled between waypoints in meters.
 `duration` | A number indicating the estimated travel time between waypoints in seconds.
