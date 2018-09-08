@@ -1,43 +1,43 @@
-## Tilequery
+## 切片查询
 
 <!-- preview -->
 
-The Mapbox Tilequery API allows you to retrieve data about specific features from a vector tileset, based on a given latitude and longitude. The Tilequery API makes it possible to query for features within a radius, do point in polygon queries, query for features in multiple composite layers, and augment data from the [Mapbox Geocoding API](#geocoding) with custom data.
+Mapbox的Tilequery API允许您根据给定的经纬度从矢量切片中检索特定的要素数据集。Tilequery API可以查询半径内的要素，判断点是否在多边形内，查询多个复合图层中的要素，使用自定义的数据扩充 [Mapbox Geocoding API](#geocoding)返回的数据。
 
-Mapbox Tilequery API has some functional similarities to the reverse geocoding function of the Mapbox Geocoding API, which accepts a `{longitude},{latitude}` pair and returns an address. The Tilequery API returns the location and properties of the features within the query radius.
+Mapbox的Tilequery API与Geocoding API中接受一对`{经度}，{纬度}`返回一个地址的反地理编码功能有相似之处。Tilequery API返回查询半径内的各要素的位置和属性。
 
-**Restrictions and limits**
+**约束与限制**
 
-- Use of the Tilequery API endpoint is rate limited based on your user plan. The default is 300 requests per minute.
-- Exceeding your user plan's number requests per minute will result in an `HTTP 429 Too Many Requests` response.
-- For information on rate limit headers, see the [Rate limits](#rate-limits) section.
+- 根据您不同的用户计划，Tilequery API在终端的使用权限有所不同。默认为每分钟300个请求。
+- 每分钟请求量超过用户计划的，将得到`HTTP 429 Too Many Requests`的响应结果。
+- 关于权限的更多信息，请参阅 [Rate limits](#rate-limits) 相关章节。
 
-If you require a higher rate limit, [contact us](https://www.mapbox.com/contact/).
+如果您需要更高的权限，[请联系我们](https://www.mapbox.com/contact/)。
 
 ```javascript
 const mbxTilequery = require('@mapbox/mapbox-sdk/services/tilequery');
 const tilequeryClient = mbxTilequery({ accessToken: '{your_access_token}' });
 ```
 
-### The tilequery object
+### 切片查询结果对象
 
-A request to the Tilequery API returns a GeoJSON `FeatureCollection` of features at or near the geographic point described by `{longitude},{latitude}` and within the distance described by the optional `radius` parameter.
+对Tilequery API的请求返回一个GeoJSON格式的`要素集合`，该集合的各要素为处于以`{经度}，{纬度}`描述的地理坐标点或是在可选的`半径`参数描述距离内的查询结果。
 
-Each feature in the response body also includes a `tilequery` object, which contains the following additional properties:
+响应体中的每个要素还包含一个`tilequery`对象，该对象包含以下附加属性：
 
-Property | Description
+属性 | 说明
 --- | ---
-`distance` | The approximate distance in meters from the feature result to the queried point.
-`geometry` | The original geometry _type_ of the feature. This can be `”point”`, `”linestring”`, or `”polygon”`. The actual geometry of the feature is not returned in the result set.
-`layer` | The vector tile layer of the feature result.
+`distance` | 要素结果到查询点的大概距离（以米为单位）。
+`geometry` | 要素的原始几何 _类型_ 。它可能是`point`，`linestring`，或者`polygon`。结果集中不返回要素的实际几何图形数据。
+`layer` | 结果要素的矢量切片图层。
 
-The `geometry.type` in the response will be `Point` for all features returned in the `FeatureCollection`:
+对于返回的`要素集`中所有的要素，其`geometry`的`type`属性值都是`point`：
 
--   For `Polygon` and `MultiPolygon` features, the geometry is the point at the queried `{longitude},{latitude}` if the query point exists _within_ the polygon. If the query point is _outside_ the polygon, the geometry is the closest point along the nearest edge of the feature within the `radius` threshold.
--   For `LineString` and `MultiLineString` features, the geometry is the nearest point along the feature within the `radius` threshold of `{longitude},{latitude}`.
--   For `Point` and `MultiPoint` features, the geometry is the nearest point within the `radius` threshold of `{longitude},{latitude}`.
+-   对于`Polygon`和`MultiPolygon`类型的要素而言，如果查询的点在多边形内（_within_），则该点就是查询点`{经度}，{纬度}`。如果查询的点在多边形外（ _outside_ ），则该点是在“半径”阈值内距离该多边形要素最近边的最近点。
+-   对于`LineString`和`MultiLineString`类型的要素而言，该点是在`半径`阈值内沿着线要素距离查询点`{经度}，{纬度}`最近的点。
+-   对于`Point`和`MultiPoint`类型的要素而言， 该点是在`半径`阈值内距离查询点`{经度}，{纬度}`最近的点。
 
-#### The tilequery object
+#### 切片查询结果对象
 
 ```json
 {
@@ -86,42 +86,42 @@ The `geometry.type` in the response will be `Point` for all features returned in
 
 ```
 
-### Retrieve features from vector tiles
+### 从矢量切片取回要素集
 
 ```endpoint
 GET /v4/{map_id}/tilequery/{lon},{lat}.json
 ```
 
-Use this endpoint to retrieve features from vector tiles.
+使用此终端地址从矢量切片检索要素。
 
-URL parameter | Description
+URL 参数 | 说明
 --- | ---
-`map_id` | The ID of the map being queried. To composite multiple layers, provide a comma-separated list of map IDs.
-`{lon},{lat}` | The longitude and latitude to be queried.
+`map_id` | 要查询的地图ID。对于多个图层而言，请提供以逗号分隔的地图ID列表。
+`{lon},{lat}` | 要查询的经纬度。
 
-You can further refine the results from this endpoint with the following optional parameters:
+您可以使用以下可选参数进一步优化查询结果：
 
-Query parameter | Description
+查询参数 | 说明
 --- | ---
-`radius`<br /> (optional) | The approximate distance in meters to query for features. Defaults to `0`. Has no upper bound. Required for queries against point and line data. Due to the nature of tile buffering, a query with a large radius made against equally large point or line data may not include all possible features in the results. Queries will use tiles from the maximum zoom of the tileset, and will only include the intersecting tile plus 8 surrounding tiles when searching for nearby features.
-`limit`<br /> (optional) | The number of features between `1`-`50` to return. Defaults to `5`.
-`dedupe`<br /> (optional) | Determines whether results will be deduplicated (`true`, default) or not (`false`).                               
-`geometry`<br /> (optional) | Queries for a specific geometry type. Options are `polygon`, `linestring`, or `point`.
-`layers`<br /> (optional) | A comma-separated list of layers to query, rather than querying all layers. If a specified layer does not exist, it is skipped. If no layers exist, returns an empty `FeatureCollection`.
+`radius`<br /> (可选) | 查询要素的近似距离（以米为单位）。默认值为`0`，没有上限。对于查询点和线数据而言为必填参数。由于切片缓冲的性质，以很大半径进行查询时会包含同样大量的点和线数据，但返回结果集中无法包含所有可能的要素。查询将使用切片集合中最大层级的切片数据，并且在搜索附近的要素时，仅查询相交的切片块和8个与之相邻的切片块。
+`limit`<br /> (可选) | 返回要素的数量（`1`-`50`之间）。默认值为`5`。
+`dedupe`<br /> (可选) | 确定结果是否删除重复的数据，默认值为`true`（删除），`false`则不删除。                           
+`geometry`<br /> (可选) | 查询指定的几何类型。可选择`polygon`，`linestring`，或者`point`。
+`layers`<br /> (可选) | 要查询的图层列表（以逗号分隔开），而不是查询所有图层。如果指定的图层不存在，则跳过该图层。如果图层都不存在，则返回空的`要素集`。
 
-#### Example requests
+#### 请求示例
 
 ```curl
-# Retrieve features within a 10 meter radius of the specified location
+# 获取指定位置10m半径范围内的要素
 curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/tilequery/-122.42901,37.80633.json?radius=10&access_token={your_access_token}"
 
-# Return at most 20 features
+# 返回最多20条要素
 curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/tilequery/-122.42901,37.80633.json?limit=20&access_token={your_access_token}"
 
-# Query multiple maps
+# 查询多个地图
 curl "https://api.mapbox.com/v4/{map_id_1},{map_id_2},{map_id_3}/tilequery/-122.42901,37.80633.json&access_token={your_access_token}"
 
-# Return only results from the poi_label and building layers within a 30 meter radius of the specified location
+# 仅返回poi_label和building图层中，指定位置30m半径范围内的要素
 curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/tilequery/-122.42901,37.80633.json?radius=30&layers=poi_label,building&access_token={your_access_token}"
 ```
 
@@ -158,7 +158,7 @@ tilequeryClient
 // This API cannot be accessed with the Mapbox Swift libraries
 ```
 
-#### Example response
+#### 查询结果示例
 
 ```json
 {
