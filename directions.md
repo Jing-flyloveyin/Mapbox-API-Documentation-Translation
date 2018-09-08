@@ -513,10 +513,10 @@ Property | Description
 ```
 
 ### Route object
-### 路径对象
+### 路线对象
 
 The response body of a Directions API query also contains an array of **route objects**. A route object describes a route through multiple waypoints. A route object contains the following properties:
-Directions API查询的响应主体包含一个数组组成的**路径对象**。一个路径对象描述了一条通过多个路点的路径。路径对象包括以下属性:
+Directions API查询的响应主体包含一个数组组成的**路线对象**。一个路线对象描述了一条通过多个路点的路线。路线对象包括以下属性:
 
 Property | Description
 --- | ---
@@ -539,7 +539,7 @@ Property | Description
 `voiceLocale` | 一个字符串，设定用于语音指令的语言环境. 默认是 `en` (英语). 可以改为任何 [accepted instruction language](#instructions-languages). `voiceLocale` 仅在 `voice_instructions=true`时出现。
 
 #### Example route object
-#### 路径对象举例
+#### 路线对象举例
 
 ```json
 {
@@ -557,15 +557,23 @@ Property | Description
 ### 路段对象
 
 A route object contains a nested **route leg** object for each leg of the journey, which is one fewer than the number of input coordinates. A route leg object contains the following properties:
-包含路程中的每一个路段，形成一个**路段**网，比输入的坐标少一个。路段对象包括以下属性:
+路程对象中嵌套**路段**对象，用于描述路程中的每一段路，数量比输入的坐标少一个。路段对象包括以下属性:
 
-属性 | 描述
+Property | Description
 --- | ---
 `distance` | A number indicating the distance traveled between waypoints in meters.
 `duration` | A number indicating the estimated travel time between waypoints in seconds.
 `steps` | Depending on the optional `steps` parameter, either an array of [route step](#routestep-object) objects (`steps=true`) or an empty array (`steps=false`, default).
 `summary` | A string summarizing the route.
 `annotation` | An annotations object that contains additional details about each line segment along the route geometry. Each entry in an annotations field corresponds to a coordinate along the route geometry. See the following table for more information about the `annotation` object:
+
+属性 | 描述
+--- | ---
+`distance` | 一个数字，表示通过的路点之间的距离（以米为单位）。
+`duration` | 一个数字，表示通过的路点预期要花费的时间（以秒为单位）。
+`steps` | 基于可选的 `steps` 参数，可能是一个[route step](#routestep-object) 的数组 (当`steps=true`) 或为空（当`steps=false`，默认）。
+`summary` | 一个总结路线的字符串。
+`annotation` | 注释对象，其中包含有关路线几何图形的每个线段的其他详细信息。 注释字段中的每个条目对应于路线几何的坐标。 有关`annotation`对象的更多信息，请参见下表：
 
 `annotation` | Description
 --- | ---
@@ -574,7 +582,17 @@ A route object contains a nested **route leg** object for each leg of the journe
 `speed` | The speed between each pair of coordinates in meters per second.
 `congestion` | The level of congestion, described as `severe`, `heavy`, `moderate`, `low` or `unknown`, between each entry in the array of coordinate pairs in the route leg. For any profile other than `mapbox/driving-traffic` a list of `unknown`s will be returned. A list of `unknown`s will also be returned if the route is very long.
 
+`annotation` | 描述
+--- | ---
+`distance` | 每对坐标之间的距离，以米为单位。
+`duration` | 每对坐标之间的时间花销，以秒为单位。
+`speed` | 每对坐标之间的速度，以米/秒为单位。
+`congestion` | 拥堵程度, 用 `severe`，`heavy`，`moderate`，`low`或`unknown`描述。每个条目对应于一个路段. 对于除“mapbox / driving-traffic”以外的任何配置文件，将返回`unknown`的列表。 如果路线很长，也会返回`unknown`的列表。
+
+
+
 #### Example route leg object
+#### 路段对象举例
 
 ```json
 {
@@ -629,8 +647,10 @@ A route object contains a nested **route leg** object for each leg of the journe
 ```
 
 ### Route step object
+### 行路步骤对象
 
 In a route leg object, a nested **route step** object includes one [step maneuver](#stepmaneuver-object) object as well as information about travel to the following route step:
+在路段对象中，嵌套的**行路步骤**对象包括一个[step maneuver](#stepmaneuver-object) 对象以及如何前往下一段路的信息：
 
 Property | Description
 --- | ---
@@ -638,6 +658,21 @@ Property | Description
 `distance` | A number indicating the distance traveled in meters from the maneuver to the next route step.
 `duration` | A number indicating the estimated time traveled in seconds from the maneuver to the next route step.
 `geometry` | Depending on the `geometries` parameter, this is a [GeoJSON LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2) or a [Polyline string](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) representing the full route geometry from this route step to the next route step.
+`name` | A string with the name of the road or path that forms part of the route step.
+`ref` | Any [road designations](https://en.wikipedia.org/wiki/Road_designation_or_abbreviation) associated with the road or path leading from this step’s maneuver to the next step’s maneuver. If [multiple road designations](https://en.wikipedia.org/wiki/Concurrency_%28road%29) are associated with the road, they are separated by semicolons. Typically consists of an alphabetic network code (identifying the road type or numbering system), a space or hyphen, and a [route number](https://en.wikipedia.org/wiki/Route_number). Optionally included, if data is available. <br>**Note:** A network code is not necessarily globally unique, and should not be treated as though it is. A route number may not uniquely identify a road within a given network.
+`destinations` | A string with the destinations of the road or path along which the travel proceeds. Optionally included, if data is available.
+`exits` | A string with the exit numbers or names of the road or path. Optionally included, if data is available.
+`driving_side` | The legal driving side at the location for this step. Either `left` or `right`.
+`mode` | A string indicating the mode of transportation. <table><tr><th>Profile</th><th>Possible values</th></tr><tr><td>`mapbox/driving` </td><td>`driving`, `ferry`, `unaccessible`</td></tr><tr><td>`mapbox/walking`</td><td>`walking`, `ferry`, `unaccessible`</td></tr><tr><td>`mapbox/cycling`</td><td>`cycling`, `walking`, `ferry`, `train`, `unaccessible`</td></tr></table>
+`pronunciation` | A string containing an [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet) phonetic transcription indicating how to pronounce the name in the `name` property. Omitted if pronunciation data is not available for the step.
+`intersections` | An array of objects representing all the intersections along the step. See the following table for more information on the `intersections` array:
+
+属性 | 描述
+--- | ---
+`maneuver` | 一个[step maneuver](#stepmaneuver-object) 对象。
+`distance` | 一个数字，表示从现在行为到下一个行路步骤的行进距离（以米为单位）。
+`duration` | 一个数字，表示从现在行为到下一个行路步骤的预期时间（以秒为单位）。
+`geometry` | 基于 `geometries` 参数，this is a [GeoJSON LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2) or a [Polyline string](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) representing the full route geometry from this route step to the next route step.
 `name` | A string with the name of the road or path that forms part of the route step.
 `ref` | Any [road designations](https://en.wikipedia.org/wiki/Road_designation_or_abbreviation) associated with the road or path leading from this step’s maneuver to the next step’s maneuver. If [multiple road designations](https://en.wikipedia.org/wiki/Concurrency_%28road%29) are associated with the road, they are separated by semicolons. Typically consists of an alphabetic network code (identifying the road type or numbering system), a space or hyphen, and a [route number](https://en.wikipedia.org/wiki/Route_number). Optionally included, if data is available. <br>**Note:** A network code is not necessarily globally unique, and should not be treated as though it is. A route number may not uniquely identify a road within a given network.
 `destinations` | A string with the destinations of the road or path along which the travel proceeds. Optionally included, if data is available.
@@ -659,6 +694,7 @@ Property | Description
 `lanes` | An array of [lane](#lane-object) objects that represent the available turn lanes at the intersection. If no lane information is available for an intersection, the `lanes` property will not be present.
 
 #### Example route step object
+#### 行路步骤对象举例
 
 ```json
 {
@@ -704,6 +740,7 @@ Property | Description
 ```
 
 ### Step maneuver object
+### 步骤行为
 
 A route step object contains a nested **step maneuver** object, which contains the following properties:
 
