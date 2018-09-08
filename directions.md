@@ -672,15 +672,15 @@ Property | Description
 `maneuver` | 一个[step maneuver](#stepmaneuver-object) 对象。
 `distance` | 一个数字，表示从现在行为到下一个行路步骤的行进距离（以米为单位）。
 `duration` | 一个数字，表示从现在行为到下一个行路步骤的预期时间（以秒为单位）。
-`geometry` | 基于 `geometries` 参数，this is a [GeoJSON LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2) or a [Polyline string](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) representing the full route geometry from this route step to the next route step.
-`name` | A string with the name of the road or path that forms part of the route step.
-`ref` | Any [road designations](https://en.wikipedia.org/wiki/Road_designation_or_abbreviation) associated with the road or path leading from this step’s maneuver to the next step’s maneuver. If [multiple road designations](https://en.wikipedia.org/wiki/Concurrency_%28road%29) are associated with the road, they are separated by semicolons. Typically consists of an alphabetic network code (identifying the road type or numbering system), a space or hyphen, and a [route number](https://en.wikipedia.org/wiki/Route_number). Optionally included, if data is available. <br>**Note:** A network code is not necessarily globally unique, and should not be treated as though it is. A route number may not uniquely identify a road within a given network.
-`destinations` | A string with the destinations of the road or path along which the travel proceeds. Optionally included, if data is available.
-`exits` | A string with the exit numbers or names of the road or path. Optionally included, if data is available.
-`driving_side` | The legal driving side at the location for this step. Either `left` or `right`.
-`mode` | A string indicating the mode of transportation. <table><tr><th>Profile</th><th>Possible values</th></tr><tr><td>`mapbox/driving` </td><td>`driving`, `ferry`, `unaccessible`</td></tr><tr><td>`mapbox/walking`</td><td>`walking`, `ferry`, `unaccessible`</td></tr><tr><td>`mapbox/cycling`</td><td>`cycling`, `walking`, `ferry`, `train`, `unaccessible`</td></tr></table>
-`pronunciation` | A string containing an [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet) phonetic transcription indicating how to pronounce the name in the `name` property. Omitted if pronunciation data is not available for the step.
-`intersections` | An array of objects representing all the intersections along the step. See the following table for more information on the `intersections` array:
+`geometry` | 基于 `geometries` 参数，会是 [GeoJSON LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2) 或 [Polyline string](https://developers.google.com/maps/documentation/utilities/polylinealgorithm)，表示从此行路步骤到下一个步骤的完整路线几何信息。
+`name` | 一个字符串，其中包含构成行路步骤一部分的道路或路径的名称。
+`ref` | 任何与 [road designations](https://en.wikipedia.org/wiki/Road_designation_or_abbreviation) 关联的道路或线路，引导这一步到下一步的行为。 如果关联到 [multiple road designations](https://en.wikipedia.org/wiki/Concurrency_%28road%29) ，则他们以分号分隔。通常由字母路网代码（标识道路类型或编号系统），空格或连字符以及 [route number](https://en.wikipedia.org/wiki/Route_number)组成。 可选属性，当数据可用时才存在。<br>**Note:** 路网代码不一定是全局唯一的，不应该被如此对待。路线编号可能不唯一地标识给定网络内的道路。
+`destinations` | 一个字符串，其中包含旅行所经过的道路或路径的目的地。 
+`exits` | 一个字符串，表示离开此道路时的出口编号或名称。可选属性，当数据可用时才存在。
+`driving_side` | 此位置的合法驾驶方向， `left` 或 `right`。
+`mode` | 一个字符串，表示交通方式。 <table><tr><th>大纲</th><th>可能的值</th></tr><tr><td>`mapbox/driving` </td><td>`driving`, `ferry`, `unaccessible`</td></tr><tr><td>`mapbox/walking`</td><td>`walking`, `ferry`, `unaccessible`</td></tr><tr><td>`mapbox/cycling`</td><td>`cycling`, `walking`, `ferry`, `train`, `unaccessible`</td></tr></table>
+`pronunciation` | 一个字符串，包含[IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet) 语音转录的字符串，表示如何在`name`属性中发音。如果没有发音数据，则省略。
+`intersections` | 表示沿着行路步骤的所有交叉点的对象数组。 有关`intersectionctions`数组的更多信息，请参见下表：
 
 
 `intersections` | Description
