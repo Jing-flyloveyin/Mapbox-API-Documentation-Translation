@@ -1,4 +1,4 @@
-## Tilesets 瓦片集
+## Tilesets
 
 Mapbox Tilesets API可以用来读取栅格和矢量[瓦片集](https://www.mapbox.com/help/define-tileset/)的元数据。如果想要请求瓦片，请使用[Maps API](#maps)。
 
