@@ -1,6 +1,6 @@
-## Tilesets
+## Tilesets 瓦片集
 
-Mapbox Tilesets API可以用来读取栅格和矢量[tilesets](https://www.mapbox.com/help/define-tileset/)的元数据。如果想要请求瓦片，请使用[Maps API](#maps)。
+Mapbox Tilesets API可以用来读取栅格和矢量[瓦片集](https://www.mapbox.com/help/define-tileset/)的元数据。如果想要请求瓦片，请使用[Maps API](#maps)。
 
 **约束与限制**
 
@@ -14,7 +14,7 @@ const tilesetsClient = mbxTilesets({ accessToken: '{your_access_token}' });
 ```
 ### 瓦片集对象
 
-请求Tilesets API返回一个或多个瓦片集对象，每个瓦片集对象都包含以下属性：
+请求Tilesets API将返回一个或多个瓦片集对象，每个瓦片集对象都包含以下属性：
 
 属性 | 描述
 --- | ---
@@ -57,32 +57,32 @@ GET /tilesets/v1/{username} tilesets:list
 
 URL参数 | 描述
 --- | ---
-`username` | 要列出瓦片集的账户的用户名
+`username` | 要列出的瓦片集所属账户的用户名
 
 你可以使用以下可选参数进一步细化这个端点的结果：
 
 查询参数 | 描述
 ----------|------------
-`type` | Filter results by tileset type, either `raster` or `vector`.
-`visibility` | Filter results by visibility, either `public` or `private`. Private tilesets require an access token that belong to the owner. Public tilesets can be requested with any user's access token.
-`sortby` | Sort the listings by their `created` or `modified` timestamps.
-`limit` | The maximum number of tilesets to return, from `1` to `500`. The default is `100`.
-`start` | The tileset after which to start the listing. The key is found in the `Link` header of a response. See the [pagination](#pagination) section for details.
+`type` | 根据瓦片集类型过滤结果，`raster` 或者 `vector`。
+`visibility` | 根据访问权限过滤结果，`public` 或者 `private`。私有瓦片集需要一个属于所有者的访问令牌，公共瓦片集则可以被任意用户的访问令牌请求。 
+`sortby` | 根据`created` 或 `modified` 时间戳来排序。
+`limit` | 限制返回瓦片集的最大数量，从 `1` 到 `500`。默认为 `100`。
+`start` | 设置从哪个瓦片集开始罗列，key可以在响应的`Link`头部中找到。 详见[分页](#pagination)部分。
 
 #### 请求示例
 
 ```curl
 curl "https://api.mapbox.com/tilesets/v1/{username}?access_token={your_access_token}"
 
-# Limit the results to the 25 most recently created vector tilesets
+# 请求数量上限为25个且最新创建的矢量瓦片集
 curl "https://api.mapbox.com/tilesets/v1/{username}?type=vector&limit=25&sortby=created&access_token={your_access_token}"
 
-# Limit the results to the tilesets after the tileset with a start key of abc123
+# 只请求key为abc123及其之后的瓦片集
 curl "https://api.mapbox.com/tilesets/v1/{username}?start=abc123&access_token={your_access_token}"
 ```
 
 ```bash
-# This API cannot be accessed with the Mapbox CLI
+# 该APi不支持Mapbox CLI
 ```
 
 ```javascript
@@ -95,24 +95,24 @@ tilesetsClient
 tilesetsClient
   .listTilesets()
   .eachPage((error, response, next) => {
-    // Handle error or response and call next.
+    // 处理错误、响应以及调用next。
   });
 ```
 
 ```python
-# This API cannot be accessed with the Mapbox Python SDK
+# 该API不支持Mapbox Python SDK
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 该API不支持Mapbox Java SDK
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 该API不支持Mapbox Objective-C库
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 该API不支持Mapbox Swift库
 ```
 
 #### 响应示例
