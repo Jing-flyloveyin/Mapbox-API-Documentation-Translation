@@ -693,6 +693,17 @@ Property | Description
 `out` | The index in the `bearings` and `entry` arrays. Used to extract the bearing after the turn. Namely, the clockwise angle from true north to the direction of travel after the maneuver/passing the intersection. The value is not supplied for arrival maneuvers.
 `lanes` | An array of [lane](#lane-object) objects that represent the available turn lanes at the intersection. If no lane information is available for an intersection, the `lanes` property will not be present.
 
+`intersections` | 描述
+--- | ---
+`location` | 一个 `[longitude, latitude]` 描述转弯点的位置。
+`bearings` | 一个列表，列出交叉路口可用的方向值，描述交叉路口的所有可用道路。
+`classes` | 一组字符串，表示离开交叉路口的道路类别。  <table><tr><th>可能值</th><th>描述</th></tr><tr><td>`toll`</td><td>连接到收费公路</td></tr><tr><td>`ferry`</td><td>连接到轮渡</td></tr><tr><td>`restricted`</td><td>有通行限制</td></tr><tr><td>`motorway`</td><td>连接到公路</td></tr><tr><td>`tunnel`</td><td>连接到隧道</td></tr></table>
+`entry` | 一个关于入口标志的列表，1:1 对应 `bearings`. 如果为`true`，则表示可以在有效路线上进入相应的道路，如果为`false`，转向相应的道路将违反限制。
+`in` | `bearing`和`entry`数组中的索引。用于计算转弯之前的轴向。即，在操纵/通过交叉点之前从真北到行进方向的顺时针角度。为了使轴朝向行驶方向，轴向必须旋转180°。该值不用于离场行为。
+`out` | `bearing`和`entry`数组中的索引。用于提取转弯之后的轴向。即，在操纵/通过交叉点之后从真北到行进方向的顺时针角度。到达行为不提供该值。
+`lanes` | 一个[lane](#lane-object) 数组，代表交叉路口的可用转弯车道。如果没有可用于交叉路口的车道信息，则不会出现`lanes`属性。
+
+
 #### Example route step object
 #### 行路步骤对象举例
 
@@ -740,9 +751,9 @@ Property | Description
 ```
 
 ### Step maneuver object
-### 步骤行为
+### 步骤操作对象
 
-A route step object contains a nested **step maneuver** object, which contains the following properties:
+路径步骤对象包含嵌套的**步骤操作**对象，其中包含以下属性：
 
 Property          | Description
 ------------------| ------------------
@@ -755,6 +766,18 @@ Property          | Description
 
 - If no `modifier` is provided, the `type` of maneuvers is limited to `depart` and `arrive`.
 - If the source or target location is close enough to the `depart` or `arrive` location, no `modifier` will be given.
+
+属性 | 描述
+------------------| ------------------
+`bearing_before`  | `0`到`360`之间的数字，表示在操作 _之前_ 这一瞬间从真北到行进方向的顺时针角度。
+`bearing_after`   | `0`到`360`之间的数字，表示在操作 _之后_ 这一瞬间从真北到行进方向的顺时针角度。
+`instruction`     | 关于如何执行返回操作的人类可读指令。
+`location`        | 一个 `[longitude, latitude]` 数组，对应操作点的位置。
+`modifier`        | 一个可选的字符串，表示操纵的方向变化。每个 `modifier` 的含义取决于 `type` 参数。<table><tr><th>可能值</th><th>描述</th></tr><tr><td>`uturn`</td><td>表示掉头，在同一条路上时 `type` 可能是 `turn` 或 `continue` 。</td></tr><tr><td>`sharp right`</td><td>右急转弯</td></tr><tr><td>`right`</td><td>正常右转弯。</td></tr><tr><td>`slight right`</td><td>稍向右转。</td></tr><tr><td>`straight`</td><td>方向不变。</td></tr><tr><td>`slight left`</td><td>稍向左转。</td></tr><tr><td>`left`</td><td>正常左转弯。</td></tr><tr><td>`sharp left`</td><td>左急转弯。</td></tr></table>
+`type`            | 表示操作类型的字符串。 查看 [maneuver types table](#maneuver-types)中的操作类型的完整列表。
+
+- 如果不提供 `modifier` ，`type` 会被限制在 `depart` 或 `arrive`。
+- 如果源位置或目标位置足够接近 `depart` 或 `arrive` 位置， `modifier` 将不会提供。
 
 **Maneuver types**<a id='maneuver-types'></a>
 
@@ -779,7 +802,32 @@ Property          | Description
 
 **Note:** New properties (potentially depending on `type`) may be introduced in the future without an API version change.
 
+**操作类型**<a id='maneuver-types'></a>
+
+`type` | 描述
+ --- | ---
+`turn` | 基于`modifier`的基本转向。
+`new name` | 发生变化后的道路名称（在强制转弯后）。
+`depart` | 表示离开一个路段。 `modifier` 的值表示出发点相对于当前行进方向的位置。
+`arrive` | 表示到达一个路段的目的地。 `modifier` 表示到达点相对于当前行进方向的位置。
+`merge` | 融合到一条街上。
+`on ramp` | 经由坡道进入高速公路。
+`off ramp` | 经由坡道离开高速公路。
+`fork` | 从岔道的左侧或右侧。
+`end of road` | 道路在T字路口结束。
+`continue` | 转弯后继续在街上行驶。
+`roundabout` | 通过环岛，在[route step](#routestep-object)中有个附加属性`exit`，包含驶离的编号。 `modifier` 指定进入环岛的方向。
+`rotary` | 一个环形路。 虽然与较大版本的环形交叉口非常相似，但它并不一定遵循环形交通规则。可以提供 `rotary_name` 、 `rotary_pronunciation` 两个属性之一或两者皆有。通过 [route step](#routestep-object) 定位并有个附加属性`exit`。
+`roundabout turn` |一个被视为十字路口的小型环岛。
+`notification` | 表示驾驶情况的变化，例如`mode`从`driving`变为`ferry`。
+`exit roundabout` | 表示驶离环岛的操作。 除非在请求中提供`roundabout_exits = true`查询参数，否则不会出现在结果中。
+`exit rotary` | 表示驶离小环路的操作。 除非在请求中提供`roundabout_exits = true`查询参数，否则不会出现在结果中。
+
+**Note:** 将来可能会引入新属性（可能取决于`type`），即使没有更新API版本。
+
+
 #### Example step maneuver object
+#### 步骤操作对象举例
 
 ```json
 {
