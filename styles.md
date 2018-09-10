@@ -1,14 +1,14 @@
-## Styles
+## 样式
 
-The Mapbox Styles API lets you read and change map styles, fonts, and images. This API is the basis for [Mapbox Studio](https://www.mapbox.com/mapbox-studio/).
+通过Mapbox 样式API，你可以读取和更改地图的样式、字体和图像。 样式API是[Mapbox Studio](https://www.mapbox.com/mapbox-studio/)的基础。
 
-If you use Studio, [Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/), or the [Mapbox Mobile SDKs](https://www.mapbox.com/mobile/), you are already using the Styles API. This documentation is meant for software developers who want to programmatically read and write these resources. It isn't necessary for you to read or understand this reference to design or use Mapbox maps.
+如果你使用Studio、[Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/)或[Mapbox Mobile SDKs](https://www.mapbox.com/mobile/)，那么你已经用到了样式API。这份文档适用于开发人员以编程方式读取写入这些资源。对于设计和使用Mapbox地图，你没必要读懂这份API文档。
 
-You will need to be familiar with the [Mapbox Style Specification](https://www.mapbox.com/mapbox-gl-style-spec) to use the Styles API. The Mapbox Style Specification defines the structure of map styles and is the open standard that helps Studio communicate with APIs and produce maps that are compatible with Mapbox libraries.
+为了更好使用样式API，你需要熟悉[Mapbox Style Specification](https://www.mapbox.com/mapbox-gl-style-spec)。Mapbox样式规范定义了地图样式的结构，并且是开放的标准，能够实现Studio和的APIs通信，生成可以与Mapbox库兼容的地图。 
 
-**Mapbox styles**
+**Mapbox 样式**
 
-The following Mapbox styles are available to all accounts using a valid access token:
+所有账户都可以使用有效token访问以下Mapbox样式：
 
 - [`mapbox://styles/mapbox/streets-v10`](https://api.mapbox.com/styles/v1/mapbox/streets-v10.html?title=true&access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NDg1bDA1cjYzM280NHJ5NzlvNDMifQ.d6e-nNyBDtmQCVwVNivz7A#2/0.0/0.0)
 - [`mapbox://styles/mapbox/outdoors-v10`](https://api.mapbox.com/styles/v1/mapbox/outdoors-v10.html?title=true&access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NDg1bDA1cjYzM280NHJ5NzlvNDMifQ.d6e-nNyBDtmQCVwVNivz7A#2/0.0/0.0)
@@ -21,42 +21,42 @@ The following Mapbox styles are available to all accounts using a valid access t
 - [`mapbox://styles/mapbox/navigation-guidance-day-v4`](https://api.mapbox.com/styles/v1/mapbox/navigation-guidance-day-v4.html?title=true&access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NDg1bDA1cjYzM280NHJ5NzlvNDMifQ.d6e-nNyBDtmQCVwVNivz7A#2/0.0/0.0)
 - [`mapbox://styles/mapbox/navigation-guidance-night-v4`](https://api.mapbox.com/styles/v1/mapbox/navigation-guidance-night-v4.html?title=true&access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NDg1bDA1cjYzM280NHJ5NzlvNDMifQ.d6e-nNyBDtmQCVwVNivz7A#2/0.0/0.0)
 
-Navigation styles feature coverage in [geographies that Mapbox supports](./pages/traffic-countries.html).
+导航样式功能参考[geographies that Mapbox supports](./pages/traffic-countries.html).
 
-**Restrictions and limits**
+**限制和约束**
 
-- Styles cannot reference more than 15 sources.
-- Styles cannot be larger than 5MB. This limit only applies to the style document itself, not the sprites, fonts, tilesets, or other resources it references.
-- An account is allowed to have an unlimited number of styles regardless of its [pricing plan](http://mapbox.com/plans).
+- 样式不能引用超过15个来源。
+- 样式文件不能大于5M。 此约束只是适用于文件本身，对图标、字体、瓦片或其他参考资源没有限制。
+- An account is allowed to have an unlimited number of styles regardless of its 无论哪种[pricing plan](http://mapbox.com/plans)，每个账户都有不限数量的地图样式。
 
 ```javascript
 const mbxStyles = require('@mapbox/mapbox-sdk/services/styles');
 const stylesClient = mbxStyles({ accessToken: '{your_access_token}' });
 ```
 
-### The style object
+### 样式对象
 
-A style object is an object that conforms to the [Mapbox Style Specification](https://www.mapbox.com/mapbox-gl-style-spec), with some additional account-related properties:
+样式对象在符合[Mapbox Style Specification](https://www.mapbox.com/mapbox-gl-style-spec)的同时, 还有与账户相关的属性:
 
-Property | Description
+属性 | 描述
 --- | ---
-`version` | The style specification version number.
-`name` | A human-readable name for the style.
-`metadata` | Information about the style that is used in Mapbox Studio.
-`sources` | Sources supply the data that will be shown on the map.
-`layers` | Layers will be drawn in the order of this array.
-`created` | The date and time the style was created.
-`id` | The ID of the style.
-`modified` | The date and time the style was last modified.
-`owner` | The username of the style owner.
-`visibility` | Access control for the style, either `public` or `private`. Private styles require an access token belonging to the owner. Public styles may be requested with an access token belonging to any user.
-`draft` | Indicates whether the style is a draft (`true`) or whether it has been published (`false`).
+`version` | 样式规范的版本号。
+`name` | 样式的名称。
+`metadata` | 有关Mapbox Studio使用该的样式的信息。
+`sources` | 将会显示地图上的数据来源。
+`layers` | 图层将会按照该数组的顺序绘制。
+`created` | 样式创建的日期和时间。
+`id` | 样式的ID。
+`modified` | 样式最近一次修改日期和时间。
+`owner` | 样式拥有者的名称。
+`visibility` | 设置`公开`或`私有`的访问权限。 私有样式要求使用创建者的有效token访问，公开样式可以使用任何账户的有效token访问。
+`draft` | 指示该样式是草稿 (`true`) ，还是已经发布了(`false`)。
 
-**About drafts**
+**草稿**
 
-The Styles API supports drafts, so every style can have both published and draft versions. This means that you can make changes to a style without publishing them or deploying them in your app. For each style-related endpoint, you can interact with the draft version of a style by placing `draft/` after the style ID, like `/styles/v1/{username}/{style_id}/draft/sprite`.
+样式 API 支持草稿，因此每种样式都可以有发布和草稿版本。这意味着你可以更改一个样式，但是不发布或部署到你的应用上。对于每一个样式相关端点，你都可以通过样式ID后添加`draft/`方式，切换到草稿版本，像`/styles/v1/{username}/{style_id}/draft/sprite`.
 
-#### Example style object
+#### 样式对象例子
 
 ```json
 {
@@ -76,20 +76,20 @@ The Styles API supports drafts, so every style can have both published and draft
 }
 ```
 
-### Retrieve a style
+### 样式检索
 
 ```endpoint
 GET /styles/v1/{username}/{style_id} styles:read
 ```
 
-Retrieve a style as a JSON document. The returned [style object](#the-style-object) will be in the [Mapbox Style](https://www.mapbox.com/mapbox-gl-style-spec/) format.
+以JSON方式检索一个样式， 返回的[样式对象](#the-style-object)将符合[Mapbox样式](https://www.mapbox.com/mapbox-gl-style-spec/)的格式.
 
-URL parameters | Description
+URL 参数 | 描述
 -- | ---
-`username` | The username of the account to which the style belongs.
-`style_id` | The ID of the style to be retrieved.
+`username` | 样式拥有者的账户名称。
+`style_id` | 检索的样式ID。
 
-#### Example request
+#### 请求样例
 
 ```curl
 curl "https://api.mapbox.com/styles/v1/examples/cjikt35x83t1z2rnxpdmjs7y7?access_token={your_access_token}"
@@ -107,28 +107,28 @@ stylesClient
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+# 此API不适用于 Python SDK
 ```
 
 ```bash
-# This API cannot be accessed with Mapbox CLI
+# 此API不适用于 Mapbox CLI
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 此API不适用于 Mapbox Java SDK
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
-// Use the Mapbox iOS SDK or Mapbox macOS SDK instead
+// 此API不适用于 Mapbox Objective-C 库
+// 可以使用Mapbox iOS SDK 或 Mapbox macOS SDK 代替
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
-// Use the Mapbox iOS SDK or Mapbox macOS SDK instead
+// 此API不适用于 Mapbox Swift 库
+// 可以使用Mapbox iOS SDK 或 Mapbox macOS SDK 代替
 ```
 
-#### Example response
+#### 返回样例
 
 ```json
 {
@@ -179,19 +179,19 @@ stylesClient
 }
 ```
 
-### List styles
+### 样式列表
 
 ```endpoint
 GET /styles/v1/{username} styles:list
 ```
 
-Retrieve a list of styles for a specific account. This endpoint returns style metadata instead of returning full styles.
+检索某个指定账户的样式列表， 此请求返回样式的metadata，而不是整个样式信息。
 
-URL parameters | Description
+URL 参数 | 描述
 -- | ---
-`username` | The username of the account to which the styles belong.
+`username` | 样式拥有者的账户名称。
 
-#### Example request
+#### 请求样例
 
 ```curl
 curl "https://api.mapbox.com/styles/v1/{username}?access_token={your_access_token}"
@@ -207,26 +207,26 @@ stylesClient
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+#  此API不适用于Python SDK
 ```
 
 ```bash
-# This API cannot be accessed with Mapbox CLI
+#  此API不适用于 Mapbox CLI
 ```
 
 ```java
-// This API cannot be accessed with Mapbox Java libraries
+// 此API不适用于Mapbox Java 库
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 此API不适用于Mapbox Objective-C 库
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 此API不适用于Mapbox Swift 库
 ```
 
-#### Example response
+#### 返回样例
 
 ```json
 [
@@ -249,25 +249,25 @@ stylesClient
 ]
 ```
 
-### Create a style
+### 样式创建
 
 ```endpoint
 POST /styles/v1/{username} styles:write
 ```
 
-Creates a style in your account. The posted style object must be both valid JSON and aligned to the most recent version of the [Mapbox Style Specification](https://www.mapbox.com/mapbox-gl-style-spec/). Invalid styles will produce a descriptive validation error.
+用你的账户创建一个样式。提交的样式对象必须是JSON，且符合最新[Mapbox Style Specification](https://www.mapbox.com/mapbox-gl-style-spec/)。无效的样式对象将会导致描述性验证错误。
 
-[GeoJSON sources](https://www.mapbox.com/mapbox-gl-js/style-spec/#sources-geojson) are not supported by the Styles API.
+样式API不支持[GeoJSON sources](https://www.mapbox.com/mapbox-gl-js/style-spec/#sources-geojson)。
 
-If the [optional `name` property](https://www.mapbox.com/mapbox-gl-style-spec/#root-name) is not used in the request body, the `name` of the new style will be automatically set to the style's ID.
+如果请求时，没有指定[可选 `name` 属性](https://www.mapbox.com/mapbox-gl-style-spec/#root-name)， 新样式的`name`将会默认设置为样式的ID。
 
-The style you get back from the API will contain new properties that the server has added: `created`, `id`, `modified`, `owner`, and `draft`.
+API请求返回的样式包括了服务端添加的新的属性：`created`、`id`、`modified`、`owner`和`draft`。
 
-URL parameters | Description
+URL 参数 | 描述
 -- | ---
-`username` | The username of the account to which the new style will belong.
+`username` | 样式拥有者的账户名称。
 
-#### Example request
+#### 请求样例
 
 ```curl
 curl -X POST "https://api.mapbox.com/styles/v1/{username}?access_token={your_access_token}" \
@@ -276,7 +276,7 @@ curl -X POST "https://api.mapbox.com/styles/v1/{username}?access_token={your_acc
 ```
 
 ```javascript
-// Define the style
+// 定义样式
 stylesClient
   .createStyle({
     style: {
@@ -295,26 +295,26 @@ stylesClient
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+# 此API不适用于Python SDK
 ```
 
 ```bash
-This API cannot be accessed with Mapbox CLI
+此API不适用于Mapbox CLI
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 此API不适用于Java SDK
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 此API不适用于Mapbox Objective-C库
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 此API不适用于Mapbox Swift库
 ```
 
-#### Example request body
+#### 请求样例
 
 ```json
 {
@@ -336,7 +336,7 @@ This API cannot be accessed with Mapbox CLI
 }
 ```
 
-#### Example response
+#### 返回样例
 
 ```json
 {
@@ -364,24 +364,24 @@ This API cannot be accessed with Mapbox CLI
 }
 ```
 
-### Update a style
+### 样式更新
 
 ```endpoint
 PATCH /styles/v1/{username}/{style_id} styles:write
 ```
 
-Updates an existing style in your account with new content.
+更新账户里已有的样式。
 
-If you request a style and then use the same content to update the style, this action will fail. You must remove the `created` and `modified` properties before updating a style. The `name` property, which is optional for [creating a style](#create-a-style), is required to update a style.
+你如果请求一个样式，然后用的相同的内容去更新该样式，你将会失败。在更新一个样式之前，你必须删除样式的`created`和`modified`属性。更新样式必须指定`name`属性, 但在[样式创建](#create-a-style)过程是可选的。
 
-Cross-version `PATCH` requests are rejected.
+不允许跨版本的`PATCH`请求。
 
-URL parameters | Description
+URL 参数 | 描述
 --- | ---
-`username` | The username of the account to which the style belongs.
-`style_id` | The ID of the style to be updated.
+`username` | 样式拥有者的账户名称。
+`style_id` | 更新样式的ID。
 
-#### Example request
+#### 请求样例
 
 ```curl
 curl -X PATCH "https://api.mapbox.com/styles/v1/{username}/{style_id}" \
