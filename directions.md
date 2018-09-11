@@ -8,14 +8,14 @@ Mapbox Directions API 将向你展示如何到达目的地。通过使用Directi
 - 生成多段导航命令
 - 支持25个地球上任意坐标对生成路径
 
-该API支持以下四种不同的路径：
+该API支持以下四种不同的路线规划配置文件：
 
 配置文件 | 说明
 --- | ---
-`mapbox/driving-traffic` | For automotive routing. This profile factors in current and historic traffic conditions to avoid slowdowns. Traffic information is available in [these supported geographies](./pages/traffic-countries.html).
-`mapbox/driving` | For automotive routing. This profile shows the fastest routes by preferring high-speed roads like highways.
-`mapbox/walking` | For pedestrian and hiking routing. This profile shows the shortest path by using sidewalks and trails.
-`mapbox/cycling` | For bicycle routing. This profile shows routes that are short and safer for cyclists by avoiding highways and preferring streets with bike lanes.
+`mapbox/driving-traffic` | 自动路线规划。考虑当前和历史的交通信息，规避拥堵。交通信息可参考：[these supported geographies](./pages/traffic-countries.html).
+`mapbox/driving` | 自动路线规划。提供优先高速（如公路）的最快路线。
+`mapbox/walking` | 行人和徒步。 提供人行道和小路的最短路径。
+`mapbox/cycling` | 骑行路线。规避高速公路，优先选择带有自行车道的道路，对于骑行者而言路线更短且更安全。
 
 Swift and Objective-C support for Directions is provided by the [MapboxDirections.swift](https://github.com/mapbox/MapboxDirections.swift)
 library.
@@ -105,33 +105,33 @@ Unrecognized options in the query string result in an `InvalidInput` error.
 
 The table below shows supported language codes used with the `language` parameter for turn-by-turn instructions. The language parameter will automatically be set to `en` (English) if an unsupported language code is used.
 
-Code | Language
+代码 | 语言
 --- | ---
-`da` | Danish
-`de` | German
-`en` | English
-`eo` | Esperanto
-`es` | Spanish
-`es-ES` | Spanish (Spain)
-`fi` | Finnish
-`fr` | French
-`he` | Hebrew
-`id` | Indonesian
-`it` | Italian
-`ko` | Korean
-`my` | Burmese
-`nl` | Dutch
-`no` | Norwegian (Bokmål)
-`pl` | Polish
-`pt-BR` | Portuguese (Brazil)
-`pt-PT` | Portuguese (Portugal)
-`ro` | Romanian
-`ru` | Russian
-`sv` | Swedish
-`tr` | Turkish
-`uk` | Ukrainian
-`vi` | Vietnamese
-`zh-Hans` | Chinese (Simplified)
+`da` | 丹麦语
+`de` | 德语
+`en` | 英语
+`eo` | 世界语
+`es` | 西班牙语
+`es-ES` | 西班牙语（巴西）
+`fi` | 芬兰语
+`fr` | 法语
+`he` | 希伯来语
+`id` | 印度尼西亚语
+`it` | 意大利语
+`ko` | 韩语
+`my` | 缅甸语
+`nl` | 荷兰语
+`no` | 挪威语（挪威）
+`pl` | 波兰语
+`pt-BR` | 葡萄牙语（巴西）
+`pt-PT` | 葡萄牙（葡萄牙）
+`ro` | 罗马尼亚
+`ru` | 俄语
+`sv` | 瑞典语
+`tr` | 土耳其语
+`uk` | 乌克兰
+`vi` | 越南语
+`zh-Hans` | 汉语 (简体)
 
 #### Example request
 
