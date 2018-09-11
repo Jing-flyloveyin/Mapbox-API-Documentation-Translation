@@ -1,4 +1,5 @@
 ## Directions
+## 路径规划
 
 本文档是Directions API的`v5`版。之前版本请参考[`v4`文档](./pages/directions-v4.html).
 
@@ -17,8 +18,7 @@ Mapbox Directions API 将向你展示如何到达目的地。通过使用Directi
 `mapbox/walking` | 行人和徒步。 提供人行道和小路的最短路径。
 `mapbox/cycling` | 骑行路线。规避高速公路，优先选择带有自行车道的道路，对于骑行者而言路线更短且更安全。
 
-Swift和Objective-C对Directions的支持可参考：[MapboxDirections.swift](https://github.com/mapbox/MapboxDirections.swift)
-库.
+Swift和Objective-C对Directions的支持可参考库：[MapboxDirections.swift](https://github.com/mapbox/MapboxDirections.swift)。
 
 ```objc
 @import MapboxDirections;
@@ -56,12 +56,13 @@ const directionsClient = mbxDirections({ accessToken: '{your_access_token}' });
 ```
 
 **Restrictions and limits**
+**限制**
 
-- Requests using the `driving`, `walking`, and `cycling` profiles can specify up to 25 total waypoints (input coordinates that are snapped to the roads network) along the route.
-- Requests using the `driving-traffic` profile can specify up to 3 waypoints along the route.
-- Traffic coverage for the `driving-traffic` profile is available in [supported geographies](./pages/traffic-countries.html). Requests to this profile revert to `driving` profile results for areas without traffic coverage.
-- Maximum 60 requests per minute.
-- Maximum total of 10,000 kilometers between all waypoints.
+- 使用配置文件`driving`，`walking`和 `cycling`的请求可沿路径指定最多25个点（输入坐标将捕捉道路网络）。
+- 使用配置文件`driving-traffic`的请求可沿路径指定最多3个点。
+- [supported geographies](./pages/traffic-countries.html) 提供了`driving-traffic`配置文件的交通信息。该配置文件在没有交通信息的地区则返回 `driving`文件。
+- 每分钟最多支持60次请求。
+- 所有点之间距离最多10000公里。
 
 ### Retrieve directions
 
@@ -101,6 +102,7 @@ Query parameter | Description
 
 Unrecognized options in the query string result in an `InvalidInput` error.
 
+**Instructions language**<a id='instructions-languages'></a>
 **导航命令语言**<a id='instructions-languages'></a>
 
 下表`language`参数是多段导航命令支持的语言代码。如果不支持该语言，则默认为`en`（英语）。
@@ -134,6 +136,7 @@ Unrecognized options in the query string result in an `InvalidInput` error.
 `zh-Hans` | 汉语 (简体)
 
 #### Example request
+#### 请求举例
 
 ```curl
 # Request directions with no additional options
