@@ -52,7 +52,7 @@ URL 参数 | 描述
 Query 参数 | 描述
 --- | ---
 `annotations`<br /> (可选) | 用于指定生成的矩阵。可能的值是：`duration` （默认值），`distance`，或者是两个由逗号分隔的值。
-`approaches`<br /> (可选) | 一个分号分隔的列表，表示请求的路线中最接近航点的道路。接受`unrestricted`(默认情况下，路线可以从道路两侧到达航点)或`curb`(路线将到达该区域的`driving_side`的航点)。如果提供的话，方法的数量必须与航点的数量相同。但是，您可以略过坐标并用`;` 分隔符显示列表中的位置。
+`approaches`<br /> (可选) | 一个分号分隔的列表，表示请求的路线中最接近航路点的道路。接受`unrestricted`(默认情况下，路线可以从道路两侧到达航路点)或`curb`(路线将到达该区域的`driving_side`的航路点)。如果提供的话，方法的数量必须与航路点的数量相同。但是，您可以略过坐标并用`;` 分隔符显示列表中的位置。
 `destinations`<br /> (可选) | 使用给定索引的坐标作为目的地。可能的值是：分号分隔基于0的索引列表，或`all`（默认值）。选项`all`允许使用所有坐标作为目的地。
 `sources`<br /> (可选) | 使用给定索引的坐标作为源地。可能的值是：分号分隔基于0的索引列表，或`all`（默认值）。选项`all`允许使用所有坐标作为源地。
 
@@ -61,13 +61,13 @@ Query 参数 | 描述
 #### Example requests
 
 ```curl
-# 请求一个对称的3x3矩阵，用于车辆最靠近路边的地点。
+# 请求一个对称的3x3矩阵，用于最靠近路边的车辆。
 curl "https://api.mapbox.com/directions-matrix/v1/mapbox/driving/-122.42,37.78;-122.45,37.91;-122.48,37.73?approaches=curb;curb;curb&access_token={your_access_token}"
 
-# Request an asymmetric 2x3 matrix for bicycles
+# 请求一个不对称2x3矩阵用于自行车。
 curl "https://api.mapbox.com/directions-matrix/v1/mapbox/cycling/-122.42,37.78;-122.45,37.91;-122.48,37.73?sources=0;2&destinations=all&access_token={your_access_token}"
 
-# Request a 1x3 matrix for walking that includes both duration and distance
+# 请求一个包括持续时间和距离的1x3矩阵，用于步行。
 curl "https://api.mapbox.com/directions-matrix/v1/mapbox/walking/-122.418563,37.751659;-122.422969,37.75529;-122.426904,37.759617?sources=1&annotations=distance,duration&access_token={your_access_token}"
 ```
 
@@ -136,7 +136,7 @@ MapboxMatrix directionsMatrixClient = MapboxMatrix.builder()
 // This API cannot be accessed with the Mapbox Swift libraries
 ```
 
-#### Example response
+#### 响应结果示例
 ```json
 {
     "code": "Ok",
@@ -176,21 +176,21 @@ MapboxMatrix directionsMatrixClient = MapboxMatrix.builder()
 }
 ```
 
-### The matrix response object
+### 矩阵响应对象
 
-The response to a Matrix API request is a JSON object that contains the following properties:
+一个Matrix API请求的响应的结果包含下列属性的JSON对象：
 
-Property | Description
+属性 | 描述
 --- | ---
-`code` | A string indicating the state of the response. This is a separate code than the HTTP status code. On normal valid responses, the value will be `Ok`. See the errors section below for more information.
-`durations` | Durations as an array of arrays that represent the matrix in row-major order. `durations[i][j]` gives the travel time from the i<sup>th</sup> source to the j<sup>th</sup> destination. All values are in seconds. The duration between the same coordinate is always `0`. If a duration cannot be found, the result is `null`.
-`distances` | Distances as an array of arrays that represent the matrix in row-major order. `distances[i][j]` gives the travel distance from the i<sup>th</sup> source to the j<sup>th</sup> destination. All values are in meters. The distance between the same coordinate is always `0`. If a distance cannot be found, the result is `null`.
-`destinations:` | An array of `waypoint` objects. Each waypoint is an input coordinate snapped to the road and path network. The waypoints appear in the array in the order of the input coordinates, or in the order specified in the `destinations` query parameter.
-`sources` | An array of `waypoint` objects. Each waypoint is an input coordinate snapped to the road and path network. The waypoints appear in the array in the order of the input coordinates, or in the order specified in the `sources` query parameter.
+`code` | 响应状态代码。这是一个区别于HTTP状态代码的代码。在正常时，该值将为`Ok`。有关更多信息，请参阅下面的错误部分。
+`durations` | 持续时间作为数组中的一个数组，以行-主序表示矩阵。`durations[i][j]`给出了从i<sup>th</sup>源地到j<sup>th</sup>目的地的移动时间。所有的值单位是秒。同一坐标之间的持续时间总是`0`。如果无法找到持续时间，则结果为`null`。
+`distances` | 距离作为数组中的一个数组，以行-主序表示矩阵。`distances[i][j]`给出了从i<sup>th</sup>源地到j<sup>th</sup>目的地的距离。所有值的单位是米。同一坐标之间的距离总是`0`。如果无法找到距离，则结果为`null`。
+`destinations:` | `waypoint`对象中的一个数组。每个航路点是一个输入到道路和路径网络的坐标。航路点按照输入坐标的顺序出现在数组中，或在`destinations`查询参数指定的顺序出现在数组中。
+`sources` | `waypoint`对象中的一个数组。每个航路点是一个输入到道路和路径网络的坐标。航路点按照输入坐标的顺序出现在数组中，或在`sources`查询参数指定的顺序出现在数组中。
 
-**Note:** If no route is found between a source and a destination, the respective value in the `durations` or `distances` matrix will be `null`.
+**Note:** 如果在源地和目的地之间没有找到路线，则在`durations`或`distances`矩阵中的相应值将是`null`。
 
-#### Example matrix response object
+#### 矩阵响应对象示例
 
 ```json
 {
