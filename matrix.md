@@ -49,14 +49,14 @@ URL 参数 | 描述
 
 您可以通过以下可选参数进一步细化来自该服务端的结果：
 
-Query parameter | Description
+Query 参数 | 描述
 --- | ---
-`annotations`<br /> (optional) | Used to specify the resulting matrices. Possible values are: `duration` (default), `distance`, or both values separated by comma.
-`approaches`<br /> (optional) | A semicolon-separated list indicating the side of the road from which to approach waypoints in a requested route. Accepts `unrestricted` (default, route can arrive at the waypoint from either side of the road) or `curb` (route will arrive at the waypoint on the `driving_side` of the region). If provided, the number of approaches must be the same as the number of waypoints. However, you can skip a coordinate and show its position in the list with the `;` separator.
-`destinations`<br /> (optional) | Use the coordinates at a given index as destinations. Possible values are: a semicolon-separated list of 0-based indices, or `all` (default). The option `all` allows using all coordinates as destinations.
-`sources`<br /> (optional) | Use the coordinates at a given index as sources. Possible values are: a semicolon-separated list of 0-based indices, or `all` (default). The option `all` allows using all coordinates as sources.
+`annotations`<br /> (可选) | 用于指定生成的矩阵。可能的值是：`duration` （默认值），`distance`，或者是两个由逗号分隔的值。
+`approaches`<br /> (可选) | 一个分号分隔的列表，表示请求的路线中最接近航点的道路。接受`unrestricted`(默认情况下，路线可以从道路两侧到达航点)或`curb`(路线将到达该区域的`driving_side`的航点)。如果提供的话，方法的数量必须与航点的数量相同。但是，您可以略过坐标并用`;` 分隔符显示列表中的位置。
+`destinations`<br /> (可选) | 使用给定索引的坐标作为目的地。可能的值是：分号分隔基于0的索引列表，或`all`（默认值）。选项`all`允许使用所有坐标作为目的地。
+`sources`<br /> (可选) | 使用给定索引的坐标作为源地。可能的值是：分号分隔基于0的索引列表，或`all`（默认值）。选项`all`允许使用所有坐标作为源地。
 
-Unrecognized options in the query string will result in an `InvalidInput` error.
+查询字符串中的未识别选项将导致`InvalidInput`错误。
 
 #### Example requests
 
