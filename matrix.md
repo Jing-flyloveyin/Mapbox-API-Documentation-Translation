@@ -245,7 +245,7 @@ MapboxMatrix directionsMatrixClient = MapboxMatrix.builder()
 响应体 `code` | HTTP 状态代码 | 描述
 --- | --- |---
 `Ok` | `200` | 表示正常，成功返回。
-`ProfileNotFound` | `404` | 使用一个有效的配置文件如 [Retrieve a matrix](#retrieve-a-matrix)。
+`ProfileNotFound` | `404` | 使用一个有效的配置profile如 [Retrieve a matrix](#retrieve-a-matrix)。
 `InvalidInput` | `422` | 给定的请求无效。响应的`message`键将对无效输入进行解释。 
 
 在源地和目的地之间没有找到路径的情况下，将不会返回任何错误。反而，`durations` 或 `distances`在矩阵中的相应值将是`null`。
