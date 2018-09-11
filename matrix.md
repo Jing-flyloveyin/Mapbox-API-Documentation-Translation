@@ -58,7 +58,7 @@ Query 参数 | 描述
 
 查询字符串中的未识别选项将导致`InvalidInput`错误。
 
-#### Example requests
+#### 请求示例
 
 ```curl
 # 请求一个对称的3x3矩阵，用于最靠近路边的车辆。
