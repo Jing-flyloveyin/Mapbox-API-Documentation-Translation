@@ -188,7 +188,7 @@ MapboxMatrix directionsMatrixClient = MapboxMatrix.builder()
 `destinations:` | `waypoint`对象中的一个数组。每个航路点是一个输入到道路和路径网络的坐标。航路点按照输入坐标的顺序出现在数组中，或在`destinations`查询参数指定的顺序出现在数组中。
 `sources` | `waypoint`对象中的一个数组。每个航路点是一个输入到道路和路径网络的坐标。航路点按照输入坐标的顺序出现在数组中，或在`sources`查询参数指定的顺序出现在数组中。
 
-**Note:** 如果在源地和目的地之间没有找到路线，则在`durations`或`distances`矩阵中的相应值将是`null`。
+**注意:** 如果在源地和目的地之间没有找到路线，则在`durations`或`distances`矩阵中的相应值将是`null`。
 
 #### 矩阵响应对象示例
 
@@ -236,15 +236,15 @@ MapboxMatrix directionsMatrixClient = MapboxMatrix.builder()
 }
 ```
 
-### Matrix errors
+### 矩阵错误
 
-On error, the server responds with different HTTP status codes. For responses with HTTP status codes lower than `500`, the JSON response body includes the `code` property, which may be used by client programs to manage control flow. The response body may also include a `message` property with a human-readable explanation of the error.
+在错误时，服务器响应不同的HTTP状态代码。对于HTTP状态码低于`500`的响应，JSON响应主体包括`code`属性，客户端程序可以使用该属性来管理控制流。响应体还可以包括`message`属性，并对错误进行人类可读的解释。
 
-In the case of a server error, the HTTP status code will be `500` or higher and the response will not include a `code` property.
+在服务器错误的情况下，HTTP状态代码将是`500`或更高，并且响应将不包括`code`属性。
 
-Response body `code` | HTTP status code | Description
+响应体 `code` | HTTP 状态代码 | 描述
 --- | --- |---
-`Ok` | `200` | Normal success case.
+`Ok` | `200` | 表示正常，成功返回。
 `ProfileNotFound` | `404` | Use a valid profile as described in [Retrieve a matrix](#retrieve-a-matrix).
 `InvalidInput` | `422` | The given request was not valid. The `message` key of the response will hold an explanation of the invalid input.
 
