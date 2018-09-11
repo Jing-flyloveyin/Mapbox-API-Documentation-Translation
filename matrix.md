@@ -42,12 +42,12 @@ GET /directions-matrix/v1/{profile}/{coordinates}
 
 返回一个时间矩阵，或一个距离矩阵，或两者都返回，显示坐标之间移动时间和距离信息。在默认情况下，输入坐标作为源点和目标点，此服务端点返回一个对称矩阵。使用`sources` and `destination`作为可选参数，您还可以使用一些源点和目标点坐标生成非对称矩阵。
 
-URL parameter | Description
+URL 参数 | 描述
 --- | ---
-`profile` | A Mapbox Directions routing profile ID. <table><tr><th>Profile ID</th><th>Description</th></tr><tr><td>`mapbox/driving`</td><td>Car travel times, distances, or both.</td></tr><tr><td>`mapbox/walking`</td><td>Pedestrian and hiking travel times, distances, or both</td></tr><tr><td>`mapbox/cycling`</td><td>Bicycle travel times, distances, or both</td></tr><tr><td>`mapbox/driving-traffic`</td><td>Car travel times, distances, or both as informed by traffic data</td></tr></table>
-`coordinates` | A semicolon-separated list of `{longitude},{latitude}` coordinates. There must be between 2 and 25 coordinates.
+`profile` | 一个Mapbox Directions路由配置ID. <table><tr><th>Profile ID</th><th>描述</th></tr><tr><td>`mapbox/driving`</td><td>汽车移动时间，距离。或两者都包含。</td></tr><tr><td>`mapbox/walking`</td><td>步行移动时间，距离。或两者都包含</td></tr><tr><td>`mapbox/cycling`</td><td>自行车移动时间，距离。或两者都包含</td></tr><tr><td>`mapbox/driving-traffic`</td><td>交通数据展示的汽车移动时间，距离。或两者都包含。</td></tr></table>
+`coordinates` | 一个分号分隔的`{longitude},{latitude}`坐标串。必须有2到25个坐标。
 
-You can further refine the results from this endpoint with the following optional parameters:
+您可以通过以下可选参数进一步细化来自该服务端的结果：
 
 Query parameter | Description
 --- | ---
