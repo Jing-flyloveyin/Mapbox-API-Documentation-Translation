@@ -73,7 +73,7 @@ curl "https://api.mapbox.com/directions-matrix/v1/mapbox/walking/-122.418563,37.
 
 ```python
 service = DirectionsMatrix()
-# input waypoints are features, typically GeoJSON-like feature dictionaries
+# 输入的路径点是一些要素，通常像GeoJSON一样。
 portland = {
     'type': 'Feature',
     'properties': {'name': 'Portland, OR'},
@@ -86,7 +86,7 @@ bend = {
     'geometry': {
         'type': 'Point',
         'coordinates': [-121.3153, 44.0582]}}
-# Matrix method can be called with a list of point features and the travel profile
+# 矩阵方法可以用点要素和移动配置的profile来调用。
 response = service.matrix([portland, bend], profile='mapbox/driving')
 ```
 
@@ -117,7 +117,7 @@ matrixClient
 ```
 
 ```bash
-# This API is not available through the Mapbox CLI
+# 此API无法通过Mapbox CLI获得。
 ```
 
 ```java
@@ -129,11 +129,11 @@ MapboxMatrix directionsMatrixClient = MapboxMatrix.builder()
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// Mapbox Objective-C libraries无法访问此API
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// Mapbox Swift libraries无法访问此API
 ```
 
 #### 响应结果示例
