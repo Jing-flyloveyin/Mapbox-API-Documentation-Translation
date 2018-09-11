@@ -1,34 +1,34 @@
 ## Maps
 
-The Mapbox Maps API supports the retrieval of vector and raster tilesets as images, TileJSON, or embeddable HTML slippy maps.
+The Mapbox Maps API 支持通过images、TileJSON或者平滑的嵌入式页面地图的形式获取矢量和影像的瓦片数据集。
 
-If you use [Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/), [Mapbox.js](https://www.mapbox.com/mapbox.js/), or another library like [Leaflet](https://www.mapbox.com/mapbox.js/example/v1.0.0/plain-leaflet/), you're already using the Maps API. You do not need to read this reference to design or use Mapbox maps. Instead, this documentation is meant for software developers who want to programmatically understand these resources.
+如果你使用过[Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/)、 [Mapbox.js](https://www.mapbox.com/mapbox.js/) 或者其他库比如[Leaflet](https://www.mapbox.com/mapbox.js/example/v1.0.0/plain-leaflet/)，说明你已经使用过 Maps API，如果要设计或者使用Mapbox Maps，就不需要阅读这份指南。相反, 这份文档对那些想通过编程的方式来理解这些资源的软件开发人员很有意义。
 
-**Restrictions and limits**
+**约束和限制**
 
-- Use of the Mapbox Maps API endpoint is rate limited based on your user plan. The default is 100,000 requests per minute.
-- Exceeding your user plan's number requests per minute will result in an `HTTP 429 Too Many Requests` response.
-- For information on rate limit headers, see the [Rate limits](#rate-limits) section.
+- Use of the Mapbox Maps API endpoint is rate limited based on your user plan. 默认设置是每分钟100000次请求数。The default is 100,000 requests per minute.
+- 超过用户计划的每分钟请求数会出现“HTTP 429 Too Many Requests”的响应。Exceeding your user plan's number requests per minute will result in an `HTTP 429 Too Many Requests` response.
+- 关于速率限制头文件的信息，请参考[Rate limits](#rate-limits) 章节。
 
-If you require a higher rate limit, [contact us](https://www.mapbox.com/contact/).
+如果你需要提高速率限制，[请联系我们](https://www.mapbox.com/contact/)。
 
-### Retrieve tiles
+### 瓦片获取
 
 ```endpoint
 GET /v4/{map_id}/{zoom}/{x}/{y}{@2x}.{format}
 ```
 
-Returns an image tile, vector tile, or UTFGrid in the specified format.
+返回一张栅格瓦片、矢量瓦片或者是指定格式的UTFGrid图。
 
-The response is an image tile in the specified format. For performance, image tiles are delivered with a `max-age` header value set 12 hours in the future.
+响应结果是一张指定格式的图片，出于性能考虑，带有`max-age`头部标识值且值为12小时的图像瓦片将在之后的时间传输。The response is an image tile in the specified format. For performance, image tiles are delivered with a `max-age` header value set 12 hours in the future.
 
-URL parameter | Description
---- | ---
-`map_id` | Unique identifier for the tileset in the format `username.id`. To composite multiple tilesets, use a comma-separated list of up to 15 tileset IDs.
-`zoom` | Specifies the tile's zoom level, as described in the [Slippy Map Tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames) specification.
-`{x}/{y}` | Specifies the tile's column `{x}` and row `{y}`, as described in the [Slippy Map Tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames) specification.
-`@2x`<br>(optional) | Request a higher DPI version of the image.
-`format` | Specifies the format of the returned tiles: <table><tr><td>`.grid.json`</td><td>UTFGrid</td></tr><tr><td>`.mvt`</td><td>Vector tile</td></tr><tr><td>`png`</td><td>True color PNG</td></tr><tr><td>`png32`</td><td>32 color indexed PNG</td></tr><tr><td>`png64`</td><td>64 color indexed PNG</td></tr><tr><td>`png128`</td><td>128 color indexed PNG</td></tr><tr><td>`png256`</td><td>256 color indexed PNG</td></tr><tr><td>`jpg70`</td><td>70% quality JPG</td></tr><tr><td>`jpg80`</td><td>80% quality JPG</td></tr><tr><td>`jpg90`</td><td>90% quality JPG</td></tr></table> The `format` of any image request can be replaced by any of these formats to adjust image quality for different bandwidth requirements. Higher-compression formats like `jpg70` or `png32` can be useful to favor performance over image quality.<br><br>**Note:** Tiles that include `mapbox.satellite` are always delivered as JPEGs, even if the URL specifies PNG. The PNG format can't efficiently encode photographic images like those used by `mapbox.satellite`.
+URL 参数 | 描述
+--- | --
+`map_id` | Unique identifier for the tileset 这种格式`username.id`的瓦片数据集的唯一标识。若要组成多个瓦片数据集，请使用分号分隔参数且最多有15个`map_id`。
+`zoom` | 指定瓦片的缩放层级，具体说明参见[Slippy Map Tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames)。
+`{x}/{y}` | 指定瓦片的列 `{x}` 和 行 `{y}`, 具体说明参见[Slippy Map Tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames)。
+`@2x`<br>(可选) | 请求有更高DPI（分辨率）版本的图像。
+`format` | 指定返回瓦片的格式：<table><tr><td>`.grid.json`</td><td>UTFGrid</td></tr><tr><td>`.mvt`</td><td>矢量切片</td></tr><tr><td>`png`</td><td>全彩PNG</td></tr><tr><td>`png32`</td><td>32索引色位 PNG</td></tr><tr><td>`png64`</td><td>32索引色位 PNG</td></tr><tr><td>`png128`</td><td>128索引色位PNG</td></tr><tr><td>`png256`</td><td>256 color indexed PNG</td></tr><tr><td>`jpg70`</td><td>70% quality JPG</td></tr><tr><td>`jpg80`</td><td>80% quality JPG</td></tr><tr><td>`jpg90`</td><td>90% quality JPG</td></tr></table> The `format` of any image request can be replaced by any of these formats to adjust image quality for different bandwidth requirements. Higher-compression formats like `jpg70` or `png32` can be useful to favor performance over image quality.<br><br>**Note:** Tiles that include `mapbox.satellite` are always delivered as JPEGs, even if the URL specifies PNG. The PNG format can't efficiently encode photographic images like those used by `mapbox.satellite`.
 
 **Request style-optimized tiles**
 
