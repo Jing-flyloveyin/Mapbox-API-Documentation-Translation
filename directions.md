@@ -2,15 +2,15 @@
 
 本文档是Directions API的`v5`版。之前版本请参考[`v4`文档](./pages/directions-v4.html).
 
-The Mapbox Directions API will show you how to get where you're going. With the Directions API, you can:
+Mapbox Directions API 将向你展示如何到达目的地。通过使用Directions API，你可以:
 
-- Calculate optimal driving, walking, and cycling routes using traffic- and incident-aware routing
-- Produce turn-by-turn instructions
-- Produce routes with up to 25 coordinates anywhere on earth
+- 计算驾车、步行、骑行的路况感知与事件感知的最佳路径
+- 生成多段导航命令
+- 支持25个地球上任意坐标对生成路径
 
 该API支持以下四种不同的路径：
 
-Profile | Description
+配置文件 | 说明
 --- | ---
 `mapbox/driving-traffic` | For automotive routing. This profile factors in current and historic traffic conditions to avoid slowdowns. Traffic information is available in [these supported geographies](./pages/traffic-countries.html).
 `mapbox/driving` | For automotive routing. This profile shows the fastest routes by preferring high-speed roads like highways.
