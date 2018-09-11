@@ -1,43 +1,43 @@
-## Tokens
+## 令牌
 
-An [access token](#access-tokens), referred to hereafter as 'token', grants access to Mapbox resources on behalf of a user. All accounts have a public token by default. Additional tokens can be created to grant additional, or more limited, privileges.
+一个 [访问令牌](#access-tokens), 以下简称为 '令牌', 代表用户授予对Mapbox资源的访问权. 所有的帐户在默认情况下都有一个公共令牌. 可以创建额外的令牌来授予额外的, 或者是更加受限的特权.
 
-To create additional tokens using this API you will first need to create an initial token. This initial token must contain the `tokens:write` scope and all scopes you want to add to the created token. To create the initial token visit your [Account Dashboard](https://www.mapbox.com/account/), and click **Create a token**.
+若要使用此API创建附加令牌，您将首先需要创建初始令牌. 此初始令牌必须包含 `tokens:write` 作用域和所有您想添加到创建的令牌的所有作用域. 为了创建初始令牌你需要访问 [Account Dashboard](https://www.mapbox.com/account/), 并且 **Create a token**.
 
 ```javascript
 const mbxTokens = require('@mapbox/mapbox-sdk/services/tokens');
 const tokensClient = mbxTokens({ accessToken: '{your_access_token}' });
 ```
 
-### The token format
+### 令牌格式
 
-Mapbox uses [JSON Web Tokens](https://jwt.io/) (JWT) as the token format. Each token is a string delimited by dots into three parts: header, payload, and signature.
+Mapbox 使用 [JSON Web Tokens](https://jwt.io/) (JWT) 作为令牌的格式. 每个令牌是一个由点划分为三个部分的字符串：标题、有效载荷和签名.
 
-The **header** is a literal value of either `pk` (public token), `sk` (secret token), or `tk` (temporary token).
+ **标题** `pk` (公共令牌), `sk` (私密令牌), 或者 `tk` (临时令牌)的文字值.
 
-The **payload** is a base64-encoded JSON object containing the identity and authorities of the token. `pk` and `sk` tokens contain a reference to metadata which holds the rights granted for the token. `tk` tokens contain the content of the metadata directly in the payload.
+**有效荷载** 是一个 base64-encoded JSON 对象 包含令牌的标识和权限. `pk`和 `sk` 令牌包含一个引用元数据的引用,该元数据拥有令牌授予的权限. `tk` 令牌 包含直接在有效载荷中的元数据的内容.
 
-The **signature** is signed by Mapbox and used to verify the token has not been tampered with.
+ **签名** 由Mapbox签名并用来验证令牌没有被篡改.
 
-The actions allowed by a token are based on **scopes**. A scope is a string that often is a resource type and action separated by a colon. For example, the `styles:read` scope allows read access to styles. Tokens will have access to different scopes depending on their account level and other features of their account.
+令牌允许的动作是基于**作用域 **. 作用域是一个字符串，通常是一个资源类型和一个由冒号分隔的动作. 例如,  `styles:read` 作用域允许对样式进行访问. 取决于他们的帐户级别和账户的特征,令牌有权访问不同的范围.
 
-### The token metadata object
+### 令牌元数据对象
 
-Every token has a metadata object that contains information about the capabilities of the token. Token metadata contains the following properties:
+每个令牌都有一个元数据对象，其中包含有关令牌功能的信息. 令牌元数据包含以下属性:
 
-Property | Description
+属性 | 描述
 --- | ---
-`id` | the identifier for the token
-`usage` | the type of token
-`client` | the client for the token, always 'api'
-`default` | if the token is a default token
-`scopes` | array of scopes granted to the token
-`note` | human friendly description of the token
-`created` | date and time the token was created
-`modified` | date and time the token was last modified
-`token` | the token itself
+`id` | 令牌的标识符
+`usage` | 令牌的类型
+`client` | 客户端的令牌, 'api'
+`default` | 如果令牌是默认令牌
+`scopes` | 授予令牌的作用域数组
+`note` | 令牌的人性化描述
+`created` | 创建令牌的日期和时间
+`modified` | 上次修改令牌的日期和时间
+`token` | 令牌本身
 
-#### The token metadata object
+#### 令牌元数据对象
 
 ```json
 {
@@ -53,22 +53,22 @@ Property | Description
 }
 ```
 
-**Limits**
+**限制**
 
-- Requests must be made over HTTPS. HTTP is not supported.
-- The Tokens API is limited to 120 requests per minute per account.
+-请求必须通过HTTPS进行。不支持HTTP.
+-令牌API仅限于每分钟120个请求.
 
-### List tokens
+### 列出令牌
 
-Lists all tokens for an account.
+列出帐户的所有令牌。.
 
-This endpoint supports [pagination](#pagination).
+这个端点支持 [pagination](#pagination).
 
 ```endpoint
 GET /tokens/v2/{username} tokens:read
 ```
 
-#### Example request
+#### 实例请求
 
 ```curl
 curl "https://api.mapbox.com/tokens/v2/{username}?access_token={your_access_token}"
@@ -103,7 +103,7 @@ tokensClient
 // This API cannot be accessed with the Mapbox Swift libraries
 ```
 
-#### Example response
+#### 实例响应
 
 ```json
 [
@@ -133,7 +133,7 @@ tokensClient
 
 Note: The token property will not be included for `sk` tokens.
 
-### Create token
+### 创建令牌
 
 Creates a new token.
 
@@ -145,7 +145,7 @@ The scopes included in the token decide whether the token is public or secret. A
 POST /tokens/v2/{username} tokens:write
 ```
 
-#### Example request
+#### 实例请求
 
 ```curl
 curl -X POST "https://api.mapbox.com/tokens/v2/{username}?access_token={your_access_token}"
@@ -183,7 +183,7 @@ tokensClient
 // This API cannot be accessed with the Mapbox Swift libraries
 ```
 
-#### Example request body
+#### 实例请求主体
 
 ```json
 {
@@ -192,7 +192,7 @@ tokensClient
 }
 ```
 
-#### Example response
+#### 实例响应
 
 ```json
 {
@@ -208,7 +208,7 @@ tokensClient
 }
 ```
 
-### Create temporary token
+### 创建临时令牌
 
 Creates a new temporary token that automatically expires at a fixed time.
 
@@ -222,7 +222,7 @@ Unlike public and secret tokens, a temporary token contains its metadata inside 
 POST /tokens/v2/{username} tokens:write
 ```
 
-#### Example request
+#### 实例请求
 
 ```curl
 curl -X POST "https://api.mapbox.com/tokens/v2/{username}?access_token={your_access_token}"
@@ -259,7 +259,7 @@ tokensClient
 // This API cannot be accessed with the Mapbox Swift libraries
 ```
 
-#### Example request body
+#### 实例请求主体
 
 ```json
 {
@@ -268,7 +268,7 @@ tokensClient
 }
 ```
 
-#### Example response
+#### 实例响应
 
 ```json
 {
@@ -276,8 +276,7 @@ tokensClient
 }
 ```
 
-### Update a token
-
+### 更新令牌
 Update note or scopes in a token's metadata.
 
 A public, `pk`, token may only be updated to include other public scopes. A secret, `sk`, token may be updated to contain public and secret scopes.
@@ -288,7 +287,7 @@ When updating scopes for an existing token, the token sent along with the reques
 PATCH /tokens/v2/{username}/{token_id} tokens:write
 ```
 
-#### Example request
+#### 实例请求
 
 ```curl
 curl -X PATCH  "https://api.mapbox.com/tokens/v2/{username}/{token_id}?access_token={your_access_token}"
@@ -327,7 +326,7 @@ tokensClient
 // This API cannot be accessed with the Mapbox Swift libraries
 ```
 
-#### Example request body
+#### 实例请求主体
 
 ```json
 {
@@ -335,7 +334,7 @@ tokensClient
 }
 ```
 
-#### Example response
+#### 实例响应
 
 ```json
 {
@@ -351,7 +350,7 @@ tokensClient
 }
 ```
 
-### Delete a token
+### 删除令牌
 
 Revoke a token's authorization, removing its access to Mapbox APIs. This is the same as deleting a token. Applications using the revoked token will need to get a new access token before they can access Mapbox APIs.
 
@@ -361,7 +360,7 @@ Note: Cached resources may continue to be accessible for a short period after a 
 DELETE /tokens/v2/{username}/{token_id} tokens:write
 ```
 
-#### Example request
+#### 实例请求
 
 ```curl
 curl -X DELETE "https://api.mapbox.com/tokens/v2/{username}/{token_id}?access_token={your_access_token}"
@@ -398,11 +397,11 @@ tokensClient
 // This API cannot be accessed with the Mapbox Swift libraries
 ```
 
-#### Example response
+#### 实例响应
 
 > HTTP 204
 
-### Retrieve a token
+### 检索令牌
 
 Check if a token is valid. If the token is invalid an explanation of why is returned as the `code` property.
 
@@ -420,7 +419,7 @@ Code | Description
 GET /tokens/v2?access_token={your_access_token}
 ```
 
-#### Example request
+#### 实例请求
 
 ```curl
 $ curl "https://api.mapbox.com/tokens/v2?access_token={your_access_token}"
@@ -456,7 +455,7 @@ tokensClient
 // This API cannot be accessed with the Mapbox Swift libraries
 ```
 
-#### Example response for a public token
+#### 公共令牌的实例响应
 
 ```json
 {
@@ -469,7 +468,7 @@ tokensClient
 }
 ```
 
-#### Example response for a temporary token
+#### 临时令牌的实例响应
 
 ```json
 {
@@ -485,23 +484,23 @@ tokensClient
 }
 ```
 
-### List scopes
+### 列出作用域
 
-List scopes for a user. All potential scopes a user has access to are listed.
+为用户列出作用域. 列出了用户可以访问的所有可能作用域.
 
-Public tokens may only contain scopes with the `public` property set to `true`. Secret tokens may contain any scope.
+公共令牌只包含了 `public` 属性的作用域  `true`. 私密令牌可以包含任何作用域.
 
-Property | Description
+属性 | 描述
 --- | ---
-`id` | identifier of the scope
-`description` | human friendly description of the scope
-`public` | `true` if the scope is available for public tokens
+`id` | 作用域的标识符
+`description` | 人性化的作用域描述
+`public` | `true` 如果该作用域可用于公共令牌
 
 ```endpoint
 GET /scopes/v1/{username}?access_token={your_access_token} scopes:list
 ```
 
-#### Example request
+#### 实例请求
 
 ```curl
 $ curl "https://api.mapbox.com/scopes/v1/{username}?access_token={your_access_token}"
@@ -536,7 +535,7 @@ tokensClient
 // This API cannot be accessed with the Mapbox Swift libraries
 ```
 
-#### Example response (truncated)
+#### 实例响应（截断）
 
 ```json
 [
