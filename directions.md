@@ -9,7 +9,7 @@ The Mapbox Directions API will show you how to get where you're going. With the 
 - Produce routes with up to 25 coordinates anywhere on earth
 
 This API supports 4 different routing profiles:
-这个API支持以下四种不同的路径：
+该API支持以下四种不同的路径：
 
 Profile | Description
 --- | ---
