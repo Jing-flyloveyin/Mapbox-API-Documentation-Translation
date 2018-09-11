@@ -409,26 +409,26 @@ stylesClient
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+# 用Python SDK不能进入API。
 ```
 
 ```bash
-# This API cannot be accessed with Mapbox CLI
+# 用Mapbox CLI不能进入API。
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 用Mapbox Java SDK不能进入API。
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 用Mapbox Objective-C libraries不能进入API。
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 用Mapbox Swift libraries不能进入API。
 ```
 
-#### Example request body
+#### 示例请求体
 
 ```json
 {
@@ -451,7 +451,7 @@ stylesClient
 }
 ```
 
-#### Example response
+#### 示例反应
 
 ```json
 {
@@ -477,20 +477,19 @@ stylesClient
 }
 ```
 
-### Delete a style
+### 删除格式
 
 ```endpoint
 DELETE /styles/v1/{username}/{style_id} styles:write
 ```
 
-Delete a style. All sprites that belong to this style will also be deleted, and the style will no longer be available.
-
+删除格式。 同时也会删除该格式的所有子画面，格式将不存在。 
 URL parameters | Description
 --- | ---
-`username` | The username of the account to which the style belongs.
-`style_id` | The ID of the style to be deleted.
+`username` | 格式账户用户名。
+`style_id` | 格式ID被删除。
 
-#### Example request
+#### 示例请求
 
 ```curl
 curl -X DELETE "https://api.mapbox.com/styles/v1/{username}/{style_id}?access_token={your_access_token}"
@@ -508,95 +507,95 @@ stylesClient
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+# 用Python SDK不能进入API。
 ```
 
 ```bash
-This API cannot be accessed with Mapbox CLI
+用Mapbox CLI不能进入API。
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+//  用Mapbox Java SDK不能进入API。
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 用Mapbox Objective-C libraries不能进入API。
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 用Mapbox Swift libraries不能进入API。
 ```
 
-#### Response
+#### 反应
 
 > HTTP 204
 
-### Request embeddable HTML
+### 请求可嵌入 HTML
 
 ```endpoint
 GET /styles/v1/{username}/{style_id}.html styles:read
 ```
 
-Request embeddable HTML. The results can be displayed as a fullscreen map or can be inserted into `<iframe>` content.
+请求可嵌入 HTML。 结果可展示为全屏地图或插入`<iframe>` 内容。
 
-URL parameters | Description
+URL 参数| 描述
 --- | ---
-`username` | The username of the account to which the style belongs.
-`style_id` | The ID of the style to be embedded.
+`username` | 格式账户用户名。
+`style_id` | 要嵌入的格式ID。
 
-The embeddable HTML that is returned can be further modified with the following optional query parameters:
+可用下述可选查询参数进一步修改可嵌入HTML。
 
-Query Parameter | Description
+查询参数 | 描述
 ----------|----------------------
-`zoomwheel`<br /> (optional) | Whether to provide a zoomwheel, which enables a viewer to zoom in and out of the map using the mouse (`true`, default), or not (`false`).
-`title`<br /> (optional) | Whether to display a title box with the map's title and owner in the upper right corner of the map (`true`) or not (`false`, default).
-`fallback`<br /> (optional) | Serve a fallback raster map (`true`) or not (`false`, default).
+`zoomwheel`<br /> (optional) | 用户是否可以切换鼠标滚轮缩放， 用户可用鼠标 (`true`, default), 或 (`false`)缩放地图。
+`title`<br /> (optional) |是否在地图的右上角用地图标题和所有者展示标题 W(`true`) 或 (`false`, default).
+`fallback`<br /> (optional) | 退回栅格地图 (`true`) 或 (`false`, default).
 
-#### Example style embed
+#### 嵌入的示例样式
 
 ```html
 <iframe
   src='https://api.mapbox.com/styles/v1/mapbox/streets-v10.html?title=true&zoomwheel=false&access_token={your_access_token}' />
 ```
 
-### Sprites
+### 子画面
 
-Sprites are the way that Mapbox GL JS and Mapbox Mobile efficiently request and show images. Sprites are collections of images that can be used in styles as icons or patterns in `symbol` layers. An image in a sprite can be an icon, a pattern, or an illustration. These SVG images can be added and removed from the sprite at will. The Styles API automatically collects these SVG images and renders them into a single PNG image and a JSON document that describes where each image is positioned.
+子画面是Mapbox GL JS和 Mapbox Mobile有效请求和展示图像的方式。 子画面是在“符号”层可用作图表或图样的图像集合。子画面中的图像可为图表、图样或插图。可在子画面中随时添加或删除这些SVG图像。样式API自动收集这些SVG图像并将其渲染成为单张PBG图像以及描述每张图像定位地点的JSON文件。
 
-The sprite JSON document is specified as part of the [the Mapbox Style Specification](https://www.mapbox.com/mapbox-gl-style-spec/#sprite).
+子画面 JSON 文件确定为  [the Mapbox Style Specification](https://www.mapbox.com/mapbox-gl-style-spec/#sprite)的部分。
 
-Sprites are managed on a per-style basis. Each sprite belongs to a style, so the sprite limit of 500 images is also a per-style limit. All sprite-related API methods require a `{style_id}` parameter referring to the style to which the sprite belongs.
+按照每种样式管理子画面。每个子画面属于一个样式，因此样式的限制为500张图像，也是每种样式的限制。所有子画面相关的API方式需要`{style_id}`参数，该参数指子画面所属的样式。
 
-**Restrictions and limits**
+**限制和条件**
 
-- Each image must be smaller than 400kB.
-- Mapbox supports most, but not all, SVG properties. These limits are described in our [SVG troubleshooting guide](https://www.mapbox.com/help/studio-troubleshooting-svg/).
-- Images can be up to 512px in each dimension.
-- Image names must be fewer than 255 characters in length.
-- Sprites can contain up to 500 images.
+- 每张图像必须小于 400kB。
+- Mapbox 支持大部分SVG属性，而不是全部。 [SVG troubleshooting guide](https://www.mapbox.com/help/studio-troubleshooting-svg/)列出了这些限制。
+-  图像每个维度可达512px 。
+- 图像名称长度必须小于 255 字符。
+- 子画面可含 500 张图像。
 
-### Retrieve a sprite image or JSON
+### 检索子画面图像或  JSON
 
 ```endpoint
 GET /styles/v1/{username}/{style_id}/sprite{@2x}.{format} styles:read
 ```
 
-Retrieve a sprite image or its JSON document from a Mapbox style.
+ 从Mapbox 样式中检索子画面图像或其JSON文件。
 
-URL Parameter | Description
+URL 参数| 描述
 ----------|----------------------
-`username` | The username of the account to which the style belongs.
-`style_id` | The ID of the style to which the sprite belongs.
-`@2x`<br /> (optional) | Render the sprite at a `@2x`, `@3x`, or `@4x` scale factor for high-density displays.
-`format`<br /> (optional) | By default, this endpoint returns a sprite's JSON document. Specify `.png` to return the sprite image instead.
+`username` | 样式账户用户名。
+`style_id` | 子画面样式的ID。
+`@2x`<br /> (optional) | 在 `@2x`, `@3x`, or `@4x` 比例因子渲染子画面， 高密度展示。
+`format`<br /> (optional) | 默认情况下，终点返回子画面的 JSON 文件。制定 `.png` 返回子画面图像。
 
-#### Example request
+#### 示例请求
 
 ```curl
-# Request the sprite image as a png
+# 请求作为 png的子画面图像。
 curl "https://api.mapbox.com/styles/v1/{username}/{style_id}/sprite.png?access_token={your_access_token}"
 
-# Request json for a 3x scale sprite
+# 请求 json ， 一张 3x 比例的子画面
 curl "https://api.mapbox.com/styles/v1/{username}/{style_id}/sprite@3x?access_token={your_access_token}"
 ```
 
@@ -614,26 +613,26 @@ stylesClient
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+#  用Python SDK不能进入API。
 ```
 
 ```bash
-This API cannot be accessed with Mapbox CLI
+用Mapbox CLI不能进入API。
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 用Mapbox Java SDK不能进入API。
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 用Mapbox Objective-C libraries不能进入API。
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 用Mapbox Swift libraries不能进入API。
 ```
 
-#### Example response
+#### 示例响应
 
 ```json
 {
@@ -654,24 +653,24 @@ This API cannot be accessed with Mapbox CLI
 }
 ```
 
-### Add new image to sprite
+### 在子画面中添加新图像
 
 ```endpoint
 PUT /styles/v1/{username}/{style_id}/sprite/{icon_name} styles:write
 ```
 
-Add a new image to an existing sprite in a Mapbox style. The request body should be raw SVG data.
+在Mapbox样式中现有的子画面中添加新图像。 请求体应为 原SVG 数据。
 
-URL Parameter | Description
+URL 参数 |描述
 ----------|----------------------
-`username` | The username of the account to which the style belongs.
-`style_id` | The ID of the style to which the sprite belongs.
-`icon_name` | The name of the new image that is being added to the style.
+`username` | 样式账户用户名。
+`style_id` | 子画面样式ID。
+`icon_name` | 添加到样式中新图像的名称。
 
-#### Example request
+#### 示例请求
 
 ```curl
-# Add a new image (`aerialway`) to an existing sprite
+# 将新图像 (`aerialway`) 添加到现有子画面中。
 curl -X PUT \
   "https://api.mapbox.com/styles/v1/{username}/{style_id}/sprite/aerialway?access_token={your_access_token}" \
   --data @aerialway-12.svg
@@ -693,26 +692,26 @@ stylesClient
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+#  用Python SDK不能进入API。
 ```
 
 ```bash
-This API cannot be accessed with Mapbox CLI
+用Mapbox CLI不能进入API。
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 用Mapbox Java SDK不能进入API。
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+//  用Mapbox Objective-C libraries不能进入API。
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+//  用Mapbox Swift libraries不能进入API。
 ```
 
-#### Example response
+#### 示例响应
 
 ```json
 {
@@ -733,21 +732,21 @@ This API cannot be accessed with Mapbox CLI
 }
 ```
 
-### Delete image from sprite
+### 从子画面中删除图像
 
 ```endpoint
 DELETE /styles/v1/{username}/{style_id}/sprite/{icon_name} styles:write
 ```
 
-Remove an image from an existing sprite.
+从现有子画面中删掉图像。
 
-URL Parameter | Description
+URL 参数 | 描述
 ----------|----------------------
-`username` | The username of the account to which the style belongs.
-`style_id` | The ID of the style to which the sprite belongs.
-`icon_name` | The name of the new image to delete from the style.
+`username` | 样式账户的用户名。
+`style_id` | 子画面样式的ID。
+`icon_name` | 要从样式中删除的新图像名称。
 
-#### Example request
+#### 示例请求
 
 ```curl
 curl -X DELETE "https://api.mapbox.com/styles/v1/{username}/{style_id}/sprite/{icon_name}?access_token={your_access_token}"
@@ -766,26 +765,26 @@ stylesClient
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+# 用Python SDK不能进入API。
 ```
 
 ```bash
-# This API cannot be accessed with Mapbox CLI
+# 用Mapbox CLI不能进入API。
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+//  用Mapbox Java SDK不能进入API。
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 用Mapbox Objective-C libraries不能进入API。
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 用Mapbox Swift libraries不能进入API。
 ```
 
-#### Example response
+#### 示例响应
 
 ```json
 {
