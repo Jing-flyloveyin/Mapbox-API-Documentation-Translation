@@ -28,40 +28,40 @@ URL 参数 | 描述
 `zoom` | 指定瓦片的缩放层级，具体说明参见[Slippy Map Tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames)。
 `{x}/{y}` | 指定瓦片的列 `{x}` 和 行 `{y}`, 具体说明参见[Slippy Map Tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames)。
 `@2x`<br>(可选) | 请求有更高DPI（分辨率）版本的图像。
-`format` | 指定返回瓦片的格式：<table><tr><td>`.grid.json`</td><td>UTFGrid</td></tr><tr><td>`.mvt`</td><td>矢量切片</td></tr><tr><td>`png`</td><td>全彩PNG</td></tr><tr><td>`png32`</td><td>32索引色位 PNG</td></tr><tr><td>`png64`</td><td>32索引色位 PNG</td></tr><tr><td>`png128`</td><td>128索引色位PNG</td></tr><tr><td>`png256`</td><td>256 color indexed PNG</td></tr><tr><td>`jpg70`</td><td>70% quality JPG</td></tr><tr><td>`jpg80`</td><td>80% quality JPG</td></tr><tr><td>`jpg90`</td><td>90% quality JPG</td></tr></table> The `format` of any image request can be replaced by any of these formats to adjust image quality for different bandwidth requirements. Higher-compression formats like `jpg70` or `png32` can be useful to favor performance over image quality.<br><br>**Note:** Tiles that include `mapbox.satellite` are always delivered as JPEGs, even if the URL specifies PNG. The PNG format can't efficiently encode photographic images like those used by `mapbox.satellite`.
+`format` | 指定返回瓦片的格式：<table><tr><td>`.grid.json`</td><td>UTFGrid</td></tr><tr><td>`.mvt`</td><td>矢量切片</td></tr><tr><td>`png`</td><td>全彩PNG</td></tr><tr><td>`png32`</td><td>32索引色位 PNG</td></tr><tr><td>`png64`</td><td>32索引色位 PNG</td></tr><tr><td>`png128`</td><td>128索引色位PNG</td></tr><tr><td>`png256`</td><td>256索引色位PNG</td></tr><tr><td>`jpg70`</td><td>70% 品质 JPG</td></tr><tr><td>`jpg80`</td><td>80% 品质 JPG</td></tr><tr><td>`jpg90`</td><td>90% 品质 JPG</td></tr></table> 为了适应不同的网络带宽环境，任何一种图片请求格式都可以被其他格式替换。在性能优先于图片质量的情况下，`jpg70` 和`png32`这种高压缩率的格式就很有用了。<br><br>**注意：** 带有`mapbox.satellite`的瓦片永远以JPEGs的格式传输，即使URL指定其格式为PNG。PNG这种图片格式不能对`mapbox.satellite`这类的摄影图像进行高效的编码。
 
-**Request style-optimized tiles**
+**请求 style-optimized tiles**
 
-Vector tiles can be further optimized by including a [style ID](#the-style-object) with the tile request. If the style parameter is provided, the sources, [filters](https://www.mapbox.com/mapbox-gl-style-spec/#layer-filter), [`minzoom`](https://www.mapbox.com/mapbox-gl-style-spec/#sources-vector-minzoom), and [`maxzoom`](https://www.mapbox.com/mapbox-gl-style-spec/#sources-vector-maxzoom) properties of that style are analyzed, and data that won't be visible on the map is removed from the vector tile. Mapbox GL JS can request style-optimized vector tiles that are hosted on Mapbox with a Mapbox Style JSON.
+矢量瓦片可以通过在数据请求中包含[style ID](#the-style-object)来进一步优化。如果上述的样式参数已经提供,the sources、[filters](https://www.mapbox.com/mapbox-gl-style-spec/#layer-filter)、 [`minzoom`](https://www.mapbox.com/mapbox-gl-style-spec/#sources-vector-minzoom) 和 [`maxzoom`](https://www.mapbox.com/mapbox-gl-style-spec/#sources-vector-maxzoom)这些样式属性会被解析，地图上不可见部分的数据会从矢量切片上移除。Mapbox GL JS可以通过Mapbox Style JSON去请求托管在Mapbox服务器上的style-optimized矢量切片。
 
-A style-optimized tile request requires the `style` query parameter:
+A style-optimized 瓦片请求必要的`style` 查询参数:
 
-Query parameter | Description
+查询参数| 描述
 --- | ---
-`style`<br>(optional) | The `style` parameter is broken into two parts, the style ID and the style's recently edited `timestamp`. The timestamp parameter comes from the style JSON's modified property, which is included with any style created with Mapbox Studio.
+`style`<br>(可选) |  `style` 参数分成两部分：样式的ID和这个样式最近被编辑的`timestamp`。这个时间戳参数来自于样式JSON的修改属性，Mapbox Studio创造的所有样式都包含这个参数。
 
-**Note:** Unused layers and features are removed from optimized styles. If you plan to dynamically change the style at runtime using Mapbox GL JS or a Mapbox mobile SDK, broadening filters and zoom ranges won't work the same way since any data that isn't visible with the loaded style also won't be included in the data.
+**注意:**  未被使用的图层和要素会从优化样式中移除。如果你打算在使用Mapbox GL JS 或者Mapbox mobile SDK时动态改变样式,扩展过滤器和缩放范围不会同时生效，因为已加载样式中任何不可见的数据，同样也不会在这些数据中。
 
-#### Example request
+#### 请求示例
 
 ```curl
 curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/1/0/0.png?access_token={your_access_token}"
 
-# Retrieve a 2x tile; this 512x512 tile is appropriate for high-density displays like Retina
+# 获取一张2x的瓦片，这种512x512的瓦片适合像Retina这样的高密度像素展示。
 curl "https://api.mapbox.com/v4/mapbox.mapbox-terrain-v2/1/0/0@2x.png?access_token={your_access_token}"
 
-# Retrieve a tile with 70% quality JPG encoding
+# 获取一张70%质量的JPG编码格式图片
 curl "https://api.mapbox.com/v4/mapbox.satellite/3/2/3.jpg70?access_token={your_access_token}"
 
-# Retrieve a tile with 32 color indexed PNG
+# 获取一张32PNG格式图片
 curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/3/2/3.png32?access_token={your_access_token}"
 
-# Return a style-optimized tile using the style query parameter
+# 返回一张使用了样式查询参数的style-optimized 瓦片
 curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/12/1171/1566.png?style=mapbox://styles/mapbox/streets-v10@00&access_token={your_access_token}"
 ```
 
 ```javascript
-// This API cannot be accessed with the JavaScript SDK
+// 当前API不能在中使用JavaScript SDKThis API cannot be accessed with the JavaScript SDK
 ```
 
 ```python
