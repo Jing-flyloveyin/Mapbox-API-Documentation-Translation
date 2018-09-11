@@ -17,8 +17,8 @@ Mapbox Directions API 将向你展示如何到达目的地。通过使用Directi
 `mapbox/walking` | 行人和徒步。 提供人行道和小路的最短路径。
 `mapbox/cycling` | 骑行路线。规避高速公路，优先选择带有自行车道的道路，对于骑行者而言路线更短且更安全。
 
-Swift and Objective-C support for Directions is provided by the [MapboxDirections.swift](https://github.com/mapbox/MapboxDirections.swift)
-library.
+Swift和Objective-C对Directions的支持可参考：[MapboxDirections.swift](https://github.com/mapbox/MapboxDirections.swift)
+库.
 
 ```objc
 @import MapboxDirections;
@@ -101,9 +101,9 @@ Query parameter | Description
 
 Unrecognized options in the query string result in an `InvalidInput` error.
 
-**Instructions languages**<a id='instructions-languages'></a>
+**导航命令语言**<a id='instructions-languages'></a>
 
-The table below shows supported language codes used with the `language` parameter for turn-by-turn instructions. The language parameter will automatically be set to `en` (English) if an unsupported language code is used.
+下表`language`参数是多段导航命令支持的语言代码。如果不支持该语言，则默认为`en`（英语）。
 
 代码 | 语言
 --- | ---
