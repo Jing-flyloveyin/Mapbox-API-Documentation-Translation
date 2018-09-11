@@ -65,23 +65,22 @@ const directionsClient = mbxDirections({ accessToken: '{your_access_token}' });
 - 所有点之间距离最多10000公里。
 
 ### Retrieve directions
+### 检索路径
 
 ```endpoint
 GET /directions/v5/{profile}/{coordinates}
 ```
 
-Retrieve directions between waypoints. Directions requests must specify at least two waypoints as starting and ending points.
+在路径点之间检索路径。路径请求必须明确至少两个路径点作为起点和终点。
 
-Try this in the [API Playground](https://www.mapbox.com/api-playground/#/directions/).
+可在[API Playground](https://www.mapbox.com/api-playground/#/directions/)中进行尝试。
 
-URL parameter | Description
+URL 参数 | 说明
 --- | ---
-`profile` | The routing profile to use. Possible values are `mapbox/driving-traffic`, `mapbox/driving`, `mapbox/walking`, or `mapbox/cycling`.
-`coordinates` | A semicolon-separated list of `{longitude},{latitude}` coordinate pairs to visit in order. There can be between 2 and 25 coordinates for most requests, or up to 3 coordinates for `driving-traffic` requests.
-
-You can further refine the results from this endpoint with the following optional parameters:
-
-Query parameter | Description
+`profile` | 如果使用路径配置文件，可能的值有`mapbox/driving-traffic`，`mapbox/driving`，`mapbox/walking`或者`mapbox/cycling`。
+`coordinates` | 坐标对`{longitude},{latitude}`列表用分号隔开，并按顺序访问。对于大多数请求，可以有2到25对坐标，对于`driving-traffic`请求，最多可以有3对坐标。
+你可以使用下列可选参数进一步优化端点的结果：
+查询参数 | 说明
 --- | ---
 `alternatives`<br /> (optional) | Whether to try to return alternative routes (`true`) or not (`false`, default). An alternative route is a route that is significantly different than the fastest route, but also still reasonably fast. Such a route does not exist in all circumstances. Up to 2 alternatives may be returned.
 `annotations`<br /> (optional) | Return additional metadata along the route. Possible values are: `duration`, `distance`, `speed`, and `congestion`. You can include several annotations as a comma-separated list. See the [route leg object](#routeleg-object) for more details on what is included with annotations. Must be used in conjunction with `overview=full`.
