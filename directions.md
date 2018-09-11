@@ -58,7 +58,7 @@ const directionsClient = mbxDirections({ accessToken: '{your_access_token}' });
 **Restrictions and limits**
 **限制**
 
-- 使用配置文件`driving`，`walking`和 `cycling`的请求可沿路径指定最多25个点（输入坐标将捕捉道路网络）。
+- 使用配置文件`driving`，`walking`和 `cycling`的请求可沿路径指定最多25个点（输入坐标将捕捉路网）。
 - 使用配置文件`driving-traffic`的请求可沿路径指定最多3个点。
 - [supported geographies](./pages/traffic-countries.html) 提供了`driving-traffic`配置文件的交通信息。该配置文件在没有交通信息的地区则返回 `driving`文件。
 - 每分钟最多支持60次请求。
@@ -294,16 +294,18 @@ let task = directions.calculate(options) { (waypoints, routes, error) in
 ```
 
 ### Directions response object
+### 路径响应对象
 
-The response to a Directions API request is a JSON object that contains the following properties:
+Directions API的请求响应是一个JSON对象，它包括以下属性：
 
-Property | Description
+属性 | 说明
 --- | ---
-`code` | A string indicating the state of the response. This is a different code than the HTTP status code. On normal valid responses, the value will be `Ok`. For other responses, see the [Directions API errors table](#directions-api-errors).
-`waypoints` | An array of [waypoint](#waypoint-object) objects. Each waypoint is an input coordinate snapped to the road and path network. The waypoints appear in the array in the order of the input coordinates.
-`routes` | An array of [route](#route-object) objects ordered by descending recommendation rank. The response object may contain at most 2 routes.
+`code` | 指示响应状态的字符串。这是与HTTP状态代码不同的代码。正常有效响应的情况下，值将为`Ok`。否则，参照：[Directions API errors table](#directions-api-errors).
+`waypoints` | [waypoint](#waypoint-object)对象的数组。每个点都是捕捉在道路和路网上输入的坐标对。点的顺序与坐标对输入顺序一致。
+`routes` | 按推荐等级降序排列的[route](#route-object)对象数组。响应对象最多有2条路径。
 
 #### Example response object
+#### 响应对象举例
 
 ```json
 {
