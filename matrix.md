@@ -61,7 +61,7 @@ Query 参数 | 描述
 #### Example requests
 
 ```curl
-# Request a symmetric 3x3 matrix for cars with a curbside approach for each destination
+# 请求一个对称的3x3矩阵，用于靠近路边的目的地。
 curl "https://api.mapbox.com/directions-matrix/v1/mapbox/driving/-122.42,37.78;-122.45,37.91;-122.48,37.73?approaches=curb;curb;curb&access_token={your_access_token}"
 
 # Request an asymmetric 2x3 matrix for bicycles
