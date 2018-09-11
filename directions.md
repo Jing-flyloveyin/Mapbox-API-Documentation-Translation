@@ -1,6 +1,6 @@
 ## Directions
 
-This documentation is for `v5` of the Directions API. For information about the earlier version, see the [`v4` documentation](./pages/directions-v4.html).
+本文档是Directions API的`v5`版。之前版本请参考[`v4` documentation](./pages/directions-v4.html).
 
 The Mapbox Directions API will show you how to get where you're going. With the Directions API, you can:
 
@@ -8,7 +8,6 @@ The Mapbox Directions API will show you how to get where you're going. With the 
 - Produce turn-by-turn instructions
 - Produce routes with up to 25 coordinates anywhere on earth
 
-This API supports 4 different routing profiles:
 该API支持以下四种不同的路径：
 
 Profile | Description
