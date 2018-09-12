@@ -894,28 +894,29 @@ Property | Description
 ```
 
 ### Banner instruction object
+### 标题命令对象
 
 A route step object contains a nested **banner instruction object** if the optional `banner_instructions=true` query parameter is present. The banner instruction object contains the contents of a banner that should be displayed as added visual guidance for a route. The banner instructions are children of the route steps during which they should be displayed, but they refer to the maneuver in the _following_ step.
 
 属性 | 说明
 --- | ---
-`distanceAlongGeometry` | 浮点型， indicating how far from the upcoming maneuver the banner instruction should begin being displayed in meters. Only one banner should be displayed at a time.
-`primary` | The most important content to display to the user. This text is larger and at the top.
-`secondary` | Additional content useful for visual guidance. This text is slightly smaller and below `primary`. Can be `null`.
-`sub` | Additional information that is included if the driver needs to be notified about something. Can include information about the _next_ maneuver (the one after the upcoming one) if the step is short. If lane information is available, that takes precedence over information about the _next_ maneuver.
+`distanceAlongGeometry` | 浮点型，表示距离下一个操作多远时标题指令开始显示，单位米。一次只能显示一个标题。
+`primary` | 向用户展示最重要的内容。文字位于顶部，字号更大。
+`secondary` | 对可视化引导有用的其他信息。此文本略小于`primary`文本。 可以为`null`。
+`sub` | 驾驶者需要被告知的某些内容。如果步骤很短，可以包括_下一条_操作的信息（即将操作的下一个）。如果车道信息可用，则优先于_下一条_操作的信息。
 
-Each of the different banner types (`primary`, `secondary`, and `sub`) contains the following properties:
+不同类型（`primary`，`secondary`，和`sub`）标题包括以下属性：
 
-Property | Description
+属性 | 说明
 --- | ---
-`text` | A string that contains all the text that should be displayed.
-`type` | The type of maneuver. May be used in combination with the `modifier` (and, if it is a roundabout, the `degrees`) to for an icon to display. Possible values: `turn`, `merge`, `depart`, `arrive`, `fork`, `off ramp`, and `roundabout`.
-`modifier`<br>(optional) | The modifier for the maneuver. Can be used in combination with the `type` (and, if it is a roundabout, the `degrees`) to for an icon to display. <table><tr><th>Possible values</th><th>Description</th></tr><tr><td>`uturn`</td><td>Indicates a reversal of direction</td></tr><tr><td>`sharp right`</td><td>A sharp right turn</td></tr><tr><td>`right`</td><td>A normal turn to the right</td></tr><tr><td>`slight right`</td><td>A slight turn to the right</td></tr><tr><td>`straight`</td><td>No relevant change in direction</td></tr><tr><td>`slight left`</td><td>A slight turn to the left</td></tr><tr><td>`left`</td><td>A normal turn to the left</td></tr><tr><td>`sharp left`</td><td>A sharp turn to the left</td></tr></table>
-`degrees`<br>(optional) | The degrees at which you will be exiting a roundabout, assuming `180` indicates going straight through the roundabout.
-`driving_side`<br>(optional) | A string representing which side the of the street people drive on in that location. Can be `left` or `right`.
+`text` | 包含应显示的所有文本的字符串。
+`type` | 操作类型。可以与`modifier` (和`degrees`，如果有环岛）一起使用，用于图标显示。可能的值：`turn`，`merge`，`depart`，`arrive`，`fork`，`off ramp`和`roundabout`。
+`modifier`<br>（可选） | The modifier for the maneuver. 可以与`type`（和`degrees`，如果有环岛）一起使用，用于图标显示。 <table><tr><th>可能的值</th><th>说明</th></tr><tr><td>`uturn`</td><td>掉头</td></tr><tr><td>`sharp right`</td><td>右急转弯</td></tr><tr><td>`right`</td><td>正常右转弯t</td></tr><tr><td>`slight right`</td><td>稍向右转</td></tr><tr><td>`straight`</td><td>方向不变</td></tr><tr><td>`slight left`</td><td>稍向左转</td></tr><tr><td>`left`</td><td>正常左转弯</td></tr><tr><td>`sharp left`</td><td>左急转弯</td></tr></table>
+`degrees`<br>（可选）| The degrees at which you will be exiting a roundabout, assuming `180` indicates going straight through the roundabout.
+`driving_side`<br>（可选） | A string representing which side the of the street people drive on in that location. Can be `left` or `right`.
 `components` | Objects that, together, make up what should be displayed in the banner. Includes additional information intended to be used to aid in visual layout. A component can contain the following properties:
 
-`components` | Description
+`components` | 说明
 --- | ---
 `type` | A string with more context about the component that may help in visual markup and display choices. If the type of the component is unknown, it should be treated as text. <table><tr><th>Possible values</th><th>Description</th></tr><tr><td>`text`</td><td>Default. Indicates the text is part of the instructions and no other type.</td></tr><tr><td>`icon` </td><td>This is text that can be replaced by an imageBaseURL icon.</td></tr><tr><td>`delimiter`</td><td>This is text that can be dropped, and should be dropped if you are rendering icons.</td></tr><tr><td>`exit-number`</td><td>Indicates the exit number for the maneuver.</td></tr><tr><td>`exit`</td><td>Provides the the word for _exit_ in the local language.</td></tr><tr><td>`lane`</td><td>Indicates which lanes can be used to complete the maneuver.</td></tr></table> The introduction of new types is not considered a breaking change.
 `text` | The sub-string of the `text` of the parent objects that may have additional context associated with it
