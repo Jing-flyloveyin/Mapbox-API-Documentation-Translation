@@ -1014,10 +1014,15 @@ Given the `components` in the table above, the possible abbreviations are, in or
 ```
 
 ### Directions API errors
+### 路径规划API错误
 
 On error, the server responds with different HTTP status codes. For responses with HTTP status codes lower than `500`, the JSON response body includes the `code` property, which may be used by client programs to manage control flow. The response body may also include a `message` property with a human-readable explanation of the error.
 
 If a server error occurs, the HTTP status code will be `500` or higher and the response will not include a `code` property.
+
+出错时，服务器会使用不同的HTTP状态代码进行响应。对于低于`500`的HTTP状态代码，JSON响应主体包含`code`属性，客户端程序可以使用它来管理控制流。响应主体还可以包括具有人类可读的错误解释的`message`属性。
+
+如果发生服务器错误，HTTP状态代码将为`500`或更高，并且响应将不包含`code`属性。
 
 Response body `code` | HTTP status code | Description
 --- | --- |---
@@ -1026,3 +1031,11 @@ Response body `code` | HTTP status code | Description
 `NoSegment` | `200` | No road segment could be matched for coordinates. Check for coordinates that are too far away from a road.
 `ProfileNotFound` | `404` | Use a valid profile as described in the [list of routing profiles](#directions).
 `InvalidInput` | `422` | The given request was not valid. The `message` key of the response will hold an explanation of the invalid input.
+
+响应主体`code` | HTTP状态代码 | 描述
+--- | --- |---
+`Ok` | `200` | 正常成功情况。
+`NoRoute` | `200` | 根据给定的坐标找不到路径。检查不可能的路线（例如，没有渡轮连接的海洋上的路线）。
+`NoSegment` | `200` | 给定坐标无法匹配到路段。 检查距离道路太远的坐标。
+`ProfileNotFound` | `404` | 使用有效的配置文件，如 [list of routing profiles](#directions)中所述。
+`InvalidInput` | `422` | 给定的请求无效。响应中的`message`将保留无效输入的解释。
