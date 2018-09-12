@@ -87,15 +87,14 @@ URL 参数 | 说明
 `alternatives`<br /> （可选） | 是否尝试返回替代路线(`true`)或者不返回(`false`，默认值)。替代路线是与最快路线明显不同的路线，但仍然相当快。并不是所有情况下都存在该路线，最多可返回2个替代路线。
 `annotations`<br /> （可选） | 沿路线返回其他元数据。可能的值有：`duration`，`distance`，`speed`和 `congestion`。多个注释列表可用逗号分隔。注释中包含的详细内容，请参考：[route leg object](#routeleg-object)。必须与`overview=full`一起使用。
 `approaches`<br /> （可选） | 用分号分隔的列表指示的是请求路径中路径点应在道路的哪一侧。选择`unrestricted`（默认值，路径生成的路径点可以在道路的任意一侧）或者 `curb` (路径生成的路径点将沿着该地区`driving_side`的方向)。如果选择，方法的数量必须与路径点数量相同。但是，你可以跳过坐标并通过`;`分隔符表示其在列表中的位置。必须与`steps=true`一起使用。
-`banner_instructions`<br /> （可选） | 返回与路径步骤关联的标题对象 (`true`) 或者不反回（`false`，默认值）。必须与`steps=true`一起使用。
-`bearings`<br /> （可选） | Influences the direction in which a route *starts* from a waypoint. Used to filter the road segment the waypoint will be placed on by direction. 确保车辆行驶路线的方向是正确的。执行请求，则提供第一个路径点的方位和半径值，其余值为空。必须与`radiuses`参数一起使用。每个路径点有2个逗号分隔的值：正北方向顺时针0到360度，以及角度偏离度数范围(建议值为45°或90°），格式为`{angle, degrees}`。如果赋值，方位列表的长度必须与坐标对的长度一致。但是可以跳过坐标，用`;`分隔符表示其位置。
+`banner_instructions`<br /> （可选） | 返回与路径步骤关联的标题对象 (`true`) 或者不返回（`false`，默认值）。必须与`steps=true`一起使用。
+`bearings`<br /> （可选） | 影响路径从路径点*开始*的方向。用于过滤路径点被放置路段的方向，确保车辆行驶路线的方向是正确的。执行请求，则提供第一个路径点的方位和半径值，其余值为空。必须与`radiuses`参数一起使用。每个路径点有2个逗号分隔的值：正北方向顺时针0到360度，以及角度偏离度数范围(建议值为45°或90°），格式为`{angle, degrees}`。如果赋值，方位列表的长度必须与坐标对的长度一致。但是可以跳过坐标，用`;`分隔符表示其位置。
 `continue_straight`<br /> （可选） | 在离开中间路径点时，设置前进方向。如果设置为`true`，继续按同一方向前进。如果设置为`false`，则向反方向前进。`mapbox/driving`默认设置为`true`，for `mapbox/walking`和`mapbox/cycling`默认设置为`false`。
 `exclude`<br/> （可选） | 路径中排除某种类型的道路。默认设置是不从所选配置文件中排除任何类型。每个配置文件中可用的`exclude`标志如下：<table><th>**配置文件**</th><th>**排除类型**</th><tr><td>`mapbox/driving`</td><td>`toll`，`motorway`或 `ferry`其一</td></tr><tr><td>`mapbox/driving-traffic`</td><td>`toll`，`motorway`或`ferry`其一</td></tr><tr><td>`mapbox/walking`</td><td>不支持排除</td></tr><tr><td>`mapbox/cycling`</td><td>`ferry`</td></tr></table>
 `geometries`<br /> （可选） | 返回几何格式。属性值有： `geojson` (as [LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2)), [`polyline`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) （默认值，精度为5的折线），[`polyline6`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) （精度为6的折线）。
 `language`<br /> （可选） | 返回多段导航命令文本的语言。请参考：[supported languages](#instructions-languages)。默认是`en`（英文）。 必须与`steps=true`一起使用。
 `overview`<br /> （可选） | 返回几何的情况。选择`full`（最详细的几何），`simplified`（默认值，简化版精细几何），或者`false`（没有几何）。
-`radiuses`<br /> （可选） | 坐标可以移动捕捉到路网上的最大距离，单位米。半径数量与请求坐标数目一致，每个用`;`分隔开。属性值可以为任意大于
-`0`的数或者字符串`unlimited`。如果在半径范围内找不到可规划的路，则返回`NoSegment`错误。
+`radiuses`<br /> （可选） | 坐标可以移动捕捉到路网上的最大距离，单位米。半径数量与请求坐标数目一致，每个用`;`分隔开。属性值可以为任意大于`0`的数或者字符串`unlimited`。如果在半径范围内找不到可规划的路，则返回`NoSegment`错误。
 `roundabout_exits`<br /> （可选）| 在出环岛时发送指令（`true`）或不发送（`false`，默认值）。如果没有这个参数，环岛操作则为一个指令，同时包括进入环岛和退出环岛。当`roundabout_exits=true`时，该操作变成两个指令，一个用于进入环岛，一个用于退出环岛。
 `steps`<br /> （可选） | 返回步骤和多段导航命令（`true`）或不返回（`false`，默认值）。
 `voice_instructions`<br /> （可选） | 语音导航时，返回路径的[SSML](https://developer.amazon.com/docs/custom-skills/speech-synthesis-markup-language-ssml-reference.html)标记文本（`true`）或不返回（`false`，默认值）。 必须与`steps=true`一起使用。
@@ -898,9 +897,9 @@ Property | Description
 
 A route step object contains a nested **banner instruction object** if the optional `banner_instructions=true` query parameter is present. The banner instruction object contains the contents of a banner that should be displayed as added visual guidance for a route. The banner instructions are children of the route steps during which they should be displayed, but they refer to the maneuver in the _following_ step.
 
-Property | Description
+属性 | 说明
 --- | ---
-`distanceAlongGeometry` | A float indicating how far from the upcoming maneuver the banner instruction should begin being displayed in meters. Only one banner should be displayed at a time.
+`distanceAlongGeometry` | 浮点型， indicating how far from the upcoming maneuver the banner instruction should begin being displayed in meters. Only one banner should be displayed at a time.
 `primary` | The most important content to display to the user. This text is larger and at the top.
 `secondary` | Additional content useful for visual guidance. This text is slightly smaller and below `primary`. Can be `null`.
 `sub` | Additional information that is included if the driver needs to be notified about something. Can include information about the _next_ maneuver (the one after the upcoming one) if the step is short. If lane information is available, that takes precedence over information about the _next_ maneuver.
