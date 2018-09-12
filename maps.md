@@ -84,29 +84,29 @@ curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/12/1171/1566.png?style=
 // This API cannot be accessed with the Mapbox Swift libraries
 ```
 
-### Retrieve an HTML slippy map
+### 获取页面形式的 slippy map
 
 ```endpoint
 GET /v4/{map_id}{/options}.html{#hash}
 ```
 
-Returns HTML for a slippy map that can be used for sharing or embedding.
+返回一个有slippy map的网页，可以用来分享或者嵌入其他应用。
 
-URL parameter | Description
+URL 参数 | 描述
 --- | ---
-`map_id` | Unique identifier for the tileset in the format `username.id`
-`options`<br /> (optional) | A comma-separated list of controls and map behaviors to be included in the map:<br><ul><li>`zoomwheel`: Enable zooming with the mouse wheel</li><li>`zoompan`: Enable zoom and pan controls</li><li>`geocoder`: Add a geocoder control to the result slippy map</li><li>`share`: Add a share control</li></ul>
+`map_id` | 瓦片数据集的唯一标识，格式为`username.id`。
+`options`<br /> (可选) | 地图包含的控制和操作，用逗号分隔：<br><ul><li>`zoomwheel`: 允许鼠标滚轮触发地图缩放</li><li>`zoompan`: 允许地图缩放和平移控制</li><li>`geocoder`: 对产生的slippy map添加地理编码管理</li><li>`share`: 添加一个分享管理</li></ul>
 
-A request to retrieve an HTML slippy map can be further refined by adding the optional `hash` parameter:
+获取页面slippy map的请求，以后会精简成添加一个可选的参数`hash`：
 
-Query parameter | Description
+查询参数 | 描述
 --- | ---
-`hash`<br /> (optional) | Specify a zoom level and location for the map to center on, in the format `#zoom/lat/lon`. **Note:** This hash is placed after the `access_token` in the request.
+`hash`<br /> (可选) | 指定地图居中位置的层级和坐标点，格式为`#zoom/lat/lon`。 **注意：** 这个字段在请求中的位置在`access_token`的后面。
 
-#### Example request
+#### 请求示例
 
 ```curl
-# Returns a map with zoom and pan controls, a geocoder, and a share control
+# 返回一个有缩放和平移管理、地理编码管理和分享管理的地图。
 curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/zoomwheel,zoompan,geocoder,share.html?access_token={your_access_token}"
 ```
 
@@ -134,30 +134,30 @@ curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/zoomwheel,zoompan,geoco
 // This API cannot be accessed with the Mapbox Swift libraries
 ```
 
-### Retrieve TileJSON metadata
+### 获取 TileJSON metadata
 
 ```endpoint
 GET /v4/{map_id}.json
 ```
 
-Returns [TileJSON](https://github.com/mapbox/tilejson-spec/) metadata for a tileset. The TileJSON object describes a map's resources, like tiles, markers, and UTFGrid, as well as its name, description, and centerpoint.
+返回瓦片数据集的[TileJSON](https://github.com/mapbox/tilejson-spec/) metadata。TileJSON 对象描述了地图上的一些资源，比如瓦片数据、点位和UTFGrid，以及地图的名称、描述信息和中心点。 
 
-URL parameter | Description
+URL 参数 | 描述
 --- | ---
-`map_id` | Unique identifier for the tileset in the format `username.id`.
+`map_id` | 瓦片数据集的唯一标识，格式为`username.id`。
 
-This endpoint can be further customized with the optional `secure` parameter:
+这个端点可以进一步的自定义成一个可选的参数`secure`。
 
-Query parameter | Description
+查询 参数 | 描述
 --- | ---
-`secure`<br /> (optional) | By default, resource URLs in the retrieved TileJSON (such as in the  `"tiles"` array) will use the HTTP scheme. Include this query parameter in your request to receive HTTPS resource URLs instead.
+`secure`<br /> (可选) | 在默认情况下, 所获取的TileJSON内部的资源URLs（例如在`"tiles"`数组中）将使用HTTP协议。在请求中包含这个查询参数，以接收HTTPS资源url。Include this query parameter in your request to receive HTTPS resource URLs instead.
 
-#### Example request
+#### 请求示例
 
 ```curl
 curl "https://api.mapbox.com/v4/mapbox.satellite.json?access_token={your_access_token}"
 
-# Request HTTPS resource URLs in the retrieved TileJSON
+# 在获取的TileJSON中请求HTTPS资源url
 curl "https://api.mapbox.com/v4/mapbox.satellite.json?secure&access_token={your_access_token}"
 ```
 
@@ -185,7 +185,7 @@ curl "https://api.mapbox.com/v4/mapbox.satellite.json?secure&access_token={your_
 // This API cannot be accessed with the Mapbox Swift libraries
 ```
 
-#### Example response
+#### 响应示例
 
 ```json
 {
@@ -212,31 +212,31 @@ curl "https://api.mapbox.com/v4/mapbox.satellite.json?secure&access_token={your_
 }
 ```
 
-### Retrieve a standalone marker
+### 获取一个单独的点标注
 
 ```endpoint
 GET /v4/marker/{name}-{label}+{color}{@2x}.png
 ```
 
-Request a single marker image without an accompanying background map.
+请求一个单独的点标注，没有相应的背景地图。Request a single marker image without an accompanying background map.
 
-URL Parameter | Description
+URL 参数 | 描述
 --- | ---
-`name` | Marker shape and size. Options are `pin-s` and `pin-l`.
-`label`<br /> (optional) | A [Maki v0.5.0](https://github.com/mapbox/maki/blob/v0.5.0/_includes/maki.json) `icon` value. Options are an alphanumeric label `a` through `z`, `0` through `99`, or a valid Maki icon. If a letter is requested, it will be rendered in uppercase only.
-`color`<br /> (optional) | A 3- or 6-digit hexadecimal color code. The default color is gray.
-`@2x`<br /> (optional) | Include to request a high DPI version of the image.
+`name` | 点标注的形状和大小Marker shape and size. 选项有`pin-s` 和 `pin-l`.
+`label`<br /> (可选) | 符合 [Maki v0.5.0](https://github.com/mapbox/maki/blob/v0.5.0/_includes/maki.json) 格式的`icon` 值. 选项有`a`到`z`，`0`到`99`的数字标签，或者可用的Maki图标。 如果请求对象是字母，只会以大写的形式呈现。
+`color`<br /> (可选) | A 3- or 6-数字十六进制颜色编码，默认颜色是灰色。
+`@2x`<br /> (可选) | 包括请求一个高DPI版本的图像。
 
-#### Example request
+#### 请求示例
 
 ```curl
-# Returns a small red marker that contains a car icon, high DPI version
+# 返回一个高分辨率版本的红色点标注，图标为汽车样式
 curl "https://api.mapbox.com/v4/marker/pin-s-car+f44@2x.png?access_token={your_access_token}"
 
-# Returns a large default gray marker
+# 返回一个大号点标注，颜色为默认灰色
 curl "https://api.mapbox.com/v4/marker/pin-l.png?access_token={your_access_token}"
 
-# Returns a small blue marker labeled A
+# 返回一个带有A字母标签的小号蓝色点标注
 curl "https://api.mapbox.com/v4/marker/pin-s-a+00f.png?access_token={your_access_token}"
 ```
 
@@ -271,7 +271,7 @@ MBSnapshot *snapshot = [[MBSnapshot alloc] initWithOptions:options accessToken:@
 // `image` is a `UIImage` on iOS, watchOS, and tvOS and an `NSImage` on macOS.
 self.imageView.image = snapshot.image;
 
-// Alternatively, pass a completion handler to run asynchronously on the main thread.
+// Alternatively, 传递一个完成处理器，以便在主线程上异步运行。pass a completion handler to run asynchronously on the main thread.
 [snapshot imageWithCompletionHandler:^(UIImage * _Nullable image, NSError * _Nullable error) {
     self.imageView.image = image;
 }];
