@@ -61,27 +61,27 @@ curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/12/1171/1566.png?style=
 ```
 
 ```javascript
-// 当前API不能在中使用JavaScript SDKThis API cannot be accessed with the JavaScript SDK
+// 这个API不能通过JavaScript SDK访问
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+# 这个API不能通过Python SDK访问
 ```
 
 ```bash
-# This API cannot be accessed with Mapbox CLI
+# 这个API不能通过Mapbox CLI访问
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 这个API不能通过Mapbox Java SDK访问
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 这个API不能通过Mapbox Objective-C libraries访问
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+//这个API不能通过Mapbox Swift libraries访问
 ```
 
 ### 获取页面形式的 slippy map
@@ -111,27 +111,27 @@ curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/zoomwheel,zoompan,geoco
 ```
 
 ```javascript
-// This API cannot be accessed with the JavaScript SDK
+// 这个API不能通过JavaScript SDK访问
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+# 这个API不能通过Python SDK访问
 ```
 
 ```bash
-# This API cannot be accessed with Mapbox CLI
+# 这个API不能通过Mapbox CLI访问
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 这个API不能通过Mapbox Java SDK访问
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 这个API不能通过Mapbox Objective-C libraries访问
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 这个API不能通过Mapbox Swift libraries访问
 ```
 
 ### 获取 TileJSON metadata
@@ -162,27 +162,27 @@ curl "https://api.mapbox.com/v4/mapbox.satellite.json?secure&access_token={your_
 ```
 
 ```javascript
-// This API cannot be accessed with the JavaScript SDK
+// 这个API不能通过JavaScript SDK访问
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+# 这个API不能通过Python SDK访问
 ```
 
 ```bash
-# This API cannot be accessed with Mapbox CLI
+# 这个API不能通过Mapbox CLI访问
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 这个API不能通过Java SDK访问
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 这个API不能通过Mapbox Objective-C libraries访问
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 这个API不能通过Mapbox Swift libraries访问
 ```
 
 #### 响应示例
@@ -241,19 +241,19 @@ curl "https://api.mapbox.com/v4/marker/pin-s-a+00f.png?access_token={your_access
 ```
 
 ```javascript
-// This method cannot be accessed with the JavaScript SDK
+// 这个API不能通过JavaScript SDK访问
 ```
 
 ```python
-# This method cannot be accessed with the Python SDK
+# 这个API不能通过Python SDK访问
 ```
 
 ```bash
-# This method cannot be accessed with Mapbox CLI
+# 这个API不能通过Mapbox CLI访问
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 这个API不能通过Java SDK访问
 ```
 
 ```objc
@@ -267,11 +267,11 @@ MBMarkerOptions *options = [[MBMarkerOptions alloc] initWithSize:MBMarkerSizeSma
 #endif
 MBSnapshot *snapshot = [[MBSnapshot alloc] initWithOptions:options accessToken:@"<#your access token#>"];
 
-// Retrieve the image synchronously, blocking the calling thread.
-// `image` is a `UIImage` on iOS, watchOS, and tvOS and an `NSImage` on macOS.
+// 同步检索图像，阻塞调用的线程。
+// `image` 在iOS、watchOS、tvOS系统上是`UIImage`，在macOS系统上是`NSImage`。
 self.imageView.image = snapshot.image;
 
-// Alternatively, 传递一个完成处理器，以便在主线程上异步运行。pass a completion handler to run asynchronously on the main thread.
+// 或者，传递一个完成处理器，以便在主线程上异步运行。
 [snapshot imageWithCompletionHandler:^(UIImage * _Nullable image, NSError * _Nullable error) {
     self.imageView.image = image;
 }];
@@ -285,16 +285,16 @@ let options = MarkerOptions(
   iconName: "cafe")
 options.color = .brown
 
-// If Snapshot conflicts with another class in your module, use `MapboxStatic.Snapshot`.
+// 如果Snapshot功能与模块中的另一个类发生冲突，请使用`MapboxStatic.Snapshot`。
 let snapshot = Snapshot(
   options: options,
   accessToken: "<#your access token#>")
 
-// Retrieve the image synchronously, blocking the calling thread.
+// 同步检索图像，阻塞调用的线程。
 // `image` is a `UIImage` on iOS, watchOS, and tvOS and an `NSImage` on macOS.
 imageView.image = snapshot.image
 
-// Alternatively, pass a completion handler to run asynchronously on the main thread.
+// 或者，传递一个完成处理器，以便在主线程上异步运行。
 snapshot.image { (image, error) in
     imageView.image = image
 }
