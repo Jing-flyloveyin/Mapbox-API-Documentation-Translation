@@ -1,4 +1,3 @@
-## Directions
 ## 路径规划
 
 本文档是Directions API的`v5`版。之前版本请参考[`v4`文档](./pages/directions-v4.html).
@@ -55,7 +54,6 @@ const mbxDirections = require('@mapbox/mapbox-sdk/services/directions');
 const directionsClient = mbxDirections({ accessToken: '{your_access_token}' });
 ```
 
-**Restrictions and limits**
 **限制**
 
 - 使用配置文件`driving`，`walking`和 `cycling`的请求可沿路径指定最多25个点（输入坐标将捕捉路网）。
@@ -64,7 +62,6 @@ const directionsClient = mbxDirections({ accessToken: '{your_access_token}' });
 - 每分钟最多支持60次请求。
 - 所有点之间距离最多10000公里。
 
-### Retrieve directions
 ### 检索路径
 
 ```endpoint
@@ -103,7 +100,6 @@ URL 参数 | 说明
 
 查询字符串中无法识别的选项会导致`InvalidInput`错误。
 
-**Instructions language**<a id='instructions-languages'></a>
 **导航命令语言**<a id='instructions-languages'></a>
 
 下表`language`参数是多段导航命令支持的语言代码。如果不支持该语言，则默认为`en`（英语）。
@@ -136,7 +132,6 @@ URL 参数 | 说明
 `vi` | 越南语
 `zh-Hans` | 汉语 (简体)
 
-#### Example request
 #### 请求举例
 
 ```curl
@@ -294,7 +289,6 @@ let task = directions.calculate(options) { (waypoints, routes, error) in
 }
 ```
 
-### Directions response object
 ### 路径响应对象
 
 Directions API的请求响应是一个JSON对象，它包括以下属性：
@@ -305,7 +299,6 @@ Directions API的请求响应是一个JSON对象，它包括以下属性：
 `waypoints` | [waypoint](#waypoint-object)对象的数组。每个点都是捕捉在道路和路网上输入的坐标对。点的顺序与坐标对输入顺序一致。
 `routes` | 按推荐等级降序排列的[route](#route-object)对象数组。响应对象最多有2条路径。
 
-#### Example response object
 #### 响应对象举例
 
 ```json
@@ -491,23 +484,15 @@ Directions API的请求响应是一个JSON对象，它包括以下属性：
 }
 ```
 
-### Waypoint object
 ### 路点对象
 
-The response body of a Directions API query contains a **waypoint object**, the input coordinates snapped to the roads network. A waypoint object contains the following properties:
 Directions API查询的响应主体包含一个**路点对象**， 输入的坐标将会被捕捉到路网上，一个路点对象包含以下属性：
-
-Property | Description
---- | ---
-`name` | A string with the name of the road or path to which the input coordinate has been snapped.
-`location` | An array containing the `[longitude, latitude]` of the snapped coordinate.
 
 属性 | 描述
 --- | ---
 `name` | 一个字符串，其中包含输入坐标捕捉到的道路或路径的名称。
 `location` |一个数组包括输入坐标捕捉到的经纬度 `[longitude, latitude]`。
 
-#### Example waypoint object
 #### 路点对象举例
 
 ```json
@@ -517,21 +502,9 @@ Property | Description
 }
 ```
 
-### Route object
 ### 路线对象
 
-The response body of a Directions API query also contains an array of **route objects**. A route object describes a route through multiple waypoints. A route object contains the following properties:
 Directions API查询的响应主体包含一个数组组成的**路线对象**。一个路线对象描述了一条通过多个路点的路线。路线对象包括以下属性:
-
-Property | Description
---- | ---
-`duration` | A float indicating the estimated travel time through the waypoints in seconds.
-`distance` | A float indicating the distance traveled through the waypoints in meters.
-`weight_name` | A string indicating which weight was used. The default is `routability`, which is duration-based, with additional penalties for less desirable maneuvers.
-`weight` | A float indicating the weight in units described by `weight_name`.
-`geometry` | Depending on the `geometries` query parameter, this is either a [GeoJSON LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2) or a [Polyline string](https://developers.google.com/maps/documentation/utilities/polylinealgorithm). Depending on the `overview` query parameter, this is the complete route geometry (`full`), a simplified geometry to the zoom level at which the route can be displayed in full (`simplified`), or is not included (`false`).
-`legs` | An array of [route leg](#routeleg-object) objects.
-`voiceLocale` | A string of the locale used for voice instructions. Defaults to `en` (English). Can be any [accepted instruction language](#instructions-languages). `voiceLocale` is only present in the response when `voice_instructions=true`.
 
 属性 | 描述
 --- | ---
@@ -543,7 +516,6 @@ Property | Description
 `legs` | 一个数组关于： [route leg](#routeleg-object) 。
 `voiceLocale` | 一个字符串，设定用于语音指令的语言环境. 默认是 `en` (英语). 可以改为任何 [accepted instruction language](#instructions-languages). `voiceLocale` 仅在 `voice_instructions=true`时出现。
 
-#### Example route object
 #### 路线对象举例
 
 ```json
@@ -558,19 +530,9 @@ Property | Description
 }
 ```
 
-### Route leg object
 ### 路段对象
 
-A route object contains a nested **route leg** object for each leg of the journey, which is one fewer than the number of input coordinates. A route leg object contains the following properties:
 路程对象中嵌套**路段**对象，用于描述路程中的每一段路，数量比输入的坐标少一个。路段对象包括以下属性:
-
-Property | Description
---- | ---
-`distance` | A number indicating the distance traveled between waypoints in meters.
-`duration` | A number indicating the estimated travel time between waypoints in seconds.
-`steps` | Depending on the optional `steps` parameter, either an array of [route step](#routestep-object) objects (`steps=true`) or an empty array (`steps=false`, default).
-`summary` | A string summarizing the route.
-`annotation` | An annotations object that contains additional details about each line segment along the route geometry. Each entry in an annotations field corresponds to a coordinate along the route geometry. See the following table for more information about the `annotation` object:
 
 属性 | 描述
 --- | ---
@@ -580,13 +542,6 @@ Property | Description
 `summary` | 一个总结路线的字符串。
 `annotation` | 注释对象，其中包含有关路线几何图形的每个线段的其他详细信息。 注释字段中的每个条目对应于路线几何的坐标。 有关`annotation`对象的更多信息，请参见下表：
 
-`annotation` | Description
---- | ---
-`distance` | The distance between each pair of coordinates in meters.
-`duration` | The duration between each pair of coordinates in seconds.
-`speed` | The speed between each pair of coordinates in meters per second.
-`congestion` | The level of congestion, described as `severe`, `heavy`, `moderate`, `low` or `unknown`, between each entry in the array of coordinate pairs in the route leg. For any profile other than `mapbox/driving-traffic` a list of `unknown`s will be returned. A list of `unknown`s will also be returned if the route is very long.
-
 `annotation` | 描述
 --- | ---
 `distance` | 每对坐标之间的距离，以米为单位。
@@ -594,9 +549,6 @@ Property | Description
 `speed` | 每对坐标之间的速度，以米/秒为单位。
 `congestion` | 拥堵程度, 用 `severe`，`heavy`，`moderate`，`low`或`unknown`描述。每个条目对应于一个路段. 对于除“mapbox / driving-traffic”以外的任何配置文件，将返回`unknown`的列表。 如果路线很长，也会返回`unknown`的列表。
 
-
-
-#### Example route leg object
 #### 路段对象举例
 
 ```json
@@ -651,26 +603,9 @@ Property | Description
 }
 ```
 
-### Route step object
 ### 行路步骤对象
 
-In a route leg object, a nested **route step** object includes one [step maneuver](#stepmaneuver-object) object as well as information about travel to the following route step:
 在路段对象中，嵌套的**行路步骤**对象包括一个[step maneuver](#stepmaneuver-object) 对象以及如何前往下一段路的信息：
-
-Property | Description
---- | ---
-`maneuver` | One [step maneuver](#stepmaneuver-object) object.
-`distance` | A number indicating the distance traveled in meters from the maneuver to the next route step.
-`duration` | A number indicating the estimated time traveled in seconds from the maneuver to the next route step.
-`geometry` | Depending on the `geometries` parameter, this is a [GeoJSON LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2) or a [Polyline string](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) representing the full route geometry from this route step to the next route step.
-`name` | A string with the name of the road or path that forms part of the route step.
-`ref` | Any [road designations](https://en.wikipedia.org/wiki/Road_designation_or_abbreviation) associated with the road or path leading from this step’s maneuver to the next step’s maneuver. If [multiple road designations](https://en.wikipedia.org/wiki/Concurrency_%28road%29) are associated with the road, they are separated by semicolons. Typically consists of an alphabetic network code (identifying the road type or numbering system), a space or hyphen, and a [route number](https://en.wikipedia.org/wiki/Route_number). Optionally included, if data is available. <br>**Note:** A network code is not necessarily globally unique, and should not be treated as though it is. A route number may not uniquely identify a road within a given network.
-`destinations` | A string with the destinations of the road or path along which the travel proceeds. Optionally included, if data is available.
-`exits` | A string with the exit numbers or names of the road or path. Optionally included, if data is available.
-`driving_side` | The legal driving side at the location for this step. Either `left` or `right`.
-`mode` | A string indicating the mode of transportation. <table><tr><th>Profile</th><th>Possible values</th></tr><tr><td>`mapbox/driving` </td><td>`driving`, `ferry`, `unaccessible`</td></tr><tr><td>`mapbox/walking`</td><td>`walking`, `ferry`, `unaccessible`</td></tr><tr><td>`mapbox/cycling`</td><td>`cycling`, `walking`, `ferry`, `train`, `unaccessible`</td></tr></table>
-`pronunciation` | A string containing an [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet) phonetic transcription indicating how to pronounce the name in the `name` property. Omitted if pronunciation data is not available for the step.
-`intersections` | An array of objects representing all the intersections along the step. See the following table for more information on the `intersections` array:
 
 属性 | 描述
 --- | ---
@@ -688,16 +623,6 @@ Property | Description
 `intersections` | 表示沿着行路步骤的所有交叉点的对象数组。 有关`intersectionctions`数组的更多信息，请参见下表：
 
 
-`intersections` | Description
---- | ---
-`location` | A `[longitude, latitude]` pair describing the location of the turn.
-`bearings` | A list of bearing values that are available at the intersection. The bearings describe all available roads at the intersection.
-`classes` | An array of strings signifying the classes of the road exiting the intersection.  <table><tr><th>Possible values</th><th>Description</th></tr><tr><td>`toll`</td><td>Road continues on a toll road</td></tr><tr><td>`ferry`</td><td>Road continues on a ferry</td></tr><tr><td>`restricted`</td><td>Road continues on with access restrictions</td></tr><tr><td>`motorway`</td><td>Road continues on a motorway</td></tr><tr><td>`tunnel`</td><td>Road continues in a tunnel</td></tr></table>
-`entry` | A list of entry flags, corresponding 1:1 to `bearings`. If `true`, indicates that the respective road could be entered on a valid route. If `false`, the turn onto the respective road would violate a restriction.
-`in` | The index in the `bearings` and `entry` arrays. Used to calculate the bearing before the turn. Namely, the clockwise angle from true north to the direction of travel before the maneuver/passing the intersection. To get the bearing in the direction of driving, the bearing has to be rotated by a value of 180. The value is not supplied for departure maneuvers.
-`out` | The index in the `bearings` and `entry` arrays. Used to extract the bearing after the turn. Namely, the clockwise angle from true north to the direction of travel after the maneuver/passing the intersection. The value is not supplied for arrival maneuvers.
-`lanes` | An array of [lane](#lane-object) objects that represent the available turn lanes at the intersection. If no lane information is available for an intersection, the `lanes` property will not be present.
-
 `intersections` | 描述
 --- | ---
 `location` | 一个 `[longitude, latitude]` 描述转弯点的位置。
@@ -708,8 +633,6 @@ Property | Description
 `out` | `bearing`和`entry`数组中的索引。用于提取转弯之后的轴向。即，在操纵/通过交叉点之后从真北到行进方向的顺时针角度。到达行为不提供该值。
 `lanes` | 一个[lane](#lane-object) 数组，代表交叉路口的可用转弯车道。如果没有可用于交叉路口的车道信息，则不会出现`lanes`属性。
 
-
-#### Example route step object
 #### 行路步骤对象举例
 
 ```json
@@ -755,22 +678,9 @@ Property | Description
 }
 ```
 
-### Step maneuver object
 ### 步骤操作对象
 
 路径步骤对象包含嵌套的**步骤操作**对象，其中包含以下属性：
-
-Property          | Description
-------------------| ------------------
-`bearing_before`  | A number between `0` and `360` indicating the clockwise angle from true north to the direction of travel immediately _before_ the maneuver.
-`bearing_after`   | A number between `0` and `360` indicating the clockwise angle from true north to the direction of travel immediately _after_ the maneuver.
-`instruction`     | A human-readable instruction of how to execute the returned maneuver.
-`location`        | An array of `[longitude, latitude]` coordinates for the point of the maneuver.
-`modifier`        | An optional string indicating the direction change of the maneuver. The meaning of each `modifier` depends on the `type` property. <table><tr><th>Possible values</th><th>Description</th></tr><tr><td>`uturn`</td><td>Indicates a reversal of direction. `type` can be `turn` or `continue` when staying on the same road.</td></tr><tr><td>`sharp right`</td><td>A sharp right turn.</td></tr><tr><td>`right`</td><td>A normal turn to the right.</td></tr><tr><td>`slight right`</td><td>A slight turn to the right.</td></tr><tr><td>`straight`</td><td>No relevant change in direction.</td></tr><tr><td>`slight left`</td><td>A slight turn to the left.</td></tr><tr><td>`left`</td><td>A normal turn to the left.</td></tr><tr><td>`sharp left`</td><td>A sharp turn to the left.</td></tr></table>
-`type`            | A string indicating the type of maneuver. See the full list of maneuver types  in the [maneuver types table](#maneuver-types).
-
-- If no `modifier` is provided, the `type` of maneuvers is limited to `depart` and `arrive`.
-- If the source or target location is close enough to the `depart` or `arrive` location, no `modifier` will be given.
 
 属性 | 描述
 ------------------| ------------------
@@ -783,29 +693,6 @@ Property          | Description
 
 - 如果不提供 `modifier` ，`type` 会被限制在 `depart` 或 `arrive`。
 - 如果源位置或目标位置足够接近 `depart` 或 `arrive` 位置， `modifier` 将不会提供。
-
-**Maneuver types**<a id='maneuver-types'></a>
-
-`type` | Description
- --- | ---
-`turn` | A basic turn in the direction of the modifier.
-`new name` | The road name changes (after a mandatory turn).
-`depart` | Indicates departure from a leg. The `modifier` value indicates the position of the departure point in relation to the current direction of travel.
-`arrive` | Indicates arrival to a destination of a leg. The `modifier` value indicates the position of the arrival point in relation to the current direction of travel.
-`merge` | Merge onto a street.
-`on ramp` | Take a ramp to enter a highway.
-`off ramp` | Take a ramp to exit a highway.
-`fork` | Take the left or right side of a fork.
-`end of road` | Road ends in a T intersection.
-`continue` | Continue on a street after a turn.
-`roundabout` | Traverse roundabout. Has an additional property `exit` in the [route step](#routestep-object) that contains the exit number. The `modifier` specifies the direction of entering the roundabout.
-`rotary` | A traffic circle. While very similar to a larger version of a roundabout, it does not necessarily follow roundabout rules for right of way. It can offer `rotary_name` parameters, `rotary_pronunciation` parameters, or both, located in the [route step](#routestep-object) object in addition to the `exit` property.
-`roundabout turn` | A small roundabout that is treated as an intersection.
-`notification` | Indicates a change of driving conditions, for example changing the `mode` from `driving` to `ferry`.
-`exit roundabout` | Indicates the exit maneuver from a roundabout. Will not appear in results unless you supply the `roundabout_exits=true` query parameter in the request.
-`exit rotary` | Indicates the exit maneuver from a rotary. Will not appear in results unless you supply the `roundabout_exits=true` query parameter in the request.
-
-**Note:** New properties (potentially depending on `type`) may be introduced in the future without an API version change.
 
 **操作类型**<a id='maneuver-types'></a>
 
@@ -830,8 +717,6 @@ Property          | Description
 
 **Note:** 将来可能会引入新属性（可能取决于`type`），即使没有更新API版本。
 
-
-#### Example step maneuver object
 #### 步骤操作对象举例
 
 ```json
@@ -845,23 +730,15 @@ Property          | Description
 }
 ```
 
-### Lane object
 ### 车道对象
 
-A route step object contains a nested **lane object**. The lane object describes the available turn lanes at an intersection. Lanes are provided in their order on the street, from left to right.
 行路步骤对象嵌套了**车道对象**。车道对象描述了交叉路口的可用转弯车道。 车道从左到右依次在街道上提供。
-
-Property | Description
---- | ---
- `valid` | Indicates whether a lane can be taken to complete the maneuver (`true`) or not (`false`). For instance, if the lane array has four objects and the first two are valid, the driver can take either of the left lanes and stay on the route.
- `indications` | An array of signs for each turn lane. There can be multiple signs. For example, a turn lane can have a sign with an arrow pointing left and another sign with an arrow pointing straight.
 
  属性 | 描述
 --- | ---
  `valid` | 表示是否可以在此车道完成操作(`true`) 或 (`false`). 例如，如果一边有四个车道对象且前两个有效，则驾驶员可以选择左侧两个车道中的任何一个并留在路线上。
  `indications` | 一系列转弯车道的标识，可能有多个。例如，转弯车道可以有一个箭头指向左侧，另一个箭头指向右侧。
 
-#### Example lane object
 #### 车道对象举例
 
 ```json
@@ -873,17 +750,17 @@ Property | Description
 }
 ```
 
-### Voice instruction object
+### 语音指令对象
 
-A route step object contains a nested **voice instruction object** if the optional `voice_instructions=true` query parameter is present. The voice instruction object contains the text that should be announced, along with how far from the maneuver it should be emitted. The voice instructions are children of the route step during which they should be spoken, but they refer to the maneuver in the _following_ step.
+如果存在可选的`voice_instructions = true`查询参数，则行路步骤对象包含嵌套的**语音指令对象**。语音指令对象包含应该显示的文本，以及应该发出操作指令的距离。语言指令是行路步骤的子项，应该在此步骤之中说出他们，但实际上他们指的是 _下一步_ 该做的操作。
 
-Property | Description
+属性 | 描述
 --- | ---
-`distanceAlongGeometry` | A float indicating how far from the upcoming maneuver the voice instruction should begin in meters.
-`announcement` | A string containing the text of the verbal instruction.
-`ssmlAnnouncement` | A string with SSML markup for proper text and pronunciation. This property is designed for use with [Amazon Polly](https://aws.amazon.com/polly/). The SSML tags may not work with other text-to-speech engines.
+`distanceAlongGeometry` | 一个浮点数，表示语音指令到即将到来的操作的距离（以米为单位）。
+`announcement` | 包含语音指令文本的字符串。
+`ssmlAnnouncement` | 带有SSML标记的字符串，用于正确的文本和发音。 被设计和[Amazon Polly](https://aws.amazon.com/polly/)一起使用. SSML标记可能无法与其他文本语音转换引擎一起使用。
 
-#### Example voice instruction object
+#### 语音指令对象举例
 
 ```json
 {
@@ -893,17 +770,16 @@ Property | Description
 }
 ```
 
-### Banner instruction object
-### 标题命令对象
+### 横幅指令对象
 
-A route step object contains a nested **banner instruction object** if the optional `banner_instructions=true` query parameter is present. The banner instruction object contains the contents of a banner that should be displayed as added visual guidance for a route. The banner instructions are children of the route steps during which they should be displayed, but they refer to the maneuver in the _following_ step.
+如果存在可选的`banner_instructions = true`查询参数，则路径步骤对象包含嵌套的**横幅指令对象**。 横幅指令对象包含横幅的内容，该横幅应显示为路径的附加视觉指导。 指令横幅是行路步骤的子项，应该在此步骤之中展现他们，但实际上他们指的是 _下一步_ 该做的操作。
 
 属性 | 说明
 --- | ---
-`distanceAlongGeometry` | 浮点型，表示距离下一个操作多远时标题指令开始显示，单位米。一次只能显示一个标题。
+`distanceAlongGeometry` | 浮点型，表示距离下一个操作多远时指令横幅开始显示，单位米。一次只能显示一个横幅。
 `primary` | 向用户展示最重要的内容。文字位于顶部，字号更大。
 `secondary` | 对可视化引导有用的其他信息。此文本略小于`primary`文本。 可以为`null`。
-`sub` | 驾驶者需要被告知的某些内容。如果步骤很短，可以包括_下一条_操作的信息（即将操作的下一个）。如果车道信息可用，则优先于_下一条_操作的信息。
+`sub` | 驾驶者需要被告知的某些内容。如果步骤很短，可以包括_下一条_操作的信息（即将操作的下一个）。如果车道信息可用，则优先于 _下一条_ 操作的信息。
 
 不同类型（`primary`，`secondary`，和`sub`）标题包括以下属性：
 
@@ -918,26 +794,26 @@ A route step object contains a nested **banner instruction object** if the optio
 
 `components` | 说明
 --- | ---
-`type` | A string with more context about the component that may help in visual markup and display choices. If the type of the component is unknown, it should be treated as text. <table><tr><th>Possible values</th><th>Description</th></tr><tr><td>`text`</td><td>Default. Indicates the text is part of the instructions and no other type.</td></tr><tr><td>`icon` </td><td>This is text that can be replaced by an imageBaseURL icon.</td></tr><tr><td>`delimiter`</td><td>This is text that can be dropped, and should be dropped if you are rendering icons.</td></tr><tr><td>`exit-number`</td><td>Indicates the exit number for the maneuver.</td></tr><tr><td>`exit`</td><td>Provides the the word for _exit_ in the local language.</td></tr><tr><td>`lane`</td><td>Indicates which lanes can be used to complete the maneuver.</td></tr></table> The introduction of new types is not considered a breaking change.
-`text` | The sub-string of the `text` of the parent objects that may have additional context associated with it
-`abbr`<br>(optional) | The abbreviated form of `text`. If this is present, there will also be an `abbr_priority` value. For an example of using `abbr` and `abbr_priority`, see the [abbreviation examples](#abbreviation-examples) table.
-`abbr_priority`<br>(optional) | An integer indicating the order in which the abbreviation `abbr` should be used in place of `text`. The highest priority is `0`, while a higher integer value means it should have a lower priority. There are no gaps in integer values. Multiple components can have the same `abbr_priority`. When this happens, all `components` with the same `abbr_priority` should be abbreviated at the same time. Finding no larger values of `abbr_priority` means that the string is fully abbreviated.
-`imageBaseURL`<br>(optional) | A string pointing to a shield image to use instead of the text.
-`directions` | An array indicating which directions you can go from a lane (left, right, or straight). If the value is ['left', 'straight'], the driver can go straight or left from that lane. Present if `components.type` is `lane`.
-`active` | A boolean that tells you whether that lane can be used to complete the upcoming maneuver. If multiple lanes are active, then they can all be used to complete the upcoming maneuver. Present if `components.type` is `lane`.
+`type` | 包含有关组件的更多上下文的字符串，可帮助进行可视标记和显示选择。 如果组件的类型未知，则应将其视为文本。 <table><tr><th>可能值</th><th>描述</th></tr><tr><td>`text`</td><td>默认。 表示此文本是说明的一部分，没有其他类型。</td></tr><tr><td>`icon` </td><td>这是可以用imageBaseURL图标替换的文本。</td></tr><tr><td>`delimiter`</td><td>这是可以删除的文本，如果要渲染图标，则应删除该文本。</td></tr><tr><td>`exit-number`</td><td>表示操作时的出口编号。</td></tr><tr><td>`exit`</td><td>以本地语言提供 _exit_ 的单词。</td></tr><tr><td>`lane`</td><td>指示哪些车道可用于完成操作。</td></tr></table> 后续新类型的引入不被认为是一个突破性的变化。
+`text` | 父对象的`text`的子字符串，可能具有与之关联的附加上下文。
+`abbr`<br>(可选) | `text`的缩写形式。 如果存在，则还会有一个`abbr_priority`值。 有关使用`abbr`和`abbr_priority`的示例，请参阅[abbreviation examples](#abbreviation-examples) 表。
+`abbr_priority`<br>(可选) | 一个整数，表示应使用缩写`abbr`代替`text`的顺序。最高优先级时`0`，更高的整形值意味着更低的优先级。整数值之间没有间隙。多个组件可以具有相同的`abbr_priority`。当发生这种情况时，所有具有相同`abbr_priority`的`components`应该同时缩写。找不到更大的`abbr_priority`值意味着该字符串是完全缩写的。
+`imageBaseURL`<br>(可选) | 一个字符串，指向用于替换文本的图标。
+`directions` | 一个数组，指示您可以从一个车道走哪些方向（左，右或直行）。如果值时['left', 'straight']，司机可以从那条车道直行或向左。当`components.type`是`lane`时才显示。
+`active` |一个布尔值，告诉您该车道是否可用于完成即将到来的操作。 如果多个车道处于激活状态，那么它们都可以用于完成即将到来的操作。当`components.type`是`lane`时才显示。
 
-**Abbreviation examples**<a id='abbreviation-examples'></a>
+**缩写举例**<a id='abbreviation-examples'></a>
 
 `text`             | `abbr`       | `abbr_priority`
 -------------------|--------------|--------------------
 North              | N            | 1
 Franklin Drive     | Franklin Dr  | 0
 
-Given the `components` in the table above, the possible abbreviations are, in order:
+鉴于上表中的`components`，可能的缩写按顺序排列：
 - North Franklin Dr
 - N Franklin Dr
 
-#### Example banner instruction object
+#### 横幅指令对象案例
 
 ```json
 {
@@ -1014,24 +890,11 @@ Given the `components` in the table above, the possible abbreviations are, in or
 }
 ```
 
-### Directions API errors
 ### 路径规划API错误
-
-On error, the server responds with different HTTP status codes. For responses with HTTP status codes lower than `500`, the JSON response body includes the `code` property, which may be used by client programs to manage control flow. The response body may also include a `message` property with a human-readable explanation of the error.
-
-If a server error occurs, the HTTP status code will be `500` or higher and the response will not include a `code` property.
 
 出错时，服务器会使用不同的HTTP状态代码进行响应。对于低于`500`的HTTP状态代码，JSON响应主体包含`code`属性，客户端程序可以使用它来管理控制流。响应主体还可以包括具有人类可读的错误解释的`message`属性。
 
 如果发生服务器错误，HTTP状态代码将为`500`或更高，并且响应将不包含`code`属性。
-
-Response body `code` | HTTP status code | Description
---- | --- |---
-`Ok` | `200` | Normal success case.
-`NoRoute` | `200` | There was no route found for the given coordinates. Check for impossible routes (for example, routes over oceans without ferry connections).
-`NoSegment` | `200` | No road segment could be matched for coordinates. Check for coordinates that are too far away from a road.
-`ProfileNotFound` | `404` | Use a valid profile as described in the [list of routing profiles](#directions).
-`InvalidInput` | `422` | The given request was not valid. The `message` key of the response will hold an explanation of the invalid input.
 
 响应主体`code` | HTTP状态代码 | 描述
 --- | --- |---
