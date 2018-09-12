@@ -294,8 +294,8 @@ let snapshot = Snapshot(
 // `image` is a `UIImage` on iOS, watchOS, and tvOS and an `NSImage` on macOS.
 imageView.image = snapshot.image
 
-// 或者，传递一个完成处理器，以便在主线程上异步运行。
+// 或者，传递一个完成处理器， 以便在主线程上异步运行。
 snapshot.image { (image, error) in
-    imageView.image = image
+    imageView.image = image 
 }
 ```
