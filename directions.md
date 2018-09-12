@@ -841,15 +841,23 @@ Property          | Description
 ```
 
 ### Lane object
+### 车道对象
 
 A route step object contains a nested **lane object**. The lane object describes the available turn lanes at an intersection. Lanes are provided in their order on the street, from left to right.
+行路步骤对象嵌套了**车道对象**。车道对象描述了交叉路口的可用转弯车道。 车道从左到右依次在街道上提供。
 
 Property | Description
 --- | ---
  `valid` | Indicates whether a lane can be taken to complete the maneuver (`true`) or not (`false`). For instance, if the lane array has four objects and the first two are valid, the driver can take either of the left lanes and stay on the route.
  `indications` | An array of signs for each turn lane. There can be multiple signs. For example, a turn lane can have a sign with an arrow pointing left and another sign with an arrow pointing straight.
 
+ 属性 | 描述
+--- | ---
+ `valid` | 表示是否可以在此车道完成操作(`true`) 或 (`false`). 例如，如果一边有四个车道对象且前两个有效，则驾驶员可以选择左侧两个车道中的任何一个并留在路线上。
+ `indications` | 一系列转弯车道的标识，可能有多个。例如，转弯车道可以有一个箭头指向左侧，另一个箭头指向右侧。
+
 #### Example lane object
+#### 车道对象举例
 
 ```json
 {
