@@ -88,20 +88,21 @@ URL 参数 | 说明
 `annotations`<br /> （可选） | 沿路线返回其他元数据。可能的值有：`duration`，`distance`，`speed`和 `congestion`。多个注释列表可用逗号分隔。注释中包含的详细内容，请参考：[route leg object](#routeleg-object)。必须与`overview=full`一起使用。
 `approaches`<br /> （可选） | 用分号分隔的列表指示的是请求路径中路径点应在道路的哪一侧。选择`unrestricted`（默认值，路径生成的路径点可以在道路的任意一侧）或者 `curb` (路径生成的路径点将沿着该地区`driving_side`的方向)。如果选择，方法的数量必须与路径点数量相同。但是，你可以跳过坐标并通过`;`分隔符表示其在列表中的位置。必须与`steps=true`一起使用。
 `banner_instructions`<br /> （可选） | 返回与路径步骤关联的标题对象 (`true`) 或者不反回（`false`，默认值）。必须与`steps=true`一起使用。
-`bearings`<br /> （可选） | Influences the direction in which a route *starts* from a waypoint. Used to filter the road segment the waypoint will be placed on by direction. This is useful for making sure the new routes of rerouted vehicles continue traveling in their current direction. A request that does this would provide bearing and radius values for the first waypoint and leave the remaining values empty. Must be used in conjunction with the `radiuses` parameter. Takes 2 comma-separated values per waypoint: an angle clockwise from true north between 0 and 360, and the range of degrees by which the angle can deviate (recommended value is 45° or 90°), formatted as `{angle, degrees}`. If provided, the list of bearings must be the same length as the list of coordinates. However, you can skip a coordinate and show its position in the list with the `;` separator.
+`bearings`<br /> （可选） | Influences the direction in which a route *starts* from a waypoint. Used to filter the road segment the waypoint will be placed on by direction. 确保车辆行驶路线的方向是正确的。执行请求，则提供第一个路径点的方位和半径值，其余值为空。必须与`radiuses`参数一起使用。每个路径点有2个逗号分隔的值：正北方向顺时针0到360度，以及角度偏离度数范围(建议值为45°或90°），格式为`{angle, degrees}`。如果赋值，方位列表的长度必须与坐标对的长度一致。但是可以跳过坐标，用`;`分隔符表示其位置。
 `continue_straight`<br /> （可选） | 在离开中间路径点时，设置前进方向。如果设置为`true`，继续按同一方向前进。如果设置为`false`，则向反方向前进。`mapbox/driving`默认设置为`true`，for `mapbox/walking`和`mapbox/cycling`默认设置为`false`。
 `exclude`<br/> （可选） | 路径中排除某种类型的道路。默认设置是不从所选配置文件中排除任何类型。每个配置文件中可用的`exclude`标志如下：<table><th>**配置文件**</th><th>**排除类型**</th><tr><td>`mapbox/driving`</td><td>`toll`，`motorway`或 `ferry`其一</td></tr><tr><td>`mapbox/driving-traffic`</td><td>`toll`，`motorway`或`ferry`其一</td></tr><tr><td>`mapbox/walking`</td><td>不支持排除</td></tr><tr><td>`mapbox/cycling`</td><td>`ferry`</td></tr></table>
 `geometries`<br /> （可选） | 返回几何格式。属性值有： `geojson` (as [LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2)), [`polyline`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) （默认值，精度为5的折线），[`polyline6`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) （精度为6的折线）。
 `language`<br /> （可选） | 返回多段导航命令文本的语言。请参考：[supported languages](#instructions-languages)。默认是`en`（英文）。 必须与`steps=true`一起使用。
 `overview`<br /> （可选） | 返回几何的情况。选择`full`（最详细的几何），`simplified`（默认值，简化版精细几何），或者`false`（没有几何）。
-`radiuses`<br /> （可选） | The maximum distance a coordinate can be moved to snap to the road network in meters. There must be as many radiuses as there are coordinates in the request, each separated by `;`. Values can be any number greater than `0` or the string `unlimited`. A `NoSegment` error is returned if no routable road is found within the radius.
-`roundabout_exits`<br /> （可选）| Whether to emit instructions at roundabout exits (`true`) or not (`false`, default). Without this parameter, roundabout maneuvers are given as a single instruction that includes both entering and exiting the roundabout. With `roundabout_exits=true`, this maneuver becomes two instructions, one for entering the roundabout and one for exiting it.
+`radiuses`<br /> （可选） | 坐标可以移动捕捉到路网上的最大距离，单位米。半径数量与请求坐标数目一致，每个用`;`分隔开。属性值可以为任意大于
+`0`的数或者字符串`unlimited`。如果在半径范围内找不到可规划的路，则返回`NoSegment`错误。
+`roundabout_exits`<br /> （可选）| 在出环岛时发送指令（`true`）或不发送（`false`，默认值）。如果没有这个参数，环岛操作则为一个指令，同时包括进入环岛和退出环岛。当`roundabout_exits=true`时，该操作变成两个指令，一个用于进入环岛，一个用于退出环岛。
 `steps`<br /> （可选） | 返回步骤和多段导航命令（`true`）或不返回（`false`，默认值）。
 `voice_instructions`<br /> （可选） | 语音导航时，返回路径的[SSML](https://developer.amazon.com/docs/custom-skills/speech-synthesis-markup-language-ssml-reference.html)标记文本（`true`）或不返回（`false`，默认值）。 必须与`steps=true`一起使用。
-`voice_units`<br /> （可选） | Specify which type of units to return in the text for voice instructions. Can be `imperial` (default) or `metric`. 必须与`steps=true`和`voice_instructions=true`一起使用。
-`waypoint_names`<br /> （可选）| A semicolon-separated list of custom names for coordinates used for the arrival instruction in banners and voice instructions. Values can be any string, and the total number of all characters cannot exceed 500. If provided, the list of `waypoint_names` must be the same length as the list of coordinates, but you can skip a coordinate and show its position with the `;` separator.
+`voice_units`<br /> （可选） | 指定要在语音指令的文本中返回的单位类型。选择`imperial`（默认值）或者`metric`。必须与`steps=true`和`voice_instructions=true`一起使用。
+`waypoint_names`<br /> （可选）| 以分号分隔的自定义名称列表用作到达命令的标题和语音命令。属性值可以是任意字符，总数不超过500。如果赋值，`waypoint_names`列表的长度必须与坐标对的长度一致，但是可以跳过坐标，用`;`分隔符表示其位置。
 
-Unrecognized options in the query string result in an `InvalidInput` error.
+查询字符串中无法识别的选项会导致`InvalidInput`错误。
 
 **Instructions language**<a id='instructions-languages'></a>
 **导航命令语言**<a id='instructions-languages'></a>
