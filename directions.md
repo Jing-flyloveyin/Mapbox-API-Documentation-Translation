@@ -1,25 +1,24 @@
 ## Directions
+## 路径规划
 
-This documentation is for `v5` of the Directions API. For information about the earlier version, see the [`v4` documentation](./pages/directions-v4.html).
+本文档是Directions API的`v5`版。之前版本请参考[`v4`文档](./pages/directions-v4.html).
 
-The Mapbox Directions API will show you how to get where you're going. With the Directions API, you can:
+Mapbox Directions API 将向你展示如何到达目的地。通过使用Directions API，你可以:
 
-- Calculate optimal driving, walking, and cycling routes using traffic- and incident-aware routing
-- Produce turn-by-turn instructions
-- Produce routes with up to 25 coordinates anywhere on earth
+- 计算驾车、步行、骑行的路况感知与事件感知的最佳路径
+- 生成多段导航命令
+- 支持25个地球上任意坐标对生成路径
 
-This API supports 4 different routing profiles:
-这个API支持以下四种不同的路径：
+该API支持以下四种不同的路线规划配置文件：
 
-Profile | Description
+配置文件 | 说明
 --- | ---
-`mapbox/driving-traffic` | For automotive routing. This profile factors in current and historic traffic conditions to avoid slowdowns. Traffic information is available in [these supported geographies](./pages/traffic-countries.html).
-`mapbox/driving` | For automotive routing. This profile shows the fastest routes by preferring high-speed roads like highways.
-`mapbox/walking` | For pedestrian and hiking routing. This profile shows the shortest path by using sidewalks and trails.
-`mapbox/cycling` | For bicycle routing. This profile shows routes that are short and safer for cyclists by avoiding highways and preferring streets with bike lanes.
+`mapbox/driving-traffic` | 自动路线规划。考虑当前和历史的交通信息，规避拥堵。交通信息可参考：[these supported geographies](./pages/traffic-countries.html).
+`mapbox/driving` | 自动路线规划。提供优先高速（如公路）的最快路线。
+`mapbox/walking` | 行人和徒步。 提供人行道和小路的最短路径。
+`mapbox/cycling` | 骑行路线。规避高速公路，优先选择带有自行车道的道路，对于骑行者而言路线更短且更安全。
 
-Swift and Objective-C support for Directions is provided by the [MapboxDirections.swift](https://github.com/mapbox/MapboxDirections.swift)
-library.
+Swift和Objective-C对Directions的支持可参考库：[MapboxDirections.swift](https://github.com/mapbox/MapboxDirections.swift)。
 
 ```objc
 @import MapboxDirections;
@@ -57,84 +56,88 @@ const directionsClient = mbxDirections({ accessToken: '{your_access_token}' });
 ```
 
 **Restrictions and limits**
+**限制**
 
-- Requests using the `driving`, `walking`, and `cycling` profiles can specify up to 25 total waypoints (input coordinates that are snapped to the roads network) along the route.
-- Requests using the `driving-traffic` profile can specify up to 3 waypoints along the route.
-- Traffic coverage for the `driving-traffic` profile is available in [supported geographies](./pages/traffic-countries.html). Requests to this profile revert to `driving` profile results for areas without traffic coverage.
-- Maximum 60 requests per minute.
-- Maximum total of 10,000 kilometers between all waypoints.
+- 使用配置文件`driving`，`walking`和 `cycling`的请求可沿路径指定最多25个点（输入坐标将捕捉路网）。
+- 使用配置文件`driving-traffic`的请求可沿路径指定最多3个点。
+- [supported geographies](./pages/traffic-countries.html) 提供了`driving-traffic`配置文件的交通信息。该配置文件在没有交通信息的地区则返回 `driving`文件。
+- 每分钟最多支持60次请求。
+- 所有点之间距离最多10000公里。
 
 ### Retrieve directions
+### 检索路径
 
 ```endpoint
 GET /directions/v5/{profile}/{coordinates}
 ```
 
-Retrieve directions between waypoints. Directions requests must specify at least two waypoints as starting and ending points.
+在路径点之间检索路径。路径请求必须明确至少两个路径点作为起点和终点。
 
-Try this in the [API Playground](https://www.mapbox.com/api-playground/#/directions/).
+可在[API Playground](https://www.mapbox.com/api-playground/#/directions/)中进行尝试。
 
-URL parameter | Description
+URL 参数 | 说明
 --- | ---
-`profile` | The routing profile to use. Possible values are `mapbox/driving-traffic`, `mapbox/driving`, `mapbox/walking`, or `mapbox/cycling`.
-`coordinates` | A semicolon-separated list of `{longitude},{latitude}` coordinate pairs to visit in order. There can be between 2 and 25 coordinates for most requests, or up to 3 coordinates for `driving-traffic` requests.
+`profile` | 如果使用路径配置文件，可能的值有`mapbox/driving-traffic`，`mapbox/driving`，`mapbox/walking`或者`mapbox/cycling`。
+`coordinates` | 坐标对`{longitude},{latitude}`列表用分号隔开，并按顺序访问。对于大多数请求，可以有2到25对坐标，对于`driving-traffic`请求，最多可以有3对坐标。
 
-You can further refine the results from this endpoint with the following optional parameters:
+你可以使用下列可选参数进一步优化端点的结果：
 
-Query parameter | Description
+查询参数 | 说明
 --- | ---
-`alternatives`<br /> (optional) | Whether to try to return alternative routes (`true`) or not (`false`, default). An alternative route is a route that is significantly different than the fastest route, but also still reasonably fast. Such a route does not exist in all circumstances. Up to 2 alternatives may be returned.
-`annotations`<br /> (optional) | Return additional metadata along the route. Possible values are: `duration`, `distance`, `speed`, and `congestion`. You can include several annotations as a comma-separated list. See the [route leg object](#routeleg-object) for more details on what is included with annotations. Must be used in conjunction with `overview=full`.
-`approaches`<br /> (optional) | A semicolon-separated list indicating the side of the road from which to approach waypoints in a requested route. Accepts `unrestricted` (default, route can arrive at the waypoint from either side of the road) or `curb` (route will arrive at the waypoint on the `driving_side` of the region). If provided, the number of approaches must be the same as the number of waypoints. However, you can skip a coordinate and show its position in the list with the `;` separator. Must be used in combination with `steps=true`.
-`banner_instructions`<br /> (optional) | Whether to return banner objects associated with the route steps (`true`) or not (`false`, default). Must be used in conjunction with `steps=true`.
-`bearings`<br /> (optional) | Influences the direction in which a route *starts* from a waypoint. Used to filter the road segment the waypoint will be placed on by direction. This is useful for making sure the new routes of rerouted vehicles continue traveling in their current direction. A request that does this would provide bearing and radius values for the first waypoint and leave the remaining values empty. Must be used in conjunction with the `radiuses` parameter. Takes 2 comma-separated values per waypoint: an angle clockwise from true north between 0 and 360, and the range of degrees by which the angle can deviate (recommended value is 45° or 90°), formatted as `{angle, degrees}`. If provided, the list of bearings must be the same length as the list of coordinates. However, you can skip a coordinate and show its position in the list with the `;` separator.
-`continue_straight`<br /> (optional) | Sets the allowed direction of travel when departing intermediate waypoints. If `true`, the route will continue in the same direction of travel. If `false`, the route may continue in the opposite direction of travel. Defaults to `true` for `mapbox/driving` and `false` for `mapbox/walking` and `mapbox/cycling`.
-`exclude`<br/> (optional) | Exclude certain road types from routing. The default is to not exclude anything from the profile selected. The following `exclude` flags are available for each profile:<table><th>**Profile**</th><th>**Available excludes**</th><tr><td>`mapbox/driving`</td><td>One of `toll`, `motorway`, or `ferry`</td></tr><tr><td>`mapbox/driving-traffic`</td><td>One of `toll`, `motorway`, or `ferry`</td></tr><tr><td>`mapbox/walking`</td><td>No excludes supported</td></tr><tr><td>`mapbox/cycling`</td><td>`ferry`</td></tr></table>
-`geometries`<br /> (optional) | The format of the returned geometry. Allowed values are: `geojson` (as [LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2)), [`polyline`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) (default, a polyline with precision 5), [`polyline6`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) (a polyline with precision 6).
-`language`<br /> (optional) | The language of returned turn-by-turn text instructions. See [supported languages](#instructions-languages). The default is `en` (English). Must be used in combination with `steps=true`.
-`overview`<br /> (optional) | The type of returned overview geometry. Can be `full` (the most detailed geometry available), `simplified` (default, a simplified version of the full geometry), or `false` (no overview geometry).
-`radiuses`<br /> (optional) | The maximum distance a coordinate can be moved to snap to the road network in meters. There must be as many radiuses as there are coordinates in the request, each separated by `;`. Values can be any number greater than `0` or the string `unlimited`. A `NoSegment` error is returned if no routable road is found within the radius.
-`roundabout_exits`<br /> (optional) | Whether to emit instructions at roundabout exits (`true`) or not (`false`, default). Without this parameter, roundabout maneuvers are given as a single instruction that includes both entering and exiting the roundabout. With `roundabout_exits=true`, this maneuver becomes two instructions, one for entering the roundabout and one for exiting it.
-`steps`<br /> (optional) | Whether to return steps and turn-by-turn instructions (`true`) or not (`false`, default).
-`voice_instructions`<br /> (optional) | Whether to return [SSML](https://developer.amazon.com/docs/custom-skills/speech-synthesis-markup-language-ssml-reference.html) marked-up text for voice guidance along the route (`true`) or not (`false`, default). Must be used in conjunction with `steps=true`.
-`voice_units`<br /> (optional) | Specify which type of units to return in the text for voice instructions. Can be `imperial` (default) or `metric`. Must be used in conjunction with be used in conjunction with `steps=true` and `voice_instructions=true`.
-`waypoint_names`<br /> (optional) | A semicolon-separated list of custom names for coordinates used for the arrival instruction in banners and voice instructions. Values can be any string, and the total number of all characters cannot exceed 500. If provided, the list of `waypoint_names` must be the same length as the list of coordinates, but you can skip a coordinate and show its position with the `;` separator.
+`alternatives`<br /> （可选） | 是否尝试返回替代路线(`true`)或者不返回(`false`，默认值)。替代路线是与最快路线明显不同的路线，但仍然相当快。并不是所有情况下都存在该路线，最多可返回2个替代路线。
+`annotations`<br /> （可选） | 沿路线返回其他元数据。可能的值有：`duration`，`distance`，`speed`和 `congestion`。多个注释列表可用逗号分隔。注释中包含的详细内容，请参考：[route leg object](#routeleg-object)。必须与`overview=full`一起使用。
+`approaches`<br /> （可选） | A semicolon-separated list indicating the side of the road from which to approach waypoints in a requested route. Accepts `unrestricted`（默认值, route can arrive at the waypoint from either side of the road）或者 `curb` (route will arrive at the waypoint on the `driving_side` of the region). 如果提供，方法的数量必须与路径点数量相同。但是，你可以跳过坐标并通过`;`分隔符表示其在列表中的位置。必须与`steps=true`一起使用。
+`banner_instructions`<br /> （可选） | Whether to return banner objects associated with the route steps (`true`) or not (`false`, default). Must be used in conjunction with `steps=true`.
+`bearings`<br /> （可选） | Influences the direction in which a route *starts* from a waypoint. Used to filter the road segment the waypoint will be placed on by direction. This is useful for making sure the new routes of rerouted vehicles continue traveling in their current direction. A request that does this would provide bearing and radius values for the first waypoint and leave the remaining values empty. Must be used in conjunction with the `radiuses` parameter. Takes 2 comma-separated values per waypoint: an angle clockwise from true north between 0 and 360, and the range of degrees by which the angle can deviate (recommended value is 45° or 90°), formatted as `{angle, degrees}`. If provided, the list of bearings must be the same length as the list of coordinates. However, you can skip a coordinate and show its position in the list with the `;` separator.
+`continue_straight`<br /> （可选） | Sets the allowed direction of travel when departing intermediate waypoints. If `true`, the route will continue in the same direction of travel. If `false`, the route may continue in the opposite direction of travel. Defaults to `true` for `mapbox/driving` and `false` for `mapbox/walking` and `mapbox/cycling`.
+`exclude`<br/> （可选） | Exclude certain road types from routing. The default is to not exclude anything from the profile selected. The following `exclude` flags are available for each profile:<table><th>**Profile**</th><th>**Available excludes**</th><tr><td>`mapbox/driving`</td><td>One of `toll`, `motorway`, or `ferry`</td></tr><tr><td>`mapbox/driving-traffic`</td><td>One of `toll`, `motorway`, or `ferry`</td></tr><tr><td>`mapbox/walking`</td><td>No excludes supported</td></tr><tr><td>`mapbox/cycling`</td><td>`ferry`</td></tr></table>
+`geometries`<br /> （可选） | 返回几何格式。属性值有： `geojson` (as [LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2)), [`polyline`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) （默认值，精度为5的折线），[`polyline6`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) （精度为6的折线）。
+`language`<br /> （可选） | The language of returned turn-by-turn text instructions. See [supported languages](#instructions-languages). The default is `en` (English). Must be used in combination with `steps=true`.
+`overview`<br /> （可选） | The type of returned overview geometry. Can be `full` (the most detailed geometry available), `simplified` (default, a simplified version of the full geometry), or `false` (no overview geometry).
+`radiuses`<br /> （可选） | The maximum distance a coordinate can be moved to snap to the road network in meters. There must be as many radiuses as there are coordinates in the request, each separated by `;`. Values can be any number greater than `0` or the string `unlimited`. A `NoSegment` error is returned if no routable road is found within the radius.
+`roundabout_exits`<br /> （可选）| Whether to emit instructions at roundabout exits (`true`) or not (`false`, default). Without this parameter, roundabout maneuvers are given as a single instruction that includes both entering and exiting the roundabout. With `roundabout_exits=true`, this maneuver becomes two instructions, one for entering the roundabout and one for exiting it.
+`steps`<br /> （可选） | Whether to return steps and turn-by-turn instructions (`true`) or not (`false`, default).
+`voice_instructions`<br /> （可选） | Whether to return [SSML](https://developer.amazon.com/docs/custom-skills/speech-synthesis-markup-language-ssml-reference.html) marked-up text for voice guidance along the route (`true`) or not (`false`, default). Must be used in conjunction with `steps=true`.
+`voice_units`<br /> （可选） | Specify which type of units to return in the text for voice instructions. Can be `imperial` (default) or `metric`. Must be used in conjunction with be used in conjunction with `steps=true` and `voice_instructions=true`.
+`waypoint_names`<br /> （可选）| A semicolon-separated list of custom names for coordinates used for the arrival instruction in banners and voice instructions. Values can be any string, and the total number of all characters cannot exceed 500. If provided, the list of `waypoint_names` must be the same length as the list of coordinates, but you can skip a coordinate and show its position with the `;` separator.
 
 Unrecognized options in the query string result in an `InvalidInput` error.
 
-**Instructions languages**<a id='instructions-languages'></a>
+**Instructions language**<a id='instructions-languages'></a>
+**导航命令语言**<a id='instructions-languages'></a>
 
-The table below shows supported language codes used with the `language` parameter for turn-by-turn instructions. The language parameter will automatically be set to `en` (English) if an unsupported language code is used.
+下表`language`参数是多段导航命令支持的语言代码。如果不支持该语言，则默认为`en`（英语）。
 
-Code | Language
+代码 | 语言
 --- | ---
-`da` | Danish
-`de` | German
-`en` | English
-`eo` | Esperanto
-`es` | Spanish
-`es-ES` | Spanish (Spain)
-`fi` | Finnish
-`fr` | French
-`he` | Hebrew
-`id` | Indonesian
-`it` | Italian
-`ko` | Korean
-`my` | Burmese
-`nl` | Dutch
-`no` | Norwegian (Bokmål)
-`pl` | Polish
-`pt-BR` | Portuguese (Brazil)
-`pt-PT` | Portuguese (Portugal)
-`ro` | Romanian
-`ru` | Russian
-`sv` | Swedish
-`tr` | Turkish
-`uk` | Ukrainian
-`vi` | Vietnamese
-`zh-Hans` | Chinese (Simplified)
+`da` | 丹麦语
+`de` | 德语
+`en` | 英语
+`eo` | 世界语
+`es` | 西班牙语
+`es-ES` | 西班牙语（巴西）
+`fi` | 芬兰语
+`fr` | 法语
+`he` | 希伯来语
+`id` | 印度尼西亚语
+`it` | 意大利语
+`ko` | 韩语
+`my` | 缅甸语
+`nl` | 荷兰语
+`no` | 挪威语（挪威）
+`pl` | 波兰语
+`pt-BR` | 葡萄牙语（巴西）
+`pt-PT` | 葡萄牙（葡萄牙）
+`ro` | 罗马尼亚
+`ru` | 俄语
+`sv` | 瑞典语
+`tr` | 土耳其语
+`uk` | 乌克兰
+`vi` | 越南语
+`zh-Hans` | 汉语 (简体)
 
 #### Example request
+#### 请求举例
 
 ```curl
 # Request directions with no additional options
@@ -292,16 +295,18 @@ let task = directions.calculate(options) { (waypoints, routes, error) in
 ```
 
 ### Directions response object
+### 路径响应对象
 
-The response to a Directions API request is a JSON object that contains the following properties:
+Directions API的请求响应是一个JSON对象，它包括以下属性：
 
-Property | Description
+属性 | 说明
 --- | ---
-`code` | A string indicating the state of the response. This is a different code than the HTTP status code. On normal valid responses, the value will be `Ok`. For other responses, see the [Directions API errors table](#directions-api-errors).
-`waypoints` | An array of [waypoint](#waypoint-object) objects. Each waypoint is an input coordinate snapped to the road and path network. The waypoints appear in the array in the order of the input coordinates.
-`routes` | An array of [route](#route-object) objects ordered by descending recommendation rank. The response object may contain at most 2 routes.
+`code` | 指示响应状态的字符串。这是与HTTP状态代码不同的代码。正常有效响应的情况下，值将为`Ok`。否则，参照：[Directions API errors table](#directions-api-errors).
+`waypoints` | [waypoint](#waypoint-object)对象的数组。每个点都是捕捉在道路和路网上输入的坐标对。点的顺序与坐标对输入顺序一致。
+`routes` | 按推荐等级降序排列的[route](#route-object)对象数组。响应对象最多有2条路径。
 
 #### Example response object
+#### 响应对象举例
 
 ```json
 {
