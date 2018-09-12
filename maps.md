@@ -1,13 +1,13 @@
 ## Maps
 
-The Mapbox Maps API 支持通过images、TileJSON或者平滑的嵌入式页面地图的形式获取矢量和影像的瓦片数据集。
+Mapbox Maps API支持将矢量和栅格tilesets作为图像、TileJSON或可嵌入的HTML平滑地图进行检索获取。
 
-如果你使用过[Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/)、 [Mapbox.js](https://www.mapbox.com/mapbox.js/) 或者其他库比如[Leaflet](https://www.mapbox.com/mapbox.js/example/v1.0.0/plain-leaflet/)，说明你已经使用过 Maps API，如果要设计或者使用Mapbox Maps，就不需要阅读这份指南。相反, 这份文档对那些想通过编程的方式来理解这些资源的软件开发人员很有意义。
+如果你使用过[Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/)、 [Mapbox.js](https://www.mapbox.com/mapbox.js/) 或者像[Leaflet](https://www.mapbox.com/mapbox.js/example/v1.0.0/plain-leaflet/)这样的库，说明你已经使用过 Maps API，不需要再阅读这份指南来设计或者使用Mapbox Maps。相反, 这份文档对那些希望以编程的方式理解这些资源的软件开发人员很有意义。
 
 **约束和限制**
 
-- Use of the Mapbox Maps API endpoint is rate limited based on your user plan. 默认设置是每分钟100000次请求数。The default is 100,000 requests per minute.
-- 超过用户计划的每分钟请求数会出现“HTTP 429 Too Many Requests”的响应。Exceeding your user plan's number requests per minute will result in an `HTTP 429 Too Many Requests` response.
+- Mapbox Maps API endpoint的使用基于个人用户计划的速率限制。默认值是每分钟10万次请求数。
+- 超过用户计划的每分钟请求数会出现“HTTP 429 Too Many Requests”的响应。
 - 关于速率限制头文件的信息，请参考[Rate limits](#rate-limits) 章节。
 
 如果你需要提高速率限制，[请联系我们](https://www.mapbox.com/contact/)。
@@ -18,17 +18,17 @@ The Mapbox Maps API 支持通过images、TileJSON或者平滑的嵌入式页面�
 GET /v4/{map_id}/{zoom}/{x}/{y}{@2x}.{format}
 ```
 
-返回一张栅格瓦片、矢量瓦片或者是指定格式的UTFGrid图。
+以指定的格式返回栅格瓦片、矢量瓦片或UTFGrid。
 
-响应结果是一张指定格式的图片，出于性能考虑，带有`max-age`头部标识值且值为12小时的图像瓦片将在之后的时间传输。The response is an image tile in the specified format. For performance, image tiles are delivered with a `max-age` header value set 12 hours in the future.
+响应结果是一张指定格式的图片，出于性能考虑，*带有`max-age`头部标识值且值为12小时的图像瓦片将在之后的时间传输。*
 
 URL 参数 | 描述
 --- | --
-`map_id` | Unique identifier for the tileset 这种格式`username.id`的瓦片数据集的唯一标识。若要组成多个瓦片数据集，请使用分号分隔参数且最多有15个`map_id`。
+`map_id` | Unique identifier for the tileset tileset的唯一标识，格式为`username.id`。若要组成多个tileset，请使用逗号分隔参数且最多有15个`map_id`的列表。
 `zoom` | 指定瓦片的缩放层级，具体说明参见[Slippy Map Tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames)。
 `{x}/{y}` | 指定瓦片的列 `{x}` 和 行 `{y}`, 具体说明参见[Slippy Map Tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames)。
-`@2x`<br>(可选) | 请求有更高DPI（分辨率）版本的图像。
-`format` | 指定返回瓦片的格式：<table><tr><td>`.grid.json`</td><td>UTFGrid</td></tr><tr><td>`.mvt`</td><td>矢量切片</td></tr><tr><td>`png`</td><td>全彩PNG</td></tr><tr><td>`png32`</td><td>32索引色位 PNG</td></tr><tr><td>`png64`</td><td>32索引色位 PNG</td></tr><tr><td>`png128`</td><td>128索引色位PNG</td></tr><tr><td>`png256`</td><td>256索引色位PNG</td></tr><tr><td>`jpg70`</td><td>70% 品质 JPG</td></tr><tr><td>`jpg80`</td><td>80% 品质 JPG</td></tr><tr><td>`jpg90`</td><td>90% 品质 JPG</td></tr></table> 为了适应不同的网络带宽环境，任何一种图片请求格式都可以被其他格式替换。在性能优先于图片质量的情况下，`jpg70` 和`png32`这种高压缩率的格式就很有用了。<br><br>**注意：** 带有`mapbox.satellite`的瓦片永远以JPEGs的格式传输，即使URL指定其格式为PNG。PNG这种图片格式不能对`mapbox.satellite`这类的摄影图像进行高效的编码。
+`@2x`<br>(可选) | 请求更高DPI（分辨率）版本的图像。
+`format` | 指定返回瓦片的格式：<table><tr><td>`.grid.json`</td><td>UTFGrid</td></tr><tr><td>`.mvt`</td><td>矢量切片</td></tr><tr><td>`png`</td><td>全彩PNG</td></tr><tr><td>`png32`</td><td>32索引色位 PNG</td></tr><tr><td>`png64`</td><td>32索引色位 PNG</td></tr><tr><td>`png128`</td><td>128索引色位PNG</td></tr><tr><td>`png256`</td><td>256索引色位PNG</td></tr><tr><td>`jpg70`</td><td>70% 品质 JPG</td></tr><tr><td>`jpg80`</td><td>80% 品质 JPG</td></tr><tr><td>`jpg90`</td><td>90% 品质 JPG</td></tr></table>为了适应不同的网络带宽环境调整图像质量，任何一种图片请求格式都可以被其他格式替换。在性能优先于图片质量的情况下，`jpg70` 和`png32`这种高压缩率的格式就很有用了。<br><br>**注意：** 带有`mapbox.satellite`的瓦片永远以JPEGs的格式传输，即使URL指定其格式为PNG。PNG这种图片格式不能对`mapbox.satellite`这类的影像图像进行高效的编码。
 
 **请求 style-optimized tiles**
 
@@ -40,7 +40,7 @@ A style-optimized 瓦片请求必要的`style` 查询参数:
 --- | ---
 `style`<br>(可选) |  `style` 参数分成两部分：样式的ID和这个样式最近被编辑的`timestamp`。这个时间戳参数来自于样式JSON的修改属性，Mapbox Studio创造的所有样式都包含这个参数。
 
-**注意:**  未被使用的图层和要素会从优化样式中移除。如果你打算在使用Mapbox GL JS 或者Mapbox mobile SDK时动态改变样式,扩展过滤器和缩放范围不会同时生效，因为已加载样式中任何不可见的数据，同样也不会在这些数据中。
+**注意:**  未被使用的图层和要素会从优化样式中移除。如果你计划在运行时使用Mapbox GL JS 或者Mapbox mobile SDK动态改变样式,扩展过滤器和缩放范围不会同时生效，因为已加载样式中任何不可见的数据，同样也不会在这些数据中。
 
 #### 请求示例
 
@@ -97,7 +97,7 @@ URL 参数 | 描述
 `map_id` | 瓦片数据集的唯一标识，格式为`username.id`。
 `options`<br /> (可选) | 地图包含的控制和操作，用逗号分隔：<br><ul><li>`zoomwheel`: 允许鼠标滚轮触发地图缩放</li><li>`zoompan`: 允许地图缩放和平移控制</li><li>`geocoder`: 对产生的slippy map添加地理编码管理</li><li>`share`: 添加一个分享管理</li></ul>
 
-获取页面slippy map的请求，以后会精简成添加一个可选的参数`hash`：
+通过添加可选的`hash`参数，可以进一步细化页面 slippy map的请求：
 
 查询参数 | 描述
 --- | ---
@@ -140,17 +140,17 @@ curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/zoomwheel,zoompan,geoco
 GET /v4/{map_id}.json
 ```
 
-返回瓦片数据集的[TileJSON](https://github.com/mapbox/tilejson-spec/) metadata。TileJSON 对象描述了地图上的一些资源，比如瓦片数据、点位和UTFGrid，以及地图的名称、描述信息和中心点。 
+为tileset返回[TileJSON](https://github.com/mapbox/tilejson-spec/) metadata。TileJSON 对象描述了地图上的一些资源，比如瓦片数据、标注和UTFGrid，以及地图的名称、描述信息和中心点。 
 
 URL 参数 | 描述
 --- | ---
-`map_id` | 瓦片数据集的唯一标识，格式为`username.id`。
+`map_id` | tileset的唯一标识，格式为`username.id`。
 
-这个端点可以进一步的自定义成一个可选的参数`secure`。
+可以使用可选的`secure`参数进一步自定义这个端点：
 
 查询 参数 | 描述
 --- | ---
-`secure`<br /> (可选) | 在默认情况下, 所获取的TileJSON内部的资源URLs（例如在`"tiles"`数组中）将使用HTTP协议。在请求中包含这个查询参数，以接收HTTPS资源url。Include this query parameter in your request to receive HTTPS resource URLs instead.
+`secure`<br /> (可选) | 默认情况下, 所获取的TileJSON的资源URLs（例如在`"tiles"`数组中的资源URLs）将使用HTTP协议。在请求中包含这个查询参数，以接收HTTPS资源URLs。
 
 #### 请求示例
 
@@ -218,14 +218,14 @@ curl "https://api.mapbox.com/v4/mapbox.satellite.json?secure&access_token={your_
 GET /v4/marker/{name}-{label}+{color}{@2x}.png
 ```
 
-请求一个单独的点标注，没有相应的背景地图。Request a single marker image without an accompanying background map.
+请求一个单独的点标注，没有相应的背景地图。
 
 URL 参数 | 描述
 --- | ---
 `name` | 点标注的形状和大小Marker shape and size. 选项有`pin-s` 和 `pin-l`.
 `label`<br /> (可选) | 符合 [Maki v0.5.0](https://github.com/mapbox/maki/blob/v0.5.0/_includes/maki.json) 格式的`icon` 值. 选项有`a`到`z`，`0`到`99`的数字标签，或者可用的Maki图标。 如果请求对象是字母，只会以大写的形式呈现。
 `color`<br /> (可选) | A 3- or 6-数字十六进制颜色编码，默认颜色是灰色。
-`@2x`<br /> (可选) | 包括请求一个高DPI版本的图像。
+`@2x`<br /> (可选) | 请求一个高DPI版本的图像。
 
 #### 请求示例
 
@@ -271,7 +271,7 @@ MBSnapshot *snapshot = [[MBSnapshot alloc] initWithOptions:options accessToken:@
 // `image` 在iOS、watchOS、tvOS系统上是`UIImage`，在macOS系统上是`NSImage`。
 self.imageView.image = snapshot.image;
 
-// 或者，传递一个完成处理器，以便在主线程上异步运行。
+// 或者传递一个完成处理器，以便在主线程上异步运行。
 [snapshot imageWithCompletionHandler:^(UIImage * _Nullable image, NSError * _Nullable error) {
     self.imageView.image = image;
 }];
