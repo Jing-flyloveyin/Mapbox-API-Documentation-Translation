@@ -911,10 +911,10 @@ A route step object contains a nested **banner instruction object** if the optio
 --- | ---
 `text` | 包含应显示的所有文本的字符串。
 `type` | 操作类型。可以与`modifier` (和`degrees`，如果有环岛）一起使用，用于图标显示。可能的值：`turn`，`merge`，`depart`，`arrive`，`fork`，`off ramp`和`roundabout`。
-`modifier`<br>（可选） | The modifier for the maneuver. 可以与`type`（和`degrees`，如果有环岛）一起使用，用于图标显示。 <table><tr><th>可能的值</th><th>说明</th></tr><tr><td>`uturn`</td><td>掉头</td></tr><tr><td>`sharp right`</td><td>右急转弯</td></tr><tr><td>`right`</td><td>正常右转弯t</td></tr><tr><td>`slight right`</td><td>稍向右转</td></tr><tr><td>`straight`</td><td>方向不变</td></tr><tr><td>`slight left`</td><td>稍向左转</td></tr><tr><td>`left`</td><td>正常左转弯</td></tr><tr><td>`sharp left`</td><td>左急转弯</td></tr></table>
-`degrees`<br>（可选）| The degrees at which you will be exiting a roundabout, assuming `180` indicates going straight through the roundabout.
-`driving_side`<br>（可选） | A string representing which side the of the street people drive on in that location. Can be `left` or `right`.
-`components` | Objects that, together, make up what should be displayed in the banner. Includes additional information intended to be used to aid in visual layout. A component can contain the following properties:
+`modifier`<br>（可选） | The modifier for the maneuver. 可以与`type`（和`degrees`，如果有环岛）一起使用，用于图标显示。 <table><tr><th>可能的值</th><th>说明</th></tr><tr><td>`uturn`</td><td>掉头</td></tr><tr><td>`sharp right`</td><td>右急转弯</td></tr><tr><td>`right`</td><td>正常右转弯</td></tr><tr><td>`slight right`</td><td>稍向右转</td></tr><tr><td>`straight`</td><td>方向不变</td></tr><tr><td>`slight left`</td><td>稍向左转</td></tr><tr><td>`left`</td><td>正常左转弯</td></tr><tr><td>`sharp left`</td><td>左急转弯</td></tr></table>
+`degrees`<br>（可选）| 离开环岛时的度数，假设`180`表示直走通过环岛。
+`driving_side`<br>（可选） | 字符串，表示行驶在道路的哪一侧。可以是`left`或者`right`。
+`components` | 与对象一起组成标题。包括辅助可视化排版其他信息。它包括以下属性：
 
 `components` | 说明
 --- | ---
