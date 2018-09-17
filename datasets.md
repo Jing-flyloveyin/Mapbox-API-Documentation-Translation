@@ -1,17 +1,17 @@
-## Datasets
+## 数据集
 
-A dataset is an editable collection of [GeoJSON features](https://tools.ietf.org/html/rfc7946). The Datasets API offers persistent storage for custom geographic data. It supports reading, creating, updating, and removing features from a dataset. To serve your geographic data at scale, convert your dataset into a tileset using [the Uploads API](https://www.mapbox.com/api-documentation/#create-an-upload).
+数据集（Dataset）是一个包含许多[GeoJSON features](https://tools.ietf.org/html/rfc7946)的数组。数据集API提供了自定义地理数据的持久存储。 它支持从数据集中读取，创建，更新和删除功能。 如想要更好的大规模投放地理数据在不同比例尺，请使用[上传API](https://www.mapbox.com/api-documentation/#create-an-upload)将数据集转换为切片集。
 
-Using the Datasets API involves interacting with two types of resources: **datasets** and **features**. Datasets contain one or more collections of features.
+使用数据集API涉及与两种类型的资源交互：**数据集**和**要素**。数据集包含一个或多个要素集合。
 
-**Restrictions and limits**
+**已知约束和限制**
 
-- The Dataset API is limited on a per dataset basis.
-- The default rate limit is 40 writes and 480 reads per minute.
-- Dataset names are limited to 60 characters, and dataset descriptions are limited to 300 characters.
-- Each feature cannot exceed 1023 KB compressed. Features are compressed server-side using [geobuf](https://github.com/mapbox/geobuf).
+- 数据集API基于每个数据集限制。
+- 默认速率限制为每分钟40次写入和480次读取。
+- 数据集名称限制为60个字符，数据集描述限制为300个字符。
+- 每个功能压缩后不能超过1023KB。使用[geobuf](https://github.com/mapbox/geobuf)在服务器端压缩功能。
 
-If you require a higher rate limit, [contact us](https://www.mapbox.com/contact/).
+如果您需要更高的费率限制，[请与我们联络](https://www.mapbox.com/contact/)。
 
 ```python
 from mapbox import Datasets
@@ -22,23 +22,23 @@ const mbxDatasets = require('@mapbox/mapbox-sdk/services/datasets');
 const datasetsClient = mbxDatasets({ accessToken: '{your_access_token}' });
 ```
 
-### The dataset object
+### 数据集对象
 
-The **dataset** object contains information pertinent to a specific dataset. Each dataset object contains the following properties:
+**数据集**对象包含与特定数据集相关的信息。每个数据集对象包含以下属性：
 
-Property | Description
+属性 | 描述
 --- | ---
-`owner` | The username of the dataset owner.
-`id` | The ID for an existing dataset.
-`created` | A timestamp indicating when the dataset was created.
-`modified` | A timestamp indicating when the dataset was last modified.
-`bounds` | The extent of features in the dataset in the format [`west`, `south`, `east`, `north`].
-`features` | The number of features in the dataset.
-`size` | The size of the dataset in bytes.
-`name`<br /> (optional) | The name of the dataset.
-`description`<br /> (optional) | A description of the dataset.
+`owner` | 数据集所有者的用户名。
+`id` | 现有数据集的ID。
+`created` | 指示何时创建数据集的时间戳。
+`modified` | 指示上次修改数据集的时间戳。
+`bounds` | 格式中数据集中要素的范围[`west`, `south`, `east`, `north`]。
+`features` | 数据集中的要素数。
+`size` | 数据集的大小（以字节为单位）。
+`name`<br /> (可选) | 数据集的名称。
+`description`<br /> (可选) | 数据集的描述。
 
-#### The dataset object
+#### 数据集对象
 
 ```json
 {
@@ -54,19 +54,20 @@ Property | Description
 }
 ```
 
-### List datasets
+### 数据集对象
 
 ```endpoint
 GET /datasets/v1/{username} datasets:list
 ```
 
-List all the datasets that belong to a particular account.
+列出属于特定帐户的所有数据集。
 
-URL parameters | Description
+
+URL 参数| 描述
 --- | ---
-`username` | The username of the account for which to list datasets.
+`username` | 新数据集所属的帐户的用户名。
 
-#### Example request
+#### 示例请求
 
 ```curl
 $ curl "https://api.mapbox.com/datasets/v1/{username}?access_token={your_access_token}"
@@ -97,18 +98,18 @@ datasets.list()
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 使用Mapbox Java SDK无法访问此API
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 无法使用Mapbox Objective-C库访问此API
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 使用Mapbox Swift库无法访问此API
 ```
 
-#### Example response
+#### 示例响应
 
 ```json
 [
@@ -137,19 +138,19 @@ datasets.list()
 ]
 ```
 
-### Create dataset
+### 创建数据集
 
 ```endpoint
 POST /datasets/v1/{username} datasets:write
 ```
 
-Create a new, empty dataset.
+创建一个新的空数据集。
 
-URL parameters | Description
+URL 参数| 描述
 --- | ---
-`username` | The username of the account to which the new dataset belongs.
+`username` | 新数据集所属的帐户的用户名。
 
-#### Example request
+#### 示例请求
 
 ```curl
 curl -X POST "https://api.mapbox.com/datasets/v1/{username}?access_token={your_access_token}" \
@@ -178,18 +179,18 @@ datasets.create(name='example', description='An example dataset')
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 使用Mapbox Java SDK无法访问此API
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 无法使用Mapbox Objective-C库访问此API
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 使用Mapbox Swift库无法访问此API
 ```
 
-#### Example request body
+#### 示例请求主体
 
 ```json
 {
@@ -198,7 +199,7 @@ datasets.create(name='example', description='An example dataset')
 }
 ```
 
-#### Example response
+#### 示例响应
 
 ```json
 {
@@ -214,20 +215,20 @@ datasets.create(name='example', description='An example dataset')
 }
 ```
 
-### Retrieve a dataset
+### 检索数据集
 
 ```endpoint
 GET /datasets/v1/{username}/{dataset_id} datasets:read
 ```
+检索有关单个现有数据集的信息。
 
-Retrieve information about a single existing dataset.
 
-URL parameters | Description
+URL 参数| 描述
 --- | ---
-`username` | The username of the account to which the dataset belongs.
-`dataset_id` | The ID of the dataset to be retrieved.
+`username` | 数据集所属帐户的用户名。
+`dataset_id` | 要检索的数据集的ID。
 
-#### Example request
+#### 示例请求
 
 ```curl
 curl "https://api.mapbox.com/datasets/v1/{username}/{dataset_id}?access_token={your_access_token}"
@@ -253,18 +254,18 @@ datasetsClient
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 使用Mapbox Java SDK无法访问此API
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 无法使用Mapbox Objective-C库访问此API
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 使用Mapbox Swift库无法访问此API
 ```
 
-#### Example response
+#### 示例响应
 
 ```json
 {
@@ -280,20 +281,20 @@ datasetsClient
 }
 ```
 
-### Update a dataset
+### 更新数据集
 
 ```endpoint
 PATCH /datasets/v1/{username}/{dataset_id} datasets:write
 ```
 
-Update the properties of a specific dataset. The request body must be valid JSON.
+更新特定数据集的属性。请求正文必须是有效的JSON。
 
-URL parameters | Description
+URL 参数| 描述
 --- | ---
-`username` | The username of the account to which the dataset belongs.
-`dataset_id` | The ID of the dataset to be updated.
+`username` | 数据集所属帐户的用户名。
+`dataset_id` | 要更新的数据集的ID。
 
-#### Example request
+#### 示例请求
 
 ```curl
 curl -X PATCH "https://api.mapbox.com/datasets/v1/{username}/{dataset_id}?access_token={your_access_token}" \
@@ -325,18 +326,18 @@ datasetsClient
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 使用Mapbox Java SDK无法访问此API
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 无法使用Mapbox Objective-C库访问此API
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 使用Mapbox Swift库无法访问此API
 ```
 
-#### Example request body
+#### 示例请求主体
 
 ```json
 {
@@ -345,7 +346,7 @@ datasetsClient
 }
 ```
 
-#### Example response
+#### 示例响应
 
 ```json
 {
@@ -361,20 +362,20 @@ datasetsClient
 }
 ```
 
-### Delete a dataset
+### 删除数据集
 
 ```endpoint
 DELETE /datasets/v1/{username}/{dataset_id} datasets:write
 ```
 
-Delete a specific dataset. All the features contained in the dataset will be deleted too.
+删除特定数据集。数据集中包含的所有功能也将被删除。
 
-URL parameters | Description
+URL 参数| 描述
 --- | ---
-`username` | The username of the account to which the dataset belongs.
-`dataset_id` | The ID of the dataset to be deleted.
+`username` | 数据集所属帐户的用户名。
+`dataset_id` | 要更新的数据集的ID。
 
-#### Example request
+#### 示例请求
 
 ```curl
 curl -X DELETE "https://api.mapbox.com/datasets/v1/{username}/{dataset_id}?access_token={your_access_token}"
@@ -395,31 +396,31 @@ datasetsClient
   })
   .send()
   .then(response => {
-    // Dataset is successfully deleted.
+    // 数据集成功删除
   });
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 使用Mapbox Java SDK无法访问此API
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 无法使用Mapbox Objective-C库访问此API
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 使用Mapbox Swift库无法访问此API
 ```
 
-#### Example response
+#### 示例响应
 
 > HTTP 204
 
-### The feature object
+### 要素对象
 
-A **feature** is a GeoJSON Feature object representing a feature in the dataset. GeometryCollections and null geometries are not supported. For a full list of GeoJSON Feature properties, see the [GeoJSON specification](https://tools.ietf.org/html/rfc7946#section-3.2).
+**要素**是表示数据集中的特征的GeoJSON Features对象。不支持几何集和空的几何。有关GeoJSON Features属性的完整列表，请参阅[GeoJSON规范](https://tools.ietf.org/html/rfc7946#section-3.2)。
 
-#### The feature object
+#### 要素对象
 
 ```json
 {
@@ -435,27 +436,27 @@ A **feature** is a GeoJSON Feature object representing a feature in the dataset.
 }
 ```
 
-### List features
+### 列出要素
 
 ```endpoint
 GET /datasets/v1/{username}/{dataset_id}/features datasets:read
 ```
 
-List all the features in a dataset. The response body will be a GeoJSON FeatureCollection.
+列出数据集中的所有功能。响应主体将是GeoJSON FeaturesCollection。
 
-This endpoint supports [pagination](#pagination) so that you can list many features.
+此端点支持[分页](https://www.mapbox.com/api-documentation/#pagination)，以便您可以列出许多要素。
 
-URL parameters | Description
+URL 参数 | 描述
 --- | ---
-`username` | The username of the account to which the dataset belongs.
-`dataset_id` | The ID of the dataset for which to retrieve features.
+`username` | 数据集所属帐户的用户名。
+`dataset_id` | 要检索功能的数据集的ID。
 
-Query parameters | Description
+查询参数 | 描述
 --- | ---
-`limit`<br> (optional) | The maximum number of features to return, from `1` to `100`. The default is `10`.
-`start`<br> (optional) | The ID of the feature after which to start the listing. See the [pagination](#pagination) section for details.
+`limit`<br> (可选) | 要返回的最大要素数，从“1”到“100”。默认值为“10”。
+`start`<br> (可选) | 要在其后开始列表的功能的ID。有关详细信息，请参阅[pagination]（#pagination）部分。
 
-#### Example request
+#### 示例请求
 
 ```curl
 curl "https://api.mapbox.com/datasets/v1/{username}/{dataset_id}/features?access_token={your_access_token}"
@@ -487,18 +488,18 @@ datasetsClient
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 使用Mapbox Java SDK无法访问此API
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 无法使用Mapbox Objective-C库访问此API
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 使用Mapbox Swift库无法访问此API
 ```
 
-#### Example response
+#### 示例响应
 
 ```json
 {
@@ -535,26 +536,27 @@ datasetsClient
 }
 ```
 
-### Insert or update a feature
+### 插入或更新功能
 
 ```endpoint
 PUT /datasets/v1/{username}/{dataset_id}/features/{feature_id} datasets:write
 ```
 
-Insert or update a feature in a specified dataset:
+插入或更新指定数据集中的要素:
 
-- **Insert**: If a feature with the given `feature_id` does not already exist, a new feature will be created.
-- **Update**: If a feature with the given `feature_id` does exist already, it will be replaced.
+-  **插入**：如果尚未存在具有给定`feature_id`的要素，则将创建新要素。
+-  **更新**：如果已经存在具有给定`feature_id`的特征，则将替换它。
 
-If you are inserting a feature, you must add the feature as the body of the `PUT` request. This should be one individual GeoJSON feature, not a GeoJSON FeatureCollection. If the GeoJSON feature has a top-level `id` property, it must match the `feature_id` you use in the URL endpoint.
+如果要插入要素，则必须将该要素添加“PUT”作为请求的主体。这应该是一个单独的GeoJSON功能，而不是GeoJSON FeaturesCollection。如果GeoJSON功能具有顶置级别的`id`属性，则它必须与您在URL端点中使用的`feature_id`相匹配。
 
-URL parameters | Description
+
+URL 参数 | 描述
 --- | ---
-`username` | The username of the account to which the dataset belongs.
-`dataset_id` | The ID of the dataset for which to insert or update features.
-`feature_id` | The ID of the feature to be inserted or updated.
+`username` | 数据集所属帐户的用户名。
+`dataset_id` | 要插入或更新要素的数据集的ID。
+`feature_id` | 要插入或更新的功能的ID。
 
-#### Example request
+#### 示例请求
 
 ```curl
 curl "https://api.mapbox.com/datasets/v1/{username}/{dataset_id}/features/{feature_id}?access_token={your_access_token}" \
@@ -595,18 +597,18 @@ datasets.update_feature('dataset-id', 'feature-id', feature)
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 使用Mapbox Java SDK无法访问此API
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 无法使用Mapbox Objective-C库访问此API
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 使用Mapbox Swift库无法访问此API
 ```
 
-#### Example request body
+#### 示例请求主体
 
 ```json
 {
@@ -630,7 +632,7 @@ datasets.update_feature('dataset-id', 'feature-id', feature)
 }
 ```
 
-#### Example response
+#### 示例响应
 
 ```json
 {
@@ -654,21 +656,21 @@ datasets.update_feature('dataset-id', 'feature-id', feature)
 }
 ```
 
-### Retrieve a feature
+### 检索功能
 
 ```endpoint
 GET /datasets/v1/{username}/{dataset_id}/features/{feature_id} datasets:read
 ```
 
-Retrieve a specific feature from a dataset.
+从数据集中检索特定要素。
 
-URL parameters | Description
+URL 参数 | 描述
 --- | ---
-`username` | The username of the account to which the dataset belongs.
-`dataset_id` | The ID of the dataset from which to retrieve a feature.
-`feature_id` | The ID of the feature to be retrieved.
+`username` | 数据集所属帐户的用户名。
+`dataset_id` | 要插入或更新要素的数据集的ID。
+`feature_id` | 要插入或更新的功能的ID。
 
-#### Example request
+#### 示例请求
 
 ```curl
 curl "https://api.mapbox.com/datasets/v1/{username}/{dataset_id}/features/{feature_id}?access_token={your_access_token}"
@@ -695,18 +697,18 @@ datasets.read_feature(dataset_id, '2').json()
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 使用Mapbox Java SDK无法访问此API
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 无法使用Mapbox Objective-C库访问此API
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 使用Mapbox Swift库无法访问此API
 ```
 
-#### Example response
+#### 示例响应
 
 ```json
 {
@@ -730,21 +732,21 @@ datasets.read_feature(dataset_id, '2').json()
 }
 ```
 
-### Delete a feature
+### 删除一个要素
 
 ```endpoint
 DELETE /datasets/v1/{username}/{dataset_id}/features/{feature_id} datasets:write
 ```
 
-Remove a specific feature from a dataset.
+从数据集中删除特定要素。
 
-URL parameters | Description
+URL 参数 | 描述
 --- | ---
-`username` | The username of the account to which the dataset belongs.
-`dataset_id` | The ID of the dataset from which to delete a feature.
-`feature_id` | The ID of the feature to be deleted.
+`username` | 数据集所属帐户的用户名。
+`dataset_id` | 要插入或更新要素的数据集的ID。
+`feature_id` | 要插入或更新的功能的ID。
 
-#### Example request
+#### 示例请求
 
 ```curl
 curl -X DELETE "https://api.mapbox.com/datasets/v1/{username}/{dataset_id}/features/{feature_id}?access_token={your_access_token}"
@@ -771,17 +773,17 @@ mapbox dataset delete-feature dataset-id feature-id
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 使用Mapbox Java SDK无法访问此API
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 无法使用Mapbox Objective-C库访问此API
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 使用Mapbox Swift库无法访问此API
 ```
 
-#### Example response
+#### 示例响应
 
 > HTTP 204
