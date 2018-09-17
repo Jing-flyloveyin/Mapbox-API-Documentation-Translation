@@ -1,35 +1,35 @@
 ## Uploads
 
-The Mapbox Uploads API transforms geographic data into tilesets that can be used with maps and geographic applications. Given a wide variety of geospatial formats, it normalizes projections and generates tiles at multiple zoom levels to make data viewable on the web.
+Mapbox Uploads API将地理数据转换为可与地图和地理应用一起使用的瓦片。鉴于各种地理空间格式，它对投影进行标准化并生成多种缩放等级的切片以便在网络上查看数据。
 
-The upload workflow follows these steps:
+上传工作流程遵循以下步骤：
 
-1. Request temporary S3 credentials that allow you to stage the file. _Jump to the [Retrieve S3 credentials  section](#retrieve-s3-credentials)._
-1. Use an S3 client to upload the file to Mapbox's S3 staging bucket using these credentials. _Learn more about this process in the [Upload to Mapbox using cURL tutorial](https://www.mapbox.com/help/upload-curl/)._
-1. Create an upload using the staged file's URL. _Jump to the [Create an upload section](#create-an-upload)._
-1. Retrieve the upload's status as it is being processed into a tileset. _Jump to the [Retrieve upload status  section](#retrieve-upload-status)._
+1. 请求允许您暂存文件的临时S3凭据。_跳转至 [取回S3凭据部分](#retrieve-s3-credentials) 。_
+1. 使用S3客户端通过这些凭据来上传文件至Mapbox的S3 staging bucket。_通过 [使用cURL教程上传至Mapbox](https://www.mapbox.com/help/upload-curl/) 了解此过程的更多信息。_
+1. 使用暂存文件的URL创建上传。_跳转至 [创建上传部分](#create-an-upload) 。_
+1. 在其正被处理为一个瓦片的同时检索上传的状态。_跳转至 [检索上传状态部分](#retrieve-upload-status) 。_
 
-**Note:** This documentation discusses how to interact with the Mapbox Uploads API programatically. For a step-by-step guide on how to use the Uploads API to stage a file to Amazon S3 and create an upload, use the [Upload to Mapbox using cURL tutorial](https://www.mapbox.com/help/upload-curl/).
+**注意：** 该文档讨论了如何以编程方式与Mapbox Uploads API进行交互。有关如何使用Uploads API将文件转存至Amazon S3并创建上载的分步指南，使用 [使用cURL教程上传至Mapbox](https://www.mapbox.com/help/upload-curl/)。
 
-**Restrictions and limits**
+**限制**
 
-- Tileset names are limited to 64 characters.
-- The Uploads API supports different file sizes for various file types:
+- 瓦片文件名限制为64个字符。
+- Uploads API支持各种文件类型的不同文件大小：
 
-File type | Size limit
+文件类型 | 大小限制
 --- | ---
-TIFF and GeoTIFF | 10 GB
+TIFF 和 GeoTIFF | 10 GB
 MBTiles | 25 GB
 GeoJSON | 1 GB
 CSV | 1 GB
 KML | 260 MB
 GPX | 260 MB
-Shapefile (zipped) | 260 MB
+Shapefile（压缩） | 260 MB
 Mapbox Dataset | 1 GB
 
-**Error messages**
+**错误信息**
 
-To see a list of possible upload errors, visit the [Uploads errors page](https://www.mapbox.com/help/uploads/#errors).
+查看可能的上传错误列表，访问 [上传错误页面](https://www.mapbox.com/help/uploads/#errors) 。
 
 ```python
 from mapbox import Uploader
@@ -46,15 +46,14 @@ const uploadsClient = mbxUploads({ accessToken: '{your_access_token}' });
 POST /uploads/v1/{username}/credentials uploads:write
 ```
 
-Mapbox provides an Amazon S3 bucket to stage your file while your upload is processed. This endpoint allows you to retrieve temporary S3 credentials to use during the staging process.
+Mapbox提供了一个Amazon S3 bucket，用于在处理上传时暂存文件。此端点允许您检索临时S3凭据以在暂存过程中使用。
 
-**Note:** This step is necessary before you can stage a file in the Amazon S3 bucket provided by Mapbox. All uploads must be staged in this Amazon S3 bucket before being uploaded to your Mapbox account. To learn more about how to stage an upload to Amazon S3, read the [Upload to Mapbox using cURL tutorial](https://www.mapbox.com/help/upload-curl/#stage-your-file-on-amazon-s3).
+**注意：** 在您可以在Mapbox提供的Amazon S3 bucket中暂存文件之前，必须执行此步骤。所有上传必须在此Amazon S3 bucket中暂存，然后才能上传到您的Mapbox帐户。要了解有关如何上传到Amazon S3的更多信息，查阅 [使用cURL教程上传至Mapbox](https://www.mapbox.com/help/upload-curl/#stage-your-file-on-amazon-s3) 。
 
-URL parameters | Description
+URL 参数 | 描述
 --- | ---
-`username` | The username of the account to which you are uploading a tileset.
-
-#### Example request
+`username` | 要上传瓦片的帐户的用户名。
+#### 请求示例
 
 ```curl
 curl -X POST "https://api.mapbox.com/uploads/v1/{username}/credentials?access_token={your_access_token}"
@@ -96,22 +95,22 @@ with open('data.geojson', 'r') as src:
 ```
 
 ```bash
-# AWS cannot be accessed through Mapbox CLI
+# 无法通过Mapbox CLI访问AWS
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 无法使用Mapbox Java SDK访问此API
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 无法使用Mapbox Objective-C库访问此API
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 无法使用Mapbox Swift库访问此API
 ```
 
-#### Example response
+#### 响应示例
 
 ```json
 {
@@ -124,22 +123,22 @@ with open('data.geojson', 'r') as src:
 }
 ```
 
-**Response body**
+**响应主体**
 
-The response body is a JSON object that contains the following properties:
+响应主体是一个包含以下属性的JSON对象：
 
-Property | Description
+属性 | 描述
 ---- | -----------
-`accessKeyId` | AWS Access Key ID
-`bucket` | S3 bucket name
-`key` | The unique key for data to be staged
-`secretAccessKey` | AWS Secret Access Key
-`sessionToken` | A temporary security token
-`url` | The destination URL of the file
+`accessKeyId` | AWS访问密钥ID
+`bucket` | S3 bucket名称
+`key` | 要暂存数据的唯一键
+`secretAccessKey` | AWS秘密访问密钥
+`sessionToken` | 临时安全令牌
+`url` | 文件的目标URL
 
-Use these credentials to store your data in the provided bucket with the provided key using the [AWS CLI](http://docs.aws.amazon.com/cli/latest/reference/s3/index.html) or AWS SDK of your choice. The bucket is located in AWS region `us-east-1`.
+使用这些凭据通过 [AWS CLI](http://docs.aws.amazon.com/cli/latest/reference/s3/index.html) 将提供的密钥存储在提供的存储桶中或您选择AWS SDK。存储桶位于AWS区域 `us-east-1`.
 
-**Example AWS CLI usage**
+**AWS CLI使用示例**
 
 ```
 $ export AWS_ACCESS_KEY_ID={accessKeyId}
@@ -154,27 +153,27 @@ $ aws s3 cp /path/to/file s3://{bucket}/{key} --region us-east-1
 POST /uploads/v1/{username} uploads:write
 ```
 
-After you have used the temporary S3 credentials to transfer your file to Mapbox's staging bucket, you can trigger the generation of a tileset using the file's URL and a destination tileset ID.
+使用临时S3凭据将文件传输到Mapbox的临时存储桶后，可以使用文件的URL和目标瓦片ID触发瓦片的生成。
 
-Uploaded files _must_ be in the bucket provided by Mapbox. Requests for resources from other S3 buckets or URLs will fail.
+上传的文件_必须_位于Mapbox提供的存储桶中。来自其他S3存储桶或URL的资源请求将失败。
 
-URL parameters | Description
+URL参数 | 描述
 --- | ---
-`username` | The username of the account to which you are uploading
+`username` | 您要上传的帐户的用户名
 
-**Request body**
+**请求主体**
 
-The request body must be a JSON object that contains the following properties:
+请求主体必须是包含以下属性的JSON对象：
 
-Property | Description
+属性 | 描述
 ---- | ------
-`tileset` | The map ID to create or replace, in the format `username.nameoftileset`. Limited to 32 characters. This character limit does not include the username. The only allowed special characters are `-` and `_`.
-`url` | The HTTPS URL of the S3 object provided in the credential request, or the [dataset ID](https://www.mapbox.com/help/define-dataset-id/) of an existing Mapbox dataset to be uploaded.
-`name`<br /> (optional) | The name of the tileset. Limited to 64 characters.
+`tileset` | 要创建或替换的地图ID，格式`username.nameoftileset`。限制为32个字符。此字符限制不包括用户名。 唯一允许的特殊字符是`-`和`_`。
+`url` | 凭据请求中提供的S3对象的HTTPS URL，或要上载的现有Mapbox数据集的[数据集ID](https://www.mapbox.com/help/define-dataset-id/)。
+`name`<br /> （可选） | 瓦片文件名。限制为64个字符。
 
-If you reuse a `tileset` value, this action will replace existing data. Use a random value to make sure that a new tileset is created, or check your existing tilesets first.
+如果重复使用`tileset`值，此操作将替换现有数据。使用随机值确保创建新的瓦片，或首先检查现有的瓦片。
 
-#### Example request
+#### 请求示例
 
 ```curl
 curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -d '{
@@ -184,7 +183,7 @@ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -d
 ```
 
 ```javascript
-// Response from a call to createUploadCredentials
+// 调用createUploadCredentials的响应
 const credentials = {
   accessKeyId: '{accessKeyId}',
   bucket: '{bucket}',
@@ -207,8 +206,8 @@ uploadsClient
 
 ```python
 with open('data.geojson', 'r') as src:
-    # Acquisition of credentials, staging of data, and upload
-    # finalization is done by a single method in the Python SDK.
+    # 获取凭证，暂存数据和上传
+    # 最终化由Python SDK中的单个方法完成。
     upload_resp = service.upload(src, '{username}.data')
 ```
 
@@ -217,18 +216,18 @@ mapbox upload username.data data.geojson
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 无法使用Mapbox Java SDK访问此API
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 无法使用Mapbox Objective-C库访问此API
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 无法使用Mapbox Swift库访问此API
 ```
 
-#### Example request body to upload a Mapbox dataset (AWS S3 bucket not required)
+#### 上传Mapbox数据集的请求示例正文（不需要AWS S3存储桶）
 
 ```json
 {
@@ -238,7 +237,7 @@ mapbox upload username.data data.geojson
 }
 ```
 
-#### Example response
+#### 响应示例
 
 ```json
 {
