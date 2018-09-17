@@ -50,7 +50,7 @@ Mapbox提供了一个Amazon S3 bucket，用于在处理上传时暂存文件。�
 
 **注意：** 在您可以在Mapbox提供的Amazon S3 bucket中暂存文件之前，必须执行此步骤。所有上传必须在此Amazon S3 bucket中暂存，然后才能上传到您的Mapbox帐户。要了解有关如何上传到Amazon S3的更多信息，查阅 [使用cURL教程上传至Mapbox](https://www.mapbox.com/help/upload-curl/#stage-your-file-on-amazon-s3) 。
 
-URL参数 | 描述
+URL 参数 | 描述
 --- | ---
 `username` | 要上传瓦片的帐户的用户名。
 #### 请求示例
