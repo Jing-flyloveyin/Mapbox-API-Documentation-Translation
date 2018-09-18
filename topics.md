@@ -102,33 +102,33 @@ XDomainRequest, like [corslite](https://github.com/mapbox/corslite/).
 ## Retina
 
 ```http
-# a 400x200 static map
+# 一张400x200静态地图
 https://api.mapbox.com/v4/mapbox.dark/-76.9,38.9,5/400x200.png?access_token={your_access_token}
 
-# the same static map for Retina
-# displays: this image will be 800x400
-# pixels, but show the same content
-# and look the same when scaled down
+# 相同的静态地图Retina
+# 显示：这个图像将是800x400
+# 像素，但是显示相同的内容
+# 比例缩小后看起来也一样
 https://api.mapbox.com/v4/mapbox.dark/-76.9,38.9,5/400x200@2x.png?access_token={your_access_token}
 ```
 
-Mapbox supports Retina image output on all APIs that serve images.
-Add `@2x` before the file extension on a URL to request an image at
-double scale. For instance, a map tile that is 256×256 pixels will be
-512×512 pixels with `@2x`, but show the same content. When displayed
-on a page, the image will be still sized to 256×256 pixels, but
-4 pixels of the original will represent 1 pixel in screen units.
+Mapbox支持所有提供图像的APIs上的Retina图像输出。
+在URL上的文件扩展名之前添加`@2x`，以双倍比例请求图像。
+例如， 一张带有`@2x`的256×256像素的地图瓦片将是
+512×512像素，但显示相同的内容。
+当在页面上显示时，图像的大小仍将为256×256像素，
+但原始的4个像素将以屏幕单元表示1个像素。
 
-The `@2x` part of the URL goes before the entire format, so a URL
-that ends in `.png` would end with `@2x.png` as a Retina image.
+URL的`@2x`部分先于整个格式，
+因此以`.png`结尾的URL将以`@2x.png`作为Retina图像的结尾。
 
-The only assets that are not available at Retina scale are tilesets
-uploaded from TileMill or as MBTiles.
+唯一不能在Retina比例上使用的资源是TileMill上传的tilesets
+或MBTiles。
 
 ## HTTPS
 
-We recommend all access to Mapbox is over HTTPS. Except for the
-Maps API, requests initiated over HTTP are automatically upgraded to HTTPS.
+我们推荐通过HTTPS来访问Mapbox。
+除Maps API外，通过HTTP启动的请求会自动升级为HTTPS。
 
 ## Pagination
 
@@ -136,34 +136,33 @@ Maps API, requests initiated over HTTP are automatically upgraded to HTTPS.
 Link: <https://api.mapbox.com/uploads/v1/1454024795582?start=cijywvxlm004rtikohhqf99jv&limit=100>; rel="next"
 ```
 
-Pagination lets you list many objects from an API by using more than one
-request. After receiving a page of objects, the next page can be requested using
-the `next` link relation in [`Link` header](http://tools.ietf.org/html/rfc5988)
-of the response. This process can be repeated until the server sends a response
-without a `Link` header or without a `next` link relation, which signals the end
-of the collection.
+分页允许您使用多个请求从API列出许多对象。
+在接收到一页对象之后，
+可以使用响应的 [`Link` header](http://tools.ietf.org/html/rfc5988) 中的 `下一个` 链接关系来请求下一页。
+可以重复此过程，
+直到服务器发送没有`链接`头或没有`下一个`链接关系的响应，
+这表示集合的结束。
 
-Your application *must* use the `Link` header for pagination instead of
-constructing your own URLs as the specific URLs used for pagination may change
-at any time. The
+您的应用程序 *必须* 使用`链接`标头进行分页，
+而不是构建您自己的URLs，因为用于分页的特定URLs可能随时更改。
 [Python requests library](http://docs.python-requests.org/en/master/user/advanced/#link-headers),
-and the
+和
 [link-header-parser module for JavaScript](https://github.com/thlorenz/parse-link-header)
-can parse Link headers. Link headers follow the [RFC 5988 specifications](http://tools.ietf.org/html/rfc5988).
+能解析链接头。链接头符合 [RFC 5988 specifications](http://tools.ietf.org/html/rfc5988) 规范。
 
-Pagination is supported on the [Datasets](#datasets), [Uploads](#uploads), [Styles](#styles), [Tilesets](#tilesets), and [Tokens](#tokens) list endpoints.
+在[Datasets](#datasets), [Uploads](#uploads), [Styles](#styles), [Tilesets](#tilesets), 和 [Tokens](#tokens) 列表终端点上支持分页。
 
-| Query Parameter | Description |
+| 查询参数 | 说明 |
 | --- | --- |
-| `limit` | The *maximum* number of objects to return. The API will attempt to return the requested number of objects, but receiving fewer objects does not necessarily signal the end of the collection. Receiving a response with no `Link` header or no `next` link relation is the only way to determine when you are at the end of a collection. |
+| `限制` | 要返回对象的*最大*数。API将尝试返回对象的请求数，但是接收更少的对象并不一定意味着集合的结束。接收没有`链接`头或没有`下一个`链接关系的响应是确定何时处于集合末尾的唯一方法。 |
 
 ## Dates
 
-Most dates and times returned by the API are represented
-in [RFC 3339](https://tools.ietf.org/html/rfc3339) format, which can be
-parsed by the [JavaScript Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
-constructor, the [Python arrow library](https://github.com/crsmithdev/arrow),
-and many other libraries and languages.
+API返回的大多数日期和时间都
+以[RFC 3339](https://tools.ietf.org/html/rfc3339) 格式表示，可以通过
+[JavaScript Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
+构造函数，[Python arrow library](https://github.com/crsmithdev/arrow)，
+以及许多其他库和语言进行解析。 
 
 ```javascript
 var parsedDate = new Date('2014-11-21T19:41:10.000Z');
@@ -197,8 +196,8 @@ rfc3339DateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
 let date = rfc3339DateFormatter.date(from: "2014-11-21T19:41:10.000Z")
 ```
 
-The only exception to this rule is the [Retrieve TileJSON metadata](#retrieve-tilejson-metadata)
-endpoint that returns `created` and `modified` properties as [Unix time](https://en.wikipedia.org/wiki/Unix_time).
+此规则的唯一例外是 [Retrieve TileJSON metadata](#retrieve-tilejson-metadata)
+终端点，它将`创建`和`修改`的属性作为 [Unix time](https://en.wikipedia.org/wiki/Unix_time) 返回。
 
 ```objc
 @import Foundation;
@@ -214,24 +213,24 @@ let date = Date(timeIntervalSince1970: 1_416_598_870_000)
 
 ## Coordinates
 
-Where geographic coordinates are provided to a Mapbox API, they should be formatted
-in the order `longitude, latitude` and specified as decimal degrees in the WGS84
-coordinate system. This pattern matches existing standards, including GeoJSON and KML.
+如果地理坐标提供给Mapbox API，
+则应按照`经度，纬度`的顺序对其进行格式化，并在WGS84坐标系中指定为十进制度。
+这种模式符合现有标准，包括GeoJSON和KML。
 
-Mapbox APIs use GeoJSON formatting wherever possible to represent
-geospatial data. The Directions, Map Matching, Geocoding, and Datasets APIs
-all return GeoJSON-formatted responses, and the Upload and Map Matching APIs
-accept GeoJSON input.
+Mapbox APIs use GeoJSON formatting wherever possible to represent Mapbox APIs尽可能使用GeoJSON格式来表示
+geospatial data. 地理空间数据。方向，地图匹配，地理编码和数据集APIs The Directions, Map Matching, Geocoding, and Datasets APIs
+都返回GeoJSON格式的响应，all return GeoJSON-formatted responses, and the Upload and Map Matching APIs
+accept GeoJSON input.上传和地图匹配APIs都接受GeoJSON输入。
 
-The only exception to `longitude, latitude` ordering is the polyline format, supported
-in Static (Classic) overlays and Directions responses. When polyline input
-or output is specified, the polyline content should follow the Google Encoded Polyline format,
-which specifies `latitude, longitude` ordering.
+唯一例外的`经度，纬度`顺序是多段线，
+在静态（经典）叠加和路线响应支持。 当指定多段线
+输入或输出时，多段线内容应遵循Google编码多段线格式，
+该格式指定`纬度，经度`顺序。
 
-The Mapbox Swift libraries use the Core Location framework’s
+Mapbox Swift库使用了核心位置框架的
 [`CLLocationCoordinate2D`](https://developer.apple.com/reference/corelocation/cllocationcoordinate2d)
-type to represent geographic coordinates. When initializing a
-`CLLocationCoordinate2D`, always specify the latitude before the longitude.
+类型来表示地理坐标。初始化
+`CLLocationCoordinate2D`时，始终在经度之前指定纬度。
 
 ```objc
 @import CoreLocation;
