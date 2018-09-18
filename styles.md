@@ -560,7 +560,7 @@ URL 参数| 描述
 
 ### 子画面
 
-子画面是Mapbox GL JS和 Mapbox Mobile有效请求和展示图像的方式。 子画面是在“符号”层可用作图表或图样的图像集合。子画面中的图像可为图表、图样或插图。可在子画面中随时添加或删除这些SVG图像。样式API自动收集这些SVG图像并将其渲染成为单张PBG图像以及描述每张图像定位地点的JSON文件。
+子画面是Mapbox GL JS和 Mapbox Mobile有效请求和展示图像的方式。子画面是在“符号”层可用作图表或图样的图像集合。子画面中的图像可为图表、图样或插图。可在子画面中随时添加或删除这些SVG图像。样式API自动收集这些SVG图像并将其渲染成为单张PBG图像以及描述每张图像定位地点的JSON文件。
 
 子画面 JSON 文件确定为  [the Mapbox Style Specification](https://www.mapbox.com/mapbox-gl-style-spec/#sprite)的部分。
 
