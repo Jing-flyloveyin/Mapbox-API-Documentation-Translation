@@ -1,65 +1,47 @@
-## Reading this Documentation
+## 阅读这篇文档
 
-This documentation is structured by API, which is a group of related functionality
-like [Geocoding](#geocoding) or [Uploads](#uploads), and then by endpoint, which
-is a specific method within that API that performs one action and is located
-at a specific URL.
+这篇文档是由如[Geocoding](#geocoding)或[Uploads](#uploads)这样一组相关功能的API和相关服务端点构成，每个服务端点是一个API中用于执行某个操作并位于特定URL的特定方法   
 
-Each endpoint in this documentation is described using several parts:
+本文档中的每个服务端点使用如下几个部分描述:   
 
-* The HTTP method: includes GET, POST, PUT, PATCH, DELETE
-* The path: for instance, `/geocoding/v5/{mode}/{query}.json`
-* URL parameters: these are the parts of the endpoint path wrapped in brackets,
-  like `{mode}` in this example.
-* Query parameters: contained in a table with an _Option_ header, these are added
-  to the query string part of the request.
-* A token scope, if one is required.
+* HTTP方法: 包含GET, POST, PUT, PATCH和DELETE   
+* 路径: 例如`/geocoding/v5/{mode}/{query}.json`   
+* URL参数: 这些参数是服务端点路径中括号括起来的部分,
+  像例子中的`{mode}`.
+* 查询参数: 包含在一个有 _Option_ 请求头的表中, 并且这些参数被添加到请求的查询字符部分.
+* 令牌作用域, 如果在需要一个令牌的情况下.  
 
-All URLs referenced in the documentation have the base path `https://api.mapbox.com`.
-This base path goes _before_ the endpoint path. In this example, you'd
-combine `https://api.mapbox.com` and `/geocoding/v5/{mode}/{query}.json` to get
-the request URL `https://api.mapbox.com/geocoding/v5/{mode}/{query}.json`.
+所有文档中提到的URL有以下基本路径 
+`https://api.mapbox.com`. 
+这个基本路径在服务端点路径之前. 在这个例子中，你需要把 `https://api.mapbox.com`和 `/geocoding/v5/{mode}/{query}.json`组合得到请求的URL `https://api.mapbox.com/geocoding/v5/{mode}/{query}.json`.
 
-For this endpoint, `{mode}` and `{query}` are the URL parameters. In a request,
-you replace their placeholders with real values: for instance, you'd choose
-`mapbox.places` as your mode and `Chester` as your query, and get the URL
-`https://api.mapbox.com/geocoding/v5/mapbox.places/Chester.json`
+在这个服务端点中, `{mode}`和 `{query}`是URL参数. 在一个请求中，你将用真实值去替换对应的占位符: 例如，你应该选择 `mapbox.places`作为你的模式, `Chester`作为你要查询的目标, 并得到这样的URL `https://api.mapbox.com/geocoding/v5/mapbox.places/Chester.json`  
 
-Query parameters are added to the end of the URL with [query string encoding](https://en.wikipedia.org/wiki/Query_string).
-If you wanted to add the `country` query parameter to that Geocoding request, you'd
-the query string `?country=us` to the end of the URL, producing
-`https://api.mapbox.com/geocoding/v5/mapbox.places/Chester.json?country=us`.
+查询参数是用[查询字符串编码](https://en.wikipedia.org/wiki/Query_string)来添加到URL的结尾.如果你想把 `country` 这个请求参数添加到这个Geocoding请求中，你应该把查询字符串 `?country=us`加到URL的结尾, 得到`https://api.mapbox.com/geocoding/v5/mapbox.places/Chester.json?country=us`.  
 
-All endpoints require an access token, which is provided as a query parameter.
-So the final geocoding request you would construct would look like
-`https://api.mapbox.com/geocoding/v5/mapbox.places/Chester.json?country=us&access_token=pk.my-token-value`
-The next section covers how you get and use access tokens.
+所有的服务端点需要一个访问令牌, 这个令牌是作为一个查询参数被提供的.   
+所以最终你要构造的geocoding请求会是这样`https://api.mapbox.com/geocoding/v5/mapbox.places/Chester.json?country=us&access_token=pk.my-token-value`.
+下一章节包括你将如何获得和使用访问令牌.
 
 ```http
 https://api.mapbox.com
 ```
 
-## Access tokens
+## 访问令牌
 
-Access to Mapbox web services requires an [access token](https://mapbox.com/help/define-access-token) that connects API
-requests to your account. The example requests in this documentation don't include
-an access token: you will need to supply one using the `access_token` query
-option or by specifying the token in the SDK or library.
+访问Mapbox的web服务需要一个[访问令牌](https://mapbox.com/help/define-access-token), 这个访问令牌会连接API请求到你的账户. 本文档中的示例请求不包括访问令牌: 你需要使用`access_token`查询选项来提供一个或者在SDK或者库中指定一个令牌.
 
-Your default access token is available on your
-[Account Dashboard](https://www.mapbox.com/account). You can also manage
-and create additional tokens on your [Access tokens page](https://www.mapbox.com/account/access-tokens/) or with the [Tokens API](#tokens).
+在你的[账户面板](https://www.mapbox.com/account)中可以得到默认访问令牌. 你也可以在你的[访问令牌页](https://www.mapbox.com/account/access-tokens/)或者使用[Tokens API](#tokens)管理和创建附加的令牌.
 
-#### Access token example
+#### 访问令牌用例
 
 ```http
 https://api.mapbox.com/{endpoint}?access_token={your_access_token}
 ```
 
-When creating a new access token, you have the option of adding one or more **scopes**.
-Each scope adds a different permission to the token, allowing it to be used to
-access restricted APIs. Throughout the documentation, we specify the scope
-required to access each endpoint.
+当创建一个新的访问令牌时, 您可以选择添加一个或多个**作用域**. 
+每个作用域为令牌添加了不同的权限来用于
+访问受限API. 在整个文档中, 我们指定了访问每个服务端点所必需的作用域.
 
 ## Versioning
 
