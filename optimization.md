@@ -1,59 +1,59 @@
 ## Optimization
 
-The Mapbox Optimization API returns a duration-optimized route between the input coordinates. This is also known as solving the [Traveling Salesperson Problem](https://en.wikipedia.org/wiki/Travelling_salesman_problem). A typical use case for the Optimization API is planning the route for deliveries in a city. You can retrieve a route for car driving, bicycling, and walking.
+Mapbox Optimization API 在输入坐标点之间，返回一个连续优化的路径。这也被称为[Traveling Salesperson Problem](https://en.wikipedia.org/wiki/Travelling_salesman_problem).Optimization API 的一个经典应用是在城市中规划配送路线。你可以为驾车，骑自行车或者步行获得一条路线。
 
-**Restrictions and limits**
+**约束和限制**
 
-- Maximum 12 coordinates per request
-- Maximum 25 distributions per request
-- Maximum 60 requests per minute
+- 一次请求最大 12 坐标点
+- 一次请求最大 25 配送物
+- 每分钟最大 60 请求
 
-For higher volumes, [contact us](https://www.mapbox.com/contact/).
+需要升级, [联系我们](https://www.mapbox.com/contact/).
 
-### Retrieve an optimization
+### 检索优化
 
 ```endpoint
 GET optimized-trips/v1/{profile}/{coordinates}
 ```
 
-A call to this endpoint retrieves a duration-optimized route between input coordinates.
+调用这个端点返回一条在输入坐标点之间，连续优化的路径。
 
 URL parameter | Description
 --- | ---
-`profile` | A Mapbox Directions routing profile ID. <table><tr><th>Profile ID</th><th>Description</th></tr><tr><td>`mapbox/driving`</td><td>Car travel times, distances, or both.</td></tr><tr><td>`mapbox/walking`</td><td>Pedestrian and hiking travel times, distances, or both</td></tr><tr><td>`mapbox/cycling`</td><td>Bicycle travel times, distances, or both</td></tr></table> The Optimization API does not support the `mapbox/driving-traffic` profile.
-`coordinates` | A semicolon-separated list of `{longitude},{latitude}` coordinates. There must be between 2 and 12 coordinates. The first coordinate is the start and end point of the trip.
+`profile` | Mapbox Directions 配置文件 ID. <table><tr><th>Profile ID</th><th>Description</th></tr><tr><td>`mapbox/driving`</td><td>汽车行驶时间、距离或两者。</td></tr><tr><td>`mapbox/walking`</td><td>步行和徒步旅行时间、距离或两者</td></tr><tr><td>`mapbox/cycling`</td><td>骑自行车时间、距离或两者</td></tr></table> 这个 Optimization API 不支持 `mapbox/driving-traffic` 配置文件。
+`coordinates` | 一组用分号分隔的坐标序列`{longitude},{latitude}`。坐标点数必须在2到12之间. 第一个坐标点是路径规划的起点和终点。
 
-You can further refine the results from this endpoint with the following optional parameters:
+你可以根据以下参数进一步优化来自该端点的结果：
 
 Query parameter | Description
 --- | ---
-`annotations`<br /> (optional) | Return additional metadata along the route. You can include several annotations as a comma-separated list. Possible values are: <table><tr><th>`annotations`</th><th>Description</th></tr><tr><td>`duration`</td><td>The duration between each pair of coordinates in seconds</td></tr><tr><td>`distance`</td><td>The distance between each pair of coordinates in meters</td></tr><tr><td>`speed`</td><td>The speed between each pair of coordinates in meters per second</td></tr></table>
-`approaches`<br /> (optional) | A semicolon-separated list indicating the side of the road from which to approach waypoints in a requested route. Accepts `unrestricted` (default, route can arrive at the waypoint from either side of the road) or `curb` (route will arrive at the waypoint on the `driving_side` of the region). If provided, the number of approaches must be the same as the number of waypoints. However, you can skip a coordinate and show its position in the list with the `;` separator. Must be used in combination with `steps=true`.
-`bearings`<br /> (optional) | Influences the direction in which a route *starts* from a waypoint. Used to filter the road segment on which a waypoint will be placed by direction. This is useful for making sure the new routes of rerouted vehicles continue traveling in their current direction. A request that does this would provide bearing and radius values for the first waypoint and leave the remaining values empty. Must be used in conjunction with the `radiuses` parameter. Takes 2 values per waypoint: an angle clockwise from true north between 0 and 360, and the range of degrees by which the angle can deviate (recommended value is 45° or 90°), formatted as `{angle, degrees}`. If provided, the list of bearings must be the same length as the list of waypoints. However, you can skip a coordinate and show its position in the list with the `;` separator.
-`destination`<br />  (optional) | Specify the destination coordinate of the returned route. Accepts `any` (default) or `last`.
-`distributions`<br /> (optional) | Specify pick-up and drop-off locations for a trip by providing a `;` delimited list of number pairs that correspond with the `coordinates` list. The first number of a pair indicates the index to the coordinate of the pick-up location in the coordinates list, and the second number indicates the index to the coordinate of the drop-off location in the coordinates list. Each pair must contain exactly 2 numbers, which cannot be the same. The returned solution will visit pick-up locations before visiting drop-off locations. The first location can only be a pick-up location, not a drop-off location.
-`geometries`<br /> (optional) | The format of the returned geometry. Allowed values are: `geojson` (as [LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2)), [`polyline`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) (default, a polyline with precision 5), [`polyline6`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) (a polyline with precision 6).
-`language`<br /> (optional) | The language of returned turn-by-turn text instructions. See [supported languages](#instructions-languages). The default is `en` (English).
-`overview`<br /> (optional) | The type of the returned overview geometry. Can be `full` (the most detailed geometry available), `simplified` (default, a simplified version of the full geometry), or `false` (no overview geometry).
-`radiuses`<br /> (optional) | The maximum distance a coordinate can be moved to snap to the road network in meters. There must be as many radiuses as there are coordinates in the request, each separated by `;`. Values can be any number greater than `0` or the string `unlimited`. A `NoSegment` error is returned if no routable road is found within the radius.
-`source`<br />  (optional) | The coordinate at which to start the returned route. Accepts `any` (default) or `first`.
-`steps`<br /> (optional) | Whether to return steps and turn-by-turn instructions (`true`) or not (`false`, default).
-`roundtrip`<br />  (optional) | Indicates whether the returned route is roundtrip, meaning the route returns to the first location (`true`, default) or not (`false`). If `roundtrip=false`, the `source` and `destination` parameters are required but not all combinations will be possible. See the *Fixing Start and End Points* section below for additional notes.
+`annotations`<br /> (optional) | 返回路线附加数据。你可以包含一些注释，用逗号分隔的列表。接受: <table><tr><th>`annotations`</th><th>Description</th></tr><tr><td>`duration`</td><td>每组坐标之前的持续时间（秒）</td></tr><tr><td>`distance`</td><td>每组坐标之间的距离（米）</td></tr><tr><td>`speed`</td><td>每组坐标之间的速度（米/秒）</td></tr></table>
+`approaches`<br /> (optional) | 一个逗号分隔的列表，表示在所求的道路中进入路标点的一侧。 包含 `unrestricted` (默认的，路线可以到达道路两边的路标点) 或者 `curb` (路线将到达在 `driving_side` 区域的路标点). 如果提供，approaches 的数量必须和路标点数量一致。 但是，你可以跳过坐标并用`;`分隔符显示其在列表中的位置。b必须和`steps=true`一起使用。
+`bearings`<br /> (optional) | 影响路径从*starts* 开始的方向。 用于过滤道路中路标点被方向替换的部分。这有助于车辆在重新路径规划时能够继续其在当前方向行驶。一次这样的请求将提供第一个路标点的方向和半径值，其余值为空。必须与 `radiuses`参数一起使用。每个路标点取两个值：一个从真北顺时针方向在0到360之间的角度，以及角度可以偏离的范围 (建议值是 45° 或者 90°)，格式为`{angle, degrees}`.如果提供，bearings 的数量必须和路标点数量一致。 但是，你可以跳过坐标并用`;`分隔符显示其在列表中的位置。
+`destination`<br />  (optional) | 指定返回路线的终点坐标。 接受 `any` (默认) 或者 `last`.
+`distributions`<br /> (optional) | 通过提供一对与`coordinates`列表对应的，用`;`分隔列表，指定车辆行驶中的上车和下车地点。 第一个数字表示上车坐标对应的坐标序列下标， 第二个数字表示下车坐标对应的坐标序列下标。 每对必须精确包含两个数字，不能是相同的。返回的结果必须在下车地点之前经过上车地点。第一个坐标只能是上车地点，不能是下车地点。
+`geometries`<br /> (optional) | 返回geometry的格式。 允许的值包括: `geojson` (as [LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2)), [`polyline`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) (default, a polyline with precision 5), [`polyline6`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) (a polyline with precision 6).
+`language`<br /> (optional) | 返回的语言是文本语言. 详见 [supported languages](#instructions-languages)。 默认是 `en` (English).
+`overview`<br /> (optional) | 返回的整体几何结构类型。可以是 `full` (最详细的几何信息), `simplified` (默认，完整几何的简化版本), or `false` (没有概述几何).
+`radiuses`<br /> (optional) | 坐标可以被移动到道路网络中的最大距离（米）。请求中必须有多个半径值，用`;`分隔。值可以是任意大于`0`或者字符串`unlimited`. 如果在半径范围内找不到可行驶的路径，返回一个`NoSegment`错误。
+`source`<br />  (optional) | 开始返回路径的坐标。 接受 `any` (默认) or `first`.
+`steps`<br /> (optional) | 是否返回步骤和转向信息 (`true`) 或者不是 (`false`, 默认)。
+`roundtrip`<br />  (optional) | 表示返回的路径是否是一个返回行程，意味着路径返回到第一个坐标点(`true`, 默认) 或者不是 (`false`). 如果`roundtrip=false`, 参数 `source` 和 `destination` 是需要的，但是不是所有的组合都是可能的。 见 *Fixing Start and End Points* 部分获取更多信息。
 
-Unrecognized options in the query string result in an `InvalidInput` error.
+查询字符串中包含未识别的选项会导致 `InvalidInput` 错误。
 
-Note that routes returned by the Optimization API will behave as if [`continue_straight=false`](#retrieve-directions) was set at each waypoint, meaning that the route will continue in the same direction of travel. See the [`continue_straight`](#retrieve-directions) parameter in the Directions API for more details on what this means for the route.
+注意，如果 Optimization API中的每一个点都设置[`continue_straight=false`](#retrieve-directions)，意味着返回路径将沿着相同方向。 参见 [`continue_straight`](#retrieve-directions)Directions API 中的参数，了解这条路径的更多信息。
 
-**Fixing Start and End Points**
+**固定起点和终点**
 
-It is possible to explicitly set the start or end coordinate of the trip:
+可以显式地设置行程的开始或结束坐标：
 
-- When `source=first`, the first coordinate is used as the start coordinate of the trip in the output.
-- When `destination=last`, the last coordinate is used as the destination coordinate of the trip in the output.
-- If you specify `any` for `source` or `destination`, any of the coordinates can be used as the first or last coordinate in the output.
-- If `source=any&destination=any`, the returned roundtrip will start at the first input coordinate by default.
+- 当 `source=first`, 在输出中使用第一个坐标作为路径的起始坐标。
+- 当 `destination=last`， 在输出中使用最后一个坐标作为路径的终点坐标。
+- 如果你指定 `any` 为 `source` 或者 `destination`, 任何坐标都可以用作输出中的第一个或最后一个坐标。
+- 如果 `source=any&destination=any`, 返回的往返路径将在默认情况下在第一个输入坐标处开始。
 
-Not all combinations of `roundtrip`, `source`, and `destination` are supported. Right now, the following combinations are possible:
+不是所有的 `roundtrip`, `source`, 和 `destination` 的组合是支持的. 现在，下面的组合是可行的：
 
 | roundtrip | source | destination | supported |
 | :-- | :-- | :-- | :-- |
@@ -66,35 +66,35 @@ Not all combinations of `roundtrip`, `source`, and `destination` are supported. 
 | false | any | last | no |
 | false | any | any | no |
 
-#### Example requests
+#### 请求举例
 
 ```curl
-# Request an optimized car trip with no additional options
+# 请求无额外选项的最佳车程
 curl "https://api.mapbox.com/optimized-trips/v1/mapbox/driving/-122.42,37.78;-122.45,37.91;-122.48,37.73?access_token={your_access_token}"
 
-# Request an optimized bicycle trip with steps and a GeoJSON response
+# 利用steps和GeoJSON响应请求最佳自行车车程
 curl "https://api.mapbox.com/optimized-trips/v1/mapbox/cycling/-122.42,37.78;-122.45,37.91;-122.48,37.73?steps=true&geometries=geojson&access_token={your_access_token}"
 
-# Request an optimized car roundtrip in Berlin with four coordinates, starting at the first coordinate pair and ending at the last coordinate pair
+# 请求在柏林用四个坐标优化汽车往返行程，从第一个坐标对开始，到最后一个坐标结束
 curl "https://api.mapbox.com/optimized-trips/v1/mapbox/driving/13.388860,52.517037;13.397634,52.529407;13.428555,52.523219;13.418555,52.523215?source=first&destination=last&roundtrip=true&access_token={your_access_token}"
 
-# Request an optimized car trip with four coordinates and one distributions constraint where the last given coordinate must be visited before the second
+# 请求具有四个坐标和一个分布约束的优化汽车行程，其中必须在第二个坐标之前访问最后一个给定坐标
 curl "https://api.mapbox.com/optimized-trips/v1/mapbox/driving/13.388860,52.517037;13.397634,52.529407;13.428555,52.523219;13.418555,52.523215?roundtrip=true&distributions=3,1&access_token={your_access_token}"
 
-# Request an optimized car trip with specified waypoint approach bearings and turn-by-turn instructions
+# 请求优化的车程，通过指定路标点顺序和方向
 curl "https://api.mapbox.com/optimized-trips/v1/mapbox/driving/-122.42,37.78;-122.45,37.91;-122.48,37.73?radiuses=unlimited;unlimited;unlimited&bearings=45,90;90,1;340,45&steps=true&access_token={your_access_token}"
 ```
 
 ```python
-# This API is not available through the Python SDK
+# 这个API是不可用的通过Python SDK
 ```
 
 ```javascript
-// This API is not available through the JavaScript SDK
+// 这个API是不可用的通过JavaScript SDK
 ```
 
 ```bash
-# This API is not available through the Mapbox CLI
+# 这个API是不可用的通过Mapbox CLI
 ```
 
 ```java
@@ -109,14 +109,14 @@ MapboxOptimization optimizedClient = MapboxOptimization.builder()
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 这个APIT无法访问通过Mapbox Objective-C libraries
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 这个APIT无法访问通过Mapbox Swift libraries
 ```
 
-#### Example response
+#### 返回举例
 
 ```json
 {
@@ -177,39 +177,39 @@ MapboxOptimization optimizedClient = MapboxOptimization.builder()
 ```
 
 ### Optimization response object
-The response to an Optimization API request is a JSON object that contains the following properties:
+对 Optimization API请求的响应是包含下列属性的JSON对象：
 
 Property | Description
 --- | ---
-`code` | A string indicating the state of the response. This is a separate code than the HTTP status code. On normal valid responses, the value will be `Ok`.
-`waypoints` | An array of `waypoint` objects. Each waypoint is an input coordinate snapped to the road and path network. The waypoints appear in the array in the order of the input coordinates.
-`trips` | An array of 0 or 1 `trip` objects.
+`code` | 指示响应状态的字符串。这是一个独立于HTTP状态的代码。 在正常有效响应上，该值将为 `Ok`。
+`waypoints` | 一个数组 `waypoint` 每个路标点是一个到道路和路径网络的输入坐标。路标点以输入坐标的顺序出现在数组中。
+`trips` | 一组0 或者1 `trip` 数组对象。
 
 **Waypoint objects**
 
-A **waypoint object** is an input coordinate snapped to the roads network that contains the following properties:
+一个 **waypoint object** 是到道路网络的输入坐标，包含以下特征：
 
 Property | Description
 --- | ---
-`name` | A string with the name of the road or path that the input coordinate snapped to.
-`location` | An array containing the `[longitude, latitude]` of the snapped coordinate.
-`trips_index` | The index of the `trip` object that contains this waypoint in the `trips` array.
-`waypoint_index` | The index of the position of the given waypoint within the `trip`.
+`name` | 一个字符串，表示输入坐标连接的道路名称。
+`location` | 一个数组包含`[longitude, latitude]` 连接的坐标点。
+`trips_index` | 这个`trip` 对象的下标，包含路标点在 `trips` 数组中的位置。
+`waypoint_index` | 给定路标点在`trip`中的位置索引。
 
 **Trip object**
 
-A **trip object** describes a route through multiple waypoints, and has the following properties:
+一个 **trip object** 描述通过多个路标点的路径，并具有以下属性： 
 
 Property | Description
 --- | ---
-`geometry` | Depending on the `geometries` parameter, this is either a [GeoJSON LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2) or a [Polyline string](https://developers.google.com/maps/documentation/utilities/polylinealgorithm). Depending on the `overview` parameter, this is the complete route geometry (`full`), a simplfied geometry to the zoom level at which the route can be displayed in full (`simplified`), or is not included (`false`).
-`legs` | An array of [route leg](#routeleg-object) objects.
-`weight_name` | A string indicating which weight was used. The default is `routability`, which is duration-based, with additional penalties for less desirable maneuvers.
-`weight` | A float indicating the weight in the units described by `weight_name`.
-`duration` | A float indicating the estimated travel time in seconds.
-`distance` | A float indicating the distance traveled in meters.
+`geometry` | 根据 `geometries` 参数， 这是一个 [GeoJSON LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2) 或者 [Polyline string](https://developers.google.com/maps/documentation/utilities/polylinealgorithm). 根据 `overview` 参数， 这是完整的路线几何结构 (`full`), 一种简化的几何结构，用于缩放可以完全显示路线 (`simplified`)，或者不包含(`false`).
+`legs` | 一个数组 [route leg](#routeleg-object) 对象.
+`weight_name` | 一个字符串表示使用哪个权重。默认的是 `routability`, 这是基于时间的，对于不太理想的策略添加惩罚。
+`weight` | 一个浮点数表示单位权重，通过 `weight_name`.
+`duration` | 一个浮点数表示估计的行程时间（秒）。
+`distance` | 一个浮点数表示行程的距离（米）。
 
-A trip object has the same format as a [route object](#route-object) in the Directions API.
+一个行程对象有与[route object](#route-object)相同的格式在Directions API中。
 
 #### Example response object
 
@@ -256,16 +256,16 @@ A trip object has the same format as a [route object](#route-object) in the Dire
 
 ### Optimization errors
 
-On error, the server responds with different HTTP status codes. For responses with HTTP status codes lower than `500`, the JSON response body includes the `code` property, which may be used by client programs to manage control flow. The response body may also include a `message` property with a human-readable explanation of the error.
+在错误时，服务器用不同的HTTP状态代码进行响应。对于HTTP状态码低于`500`的响应，JSON 响应主体包含 `code` 属性，客户端程序可以使用它来管理控制流。响应体还可以包括 `message` 属性，并对错误进行可读的解释。
 
-If a server error occurs, the HTTP status code will be `500` or higher and the response will not include a `code` property.
+如果发生服务器错误，HTTP状态代码将为`500`或更高，响应将不包括`code` 属性。
 
-Response body `code` | HTTP status code | Description
+响应体 `code` | HTTP 状态代码| Description
 --- | --- |---
-`Ok` | `200` | Normal success case.
-`NoTrips` | `200` | For one coordinate, no route to other coordinates could be found. Check for impossible routes (for example, routes over oceans without ferry connections).
-`NotImplemented`  | `200` | For the given combination of `source`, `destination`, and `roundtrip`, this request is not supported.
-`ProfileNotFound` | `404` | Use a valid profile as described in [Retrieve an optimization](#retrieve-an-optimization).
-`InvalidInput` | `422` | The given request was not valid. The `message` key of the response will hold an explanation of the invalid input.
+`Ok` | `200` | 正常成功案例。
+`NoTrips` | `200` | 对于一个坐标，找不到到其他坐标的路径。检查不可能的路线（例如，在没有渡轮连接的海洋上）。
+`NotImplemented`  | `200` | 对于给定的组合`source`, `destination`, 和 `roundtrip`, 这个请求是不支持的。
+`ProfileNotFound` | `404` | 使用一个无效的配置文件作为描述 [Retrieve an optimization](#retrieve-an-optimization).
+`InvalidInput` | `422` | 给定的请求是无效的。响应的`message`键将保持对无效输入的解释。
 
-All other properties might be undefined.
+其他的属性可能未定义。
