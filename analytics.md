@@ -21,7 +21,7 @@ from mapbox import Analytics
 GET /analytics/v1/{resourceType}/{username}/{id}?period={period} analytics:read
 ```
 
-URL参数 | 描述
+URL 参数 | 描述
 --- | ---
 `resourceType` | 被请求的资源类型。可用的类型有 `accounts`， `tokens`， `tilesets` 和 `styles`。
 `username` | 拥有此资源的账户用户名。
