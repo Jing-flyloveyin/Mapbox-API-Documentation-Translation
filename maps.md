@@ -1,191 +1,191 @@
 ## Maps
 
-The Mapbox Maps API supports the retrieval of vector and raster tilesets as images, TileJSON, or embeddable HTML slippy maps.
+Mapbox Maps API支持将矢量和栅格tilesets作为图像、TileJSON或可嵌入的HTML平滑地图进行检索获取。
 
-If you use [Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/), [Mapbox.js](https://www.mapbox.com/mapbox.js/), or another library like [Leaflet](https://www.mapbox.com/mapbox.js/example/v1.0.0/plain-leaflet/), you're already using the Maps API. You do not need to read this reference to design or use Mapbox maps. Instead, this documentation is meant for software developers who want to programmatically understand these resources.
+如果你使用过[Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/)、 [Mapbox.js](https://www.mapbox.com/mapbox.js/) 或者像[Leaflet](https://www.mapbox.com/mapbox.js/example/v1.0.0/plain-leaflet/)这样的库，说明你已经使用过 Maps API，不需要再阅读这份指南来设计或者使用Mapbox Maps。相反, 这份文档对那些希望以编程的方式理解这些资源的软件开发人员很有意义。
 
-**Restrictions and limits**
+**约束和限制**
 
-- Use of the Mapbox Maps API endpoint is rate limited based on your user plan. The default is 100,000 requests per minute.
-- Exceeding your user plan's number requests per minute will result in an `HTTP 429 Too Many Requests` response.
-- For information on rate limit headers, see the [Rate limits](#rate-limits) section.
+- Mapbox Maps API endpoint的使用基于个人用户计划的速率限制。默认值是每分钟10万次请求数。
+- 超过用户计划的每分钟请求数会出现“HTTP 429 Too Many Requests”的响应。
+- 关于速率限制头文件的信息，请参考[Rate limits](#rate-limits) 章节。
 
-If you require a higher rate limit, [contact us](https://www.mapbox.com/contact/).
+如果你需要提高速率限制，[请联系我们](https://www.mapbox.com/contact/)。
 
-### Retrieve tiles
+### 瓦片获取
 
 ```endpoint
 GET /v4/{map_id}/{zoom}/{x}/{y}{@2x}.{format}
 ```
 
-Returns an image tile, vector tile, or UTFGrid in the specified format.
+以指定的格式返回栅格瓦片、矢量瓦片或UTFGrid。
 
-The response is an image tile in the specified format. For performance, image tiles are delivered with a `max-age` header value set 12 hours in the future.
+响应结果是一张指定格式的图片，出于性能考虑，*带有`max-age`头部标识值且值为12小时的图像瓦片将在之后的时间传输。*
 
-URL parameter | Description
+URL 参数 | 描述
+--- | --
+`map_id` | Unique identifier for the tileset tileset的唯一标识，格式为`username.id`。若要组成多个tileset，请使用逗号分隔参数且最多有15个`map_id`的列表。
+`zoom` | 指定瓦片的缩放层级，具体说明参见[Slippy Map Tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames)。
+`{x}/{y}` | 指定瓦片的列 `{x}` 和 行 `{y}`, 具体说明参见[Slippy Map Tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames)。
+`@2x`<br>(可选) | 请求更高DPI（分辨率）版本的图像。
+`format` | 指定返回瓦片的格式：<table><tr><td>`.grid.json`</td><td>UTFGrid</td></tr><tr><td>`.mvt`</td><td>矢量切片</td></tr><tr><td>`png`</td><td>全彩PNG</td></tr><tr><td>`png32`</td><td>32索引色位 PNG</td></tr><tr><td>`png64`</td><td>32索引色位 PNG</td></tr><tr><td>`png128`</td><td>128索引色位PNG</td></tr><tr><td>`png256`</td><td>256索引色位PNG</td></tr><tr><td>`jpg70`</td><td>70% 品质 JPG</td></tr><tr><td>`jpg80`</td><td>80% 品质 JPG</td></tr><tr><td>`jpg90`</td><td>90% 品质 JPG</td></tr></table>为了适应不同的网络带宽环境调整图像质量，任何一种图片请求格式都可以被其他格式替换。在性能优先于图片质量的情况下，`jpg70` 和`png32`这种高压缩率的格式就很有用了。<br><br>**注意：** 带有`mapbox.satellite`的瓦片永远以JPEGs的格式传输，即使URL指定其格式为PNG。PNG这种图片格式不能对`mapbox.satellite`这类的影像图像进行高效的编码。
+
+**请求 style-optimized tiles**
+
+矢量瓦片可以通过在数据请求中包含[style ID](#the-style-object)来进一步优化。如果上述的样式参数已经提供,the sources、[filters](https://www.mapbox.com/mapbox-gl-style-spec/#layer-filter)、 [`minzoom`](https://www.mapbox.com/mapbox-gl-style-spec/#sources-vector-minzoom) 和 [`maxzoom`](https://www.mapbox.com/mapbox-gl-style-spec/#sources-vector-maxzoom)这些样式属性会被解析，地图上不可见部分的数据会从矢量切片上移除。Mapbox GL JS可以通过Mapbox Style JSON去请求托管在Mapbox服务器上的style-optimized矢量切片。
+
+A style-optimized 瓦片请求必要的`style` 查询参数:
+
+查询参数| 描述
 --- | ---
-`map_id` | Unique identifier for the tileset in the format `username.id`. To composite multiple tilesets, use a comma-separated list of up to 15 tileset IDs.
-`zoom` | Specifies the tile's zoom level, as described in the [Slippy Map Tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames) specification.
-`{x}/{y}` | Specifies the tile's column `{x}` and row `{y}`, as described in the [Slippy Map Tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames) specification.
-`@2x`<br>(optional) | Request a higher DPI version of the image.
-`format` | Specifies the format of the returned tiles: <table><tr><td>`.grid.json`</td><td>UTFGrid</td></tr><tr><td>`.mvt`</td><td>Vector tile</td></tr><tr><td>`png`</td><td>True color PNG</td></tr><tr><td>`png32`</td><td>32 color indexed PNG</td></tr><tr><td>`png64`</td><td>64 color indexed PNG</td></tr><tr><td>`png128`</td><td>128 color indexed PNG</td></tr><tr><td>`png256`</td><td>256 color indexed PNG</td></tr><tr><td>`jpg70`</td><td>70% quality JPG</td></tr><tr><td>`jpg80`</td><td>80% quality JPG</td></tr><tr><td>`jpg90`</td><td>90% quality JPG</td></tr></table> The `format` of any image request can be replaced by any of these formats to adjust image quality for different bandwidth requirements. Higher-compression formats like `jpg70` or `png32` can be useful to favor performance over image quality.<br><br>**Note:** Tiles that include `mapbox.satellite` are always delivered as JPEGs, even if the URL specifies PNG. The PNG format can't efficiently encode photographic images like those used by `mapbox.satellite`.
+`style`<br>(可选) |  `style` 参数分成两部分：样式的ID和这个样式最近被编辑的`timestamp`。这个时间戳参数来自于样式JSON的修改属性，Mapbox Studio创造的所有样式都包含这个参数。
 
-**Request style-optimized tiles**
+**注意:**  未被使用的图层和要素会从优化样式中移除。如果你计划在运行时使用Mapbox GL JS 或者Mapbox mobile SDK动态改变样式,扩展过滤器和缩放范围不会同时生效，因为已加载样式中任何不可见的数据，同样也不会在这些数据中。
 
-Vector tiles can be further optimized by including a [style ID](#the-style-object) with the tile request. If the style parameter is provided, the sources, [filters](https://www.mapbox.com/mapbox-gl-style-spec/#layer-filter), [`minzoom`](https://www.mapbox.com/mapbox-gl-style-spec/#sources-vector-minzoom), and [`maxzoom`](https://www.mapbox.com/mapbox-gl-style-spec/#sources-vector-maxzoom) properties of that style are analyzed, and data that won't be visible on the map is removed from the vector tile. Mapbox GL JS can request style-optimized vector tiles that are hosted on Mapbox with a Mapbox Style JSON.
-
-A style-optimized tile request requires the `style` query parameter:
-
-Query parameter | Description
---- | ---
-`style`<br>(optional) | The `style` parameter is broken into two parts, the style ID and the style's recently edited `timestamp`. The timestamp parameter comes from the style JSON's modified property, which is included with any style created with Mapbox Studio.
-
-**Note:** Unused layers and features are removed from optimized styles. If you plan to dynamically change the style at runtime using Mapbox GL JS or a Mapbox mobile SDK, broadening filters and zoom ranges won't work the same way since any data that isn't visible with the loaded style also won't be included in the data.
-
-#### Example request
+#### 请求示例
 
 ```curl
 curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/1/0/0.png?access_token={your_access_token}"
 
-# Retrieve a 2x tile; this 512x512 tile is appropriate for high-density displays like Retina
+# 获取一张2x的瓦片，这种512x512的瓦片适合像Retina这样的高密度像素展示。
 curl "https://api.mapbox.com/v4/mapbox.mapbox-terrain-v2/1/0/0@2x.png?access_token={your_access_token}"
 
-# Retrieve a tile with 70% quality JPG encoding
+# 获取一张70%质量的JPG编码格式图片
 curl "https://api.mapbox.com/v4/mapbox.satellite/3/2/3.jpg70?access_token={your_access_token}"
 
-# Retrieve a tile with 32 color indexed PNG
+# 获取一张32PNG格式图片
 curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/3/2/3.png32?access_token={your_access_token}"
 
-# Return a style-optimized tile using the style query parameter
+# 返回一张使用了样式查询参数的style-optimized 瓦片
 curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/12/1171/1566.png?style=mapbox://styles/mapbox/streets-v10@00&access_token={your_access_token}"
 ```
 
 ```javascript
-// This API cannot be accessed with the JavaScript SDK
+// 这个API不能通过JavaScript SDK访问
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+# 这个API不能通过Python SDK访问
 ```
 
 ```bash
-# This API cannot be accessed with Mapbox CLI
+# 这个API不能通过Mapbox CLI访问
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 这个API不能通过Mapbox Java SDK访问
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 这个API不能通过Mapbox Objective-C libraries访问
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+//这个API不能通过Mapbox Swift libraries访问
 ```
 
-### Retrieve an HTML slippy map
+### 获取页面形式的 slippy map
 
 ```endpoint
 GET /v4/{map_id}{/options}.html{#hash}
 ```
 
-Returns HTML for a slippy map that can be used for sharing or embedding.
+返回一个有slippy map的网页，可以用来分享或者嵌入其他应用。
 
-URL parameter | Description
+URL 参数 | 描述
 --- | ---
-`map_id` | Unique identifier for the tileset in the format `username.id`
-`options`<br /> (optional) | A comma-separated list of controls and map behaviors to be included in the map:<br><ul><li>`zoomwheel`: Enable zooming with the mouse wheel</li><li>`zoompan`: Enable zoom and pan controls</li><li>`geocoder`: Add a geocoder control to the result slippy map</li><li>`share`: Add a share control</li></ul>
+`map_id` | 瓦片数据集的唯一标识，格式为`username.id`。
+`options`<br /> (可选) | 地图包含的控制和操作，用逗号分隔：<br><ul><li>`zoomwheel`: 允许鼠标滚轮触发地图缩放</li><li>`zoompan`: 允许地图缩放和平移控制</li><li>`geocoder`: 对产生的slippy map添加地理编码管理</li><li>`share`: 添加一个分享管理</li></ul>
 
-A request to retrieve an HTML slippy map can be further refined by adding the optional `hash` parameter:
+通过添加可选的`hash`参数，可以进一步细化页面 slippy map的请求：
 
-Query parameter | Description
+查询参数 | 描述
 --- | ---
-`hash`<br /> (optional) | Specify a zoom level and location for the map to center on, in the format `#zoom/lat/lon`. **Note:** This hash is placed after the `access_token` in the request.
+`hash`<br /> (可选) | 指定地图居中位置的层级和坐标点，格式为`#zoom/lat/lon`。 **注意：** 这个字段在请求中的位置在`access_token`的后面。
 
-#### Example request
+#### 请求示例
 
 ```curl
-# Returns a map with zoom and pan controls, a geocoder, and a share control
+# 返回一个有缩放和平移管理、地理编码管理和分享管理的地图。
 curl "https://api.mapbox.com/v4/mapbox.mapbox-streets-v7/zoomwheel,zoompan,geocoder,share.html?access_token={your_access_token}"
 ```
 
 ```javascript
-// This API cannot be accessed with the JavaScript SDK
+// 这个API不能通过JavaScript SDK访问
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+# 这个API不能通过Python SDK访问
 ```
 
 ```bash
-# This API cannot be accessed with Mapbox CLI
+# 这个API不能通过Mapbox CLI访问
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 这个API不能通过Mapbox Java SDK访问
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 这个API不能通过Mapbox Objective-C libraries访问
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 这个API不能通过Mapbox Swift libraries访问
 ```
 
-### Retrieve TileJSON metadata
+### 获取 TileJSON metadata
 
 ```endpoint
 GET /v4/{map_id}.json
 ```
 
-Returns [TileJSON](https://github.com/mapbox/tilejson-spec/) metadata for a tileset. The TileJSON object describes a map's resources, like tiles, markers, and UTFGrid, as well as its name, description, and centerpoint.
+为tileset返回[TileJSON](https://github.com/mapbox/tilejson-spec/) metadata。TileJSON 对象描述了地图上的一些资源，比如瓦片数据、标注和UTFGrid，以及地图的名称、描述信息和中心点。 
 
-URL parameter | Description
+URL 参数 | 描述
 --- | ---
-`map_id` | Unique identifier for the tileset in the format `username.id`.
+`map_id` | tileset的唯一标识，格式为`username.id`。
 
-This endpoint can be further customized with the optional `secure` parameter:
+可以使用可选的`secure`参数进一步自定义这个端点：
 
-Query parameter | Description
+查询 参数 | 描述
 --- | ---
-`secure`<br /> (optional) | By default, resource URLs in the retrieved TileJSON (such as in the  `"tiles"` array) will use the HTTP scheme. Include this query parameter in your request to receive HTTPS resource URLs instead.
+`secure`<br /> (可选) | 默认情况下, 所获取的TileJSON的资源URLs（例如在`"tiles"`数组中的资源URLs）将使用HTTP协议。在请求中包含这个查询参数，以接收HTTPS资源URLs。
 
-#### Example request
+#### 请求示例
 
 ```curl
 curl "https://api.mapbox.com/v4/mapbox.satellite.json?access_token={your_access_token}"
 
-# Request HTTPS resource URLs in the retrieved TileJSON
+# 在获取的TileJSON中请求HTTPS资源url
 curl "https://api.mapbox.com/v4/mapbox.satellite.json?secure&access_token={your_access_token}"
 ```
 
 ```javascript
-// This API cannot be accessed with the JavaScript SDK
+// 这个API不能通过JavaScript SDK访问
 ```
 
 ```python
-# This API cannot be accessed with the Python SDK
+# 这个API不能通过Python SDK访问
 ```
 
 ```bash
-# This API cannot be accessed with Mapbox CLI
+# 这个API不能通过Mapbox CLI访问
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 这个API不能通过Java SDK访问
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 这个API不能通过Mapbox Objective-C libraries访问
 ```
 
 ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+// 这个API不能通过Mapbox Swift libraries访问
 ```
 
-#### Example response
+#### 响应示例
 
 ```json
 {
@@ -212,48 +212,48 @@ curl "https://api.mapbox.com/v4/mapbox.satellite.json?secure&access_token={your_
 }
 ```
 
-### Retrieve a standalone marker
+### 获取一个单独的点标注
 
 ```endpoint
 GET /v4/marker/{name}-{label}+{color}{@2x}.png
 ```
 
-Request a single marker image without an accompanying background map.
+请求一个单独的点标注，没有相应的背景地图。
 
-URL Parameter | Description
+URL 参数 | 描述
 --- | ---
-`name` | Marker shape and size. Options are `pin-s` and `pin-l`.
-`label`<br /> (optional) | A [Maki v0.5.0](https://github.com/mapbox/maki/blob/v0.5.0/_includes/maki.json) `icon` value. Options are an alphanumeric label `a` through `z`, `0` through `99`, or a valid Maki icon. If a letter is requested, it will be rendered in uppercase only.
-`color`<br /> (optional) | A 3- or 6-digit hexadecimal color code. The default color is gray.
-`@2x`<br /> (optional) | Include to request a high DPI version of the image.
+`name` | 点标注的形状和大小Marker shape and size. 选项有`pin-s` 和 `pin-l`.
+`label`<br /> (可选) | 符合 [Maki v0.5.0](https://github.com/mapbox/maki/blob/v0.5.0/_includes/maki.json) 格式的`icon` 值. 选项有`a`到`z`，`0`到`99`的数字标签，或者可用的Maki图标。 如果请求对象是字母，只会以大写的形式呈现。
+`color`<br /> (可选) | A 3- or 6-数字十六进制颜色编码，默认颜色是灰色。
+`@2x`<br /> (可选) | 请求一个高DPI版本的图像。
 
-#### Example request
+#### 请求示例
 
 ```curl
-# Returns a small red marker that contains a car icon, high DPI version
+# 返回一个高分辨率版本的红色点标注，图标为汽车样式
 curl "https://api.mapbox.com/v4/marker/pin-s-car+f44@2x.png?access_token={your_access_token}"
 
-# Returns a large default gray marker
+# 返回一个大号点标注，颜色为默认灰色
 curl "https://api.mapbox.com/v4/marker/pin-l.png?access_token={your_access_token}"
 
-# Returns a small blue marker labeled A
+# 返回一个带有A字母标签的小号蓝色点标注
 curl "https://api.mapbox.com/v4/marker/pin-s-a+00f.png?access_token={your_access_token}"
 ```
 
 ```javascript
-// This method cannot be accessed with the JavaScript SDK
+// 这个API不能通过JavaScript SDK访问
 ```
 
 ```python
-# This method cannot be accessed with the Python SDK
+# 这个API不能通过Python SDK访问
 ```
 
 ```bash
-# This method cannot be accessed with Mapbox CLI
+# 这个API不能通过Mapbox CLI访问
 ```
 
 ```java
-// This API cannot be accessed with the Mapbox Java SDK
+// 这个API不能通过Java SDK访问
 ```
 
 ```objc
@@ -267,11 +267,11 @@ MBMarkerOptions *options = [[MBMarkerOptions alloc] initWithSize:MBMarkerSizeSma
 #endif
 MBSnapshot *snapshot = [[MBSnapshot alloc] initWithOptions:options accessToken:@"<#your access token#>"];
 
-// Retrieve the image synchronously, blocking the calling thread.
-// `image` is a `UIImage` on iOS, watchOS, and tvOS and an `NSImage` on macOS.
+// 同步检索图像，阻塞调用的线程。
+// `image` 在iOS、watchOS、tvOS系统上是`UIImage`，在macOS系统上是`NSImage`。
 self.imageView.image = snapshot.image;
 
-// Alternatively, pass a completion handler to run asynchronously on the main thread.
+// 或者传递一个完成处理器，以便在主线程上异步运行。
 [snapshot imageWithCompletionHandler:^(UIImage * _Nullable image, NSError * _Nullable error) {
     self.imageView.image = image;
 }];
@@ -285,17 +285,17 @@ let options = MarkerOptions(
   iconName: "cafe")
 options.color = .brown
 
-// If Snapshot conflicts with another class in your module, use `MapboxStatic.Snapshot`.
+// 如果Snapshot功能与模块中的另一个类发生冲突，请使用`MapboxStatic.Snapshot`。
 let snapshot = Snapshot(
   options: options,
   accessToken: "<#your access token#>")
 
-// Retrieve the image synchronously, blocking the calling thread.
+// 同步检索图像，阻塞调用的线程。
 // `image` is a `UIImage` on iOS, watchOS, and tvOS and an `NSImage` on macOS.
 imageView.image = snapshot.image
 
-// Alternatively, pass a completion handler to run asynchronously on the main thread.
+// 或者，传递一个完成处理器， 以便在主线程上异步运行。
 snapshot.image { (image, error) in
-    imageView.image = image
+    imageView.image = image 
 }
 ```
