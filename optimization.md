@@ -1,6 +1,6 @@
 ## Optimization
 
-这个Optimization API 在输入坐标点之间，返回一个连续优化的路径。这也被称为[Traveling Salesperson Problem](https://en.wikipedia.org/wiki/Travelling_salesman_problem).Optimization API 的一个经典应用是在城市中规划配送路线。你可以为驾车，骑自行车或者步行获得一条路线。
+Mapbox Optimization API 在输入坐标点之间，返回一个连续优化的路径。这也被称为[Traveling Salesperson Problem](https://en.wikipedia.org/wiki/Travelling_salesman_problem).Optimization API 的一个经典应用是在城市中规划配送路线。你可以为驾车，骑自行车或者步行获得一条路线。
 
 **约束和限制**
 
