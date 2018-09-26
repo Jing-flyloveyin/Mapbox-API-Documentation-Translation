@@ -1,11 +1,11 @@
 ## Map Matching
 
-This documentation is for `v5` of the Map Matching API. For information about the earlier version, see the [`v4` documentation](./pages/map_matching_v4.html).
+这份文件是Map Matching API 的版本5 “`v5`”. 如要了解先前版本信息,见[`v4` documentation](./pages/map_matching_v4.html).
 
-The Mapbox Map Matching API snaps fuzzy, inaccurate traces from a GPS unit or a phone to the OpenStreetMap road and path network using the Directions API. This produces clean paths that can be displayed on a map or used for other analysis. The Map Matching API can also return a full directions response to queries.
+Mapbox Map Matching API 利用Directions API 将在GPS装置或手机上捕捉到的不清楚或不准确的痕迹发送到OpenStreetMap路网，然后产生可用于地图或其他分析的清晰道路。Map Matching API还能够根据疑问回应详细说明。
 
-Swift and Objective-C support for Map Matching is provided by the [MapboxDirections.swift](https://github.com/mapbox/MapboxDirections.swift)
-library.
+Map Matching 的 Swift and Objective-C 支持由 [MapboxDirections.swift](https://github.com/mapbox/MapboxDirections.swift)
+library提供.
 
 ```python
 from mapbox import MapMatcher
@@ -42,71 +42,71 @@ import MapboxDirections
 let directions = Directions.shared
 ```
 
-**Restrictions and limits**
+**限制**
 
-- The Map Matching API is limited to 60 requests per minute.
-- Each request can have a maximum of 100 coordinates.
-- Results must be displayed on a Mapbox map using one of the Mapbox [libraries or SDKs](https://mapbox.com/developers).
+- Map Matching API 每分钟最多只能回应60个请求。
+- 每个请求最多只能包含100个坐标。
+- 必须使用Mapbox [libraries or SDKs](https://mapbox.com/developers)开发成果并显示在Mapbox地图上。
 
-For high volume or other use cases, [contact us](https://mapbox.com/contact/).
+如要了解大量数据操作或其他使用情况，请联系我们 （[contact us](https://mapbox.com/contact/)）。
 
-### Retrieve a match
+### 寻回匹配
 
 ```endpoint
 GET /matching/v5/{profile}/{coordinates}.json
 ```
 
-Return a path on the road and path network that is closest to the input traces.
+在路网中寻回与输入痕迹最接近的道路。
 
-URL parameter | Description
+URL 参数 | 描述
 --- | ---
-`profile` | A Mapbox Directions routing profile ID. <table><tr><th>Profile ID</th><th>Description</th></tr><tr><td>`mapbox/driving`</td><td>Car travel times, distances, or both.</td></tr><tr><td>`mapbox/walking`</td><td>Pedestrian and hiking travel times, distances, or both</td></tr><tr><td>`mapbox/cycling`</td><td>Bicycle travel times, distances, or both</td></tr><tr><td>`mapbox/driving-traffic`</td><td>Car travel times, distances, or both as informed by traffic data</td></tr></table>
-`coordinates` | A semicolon-separated list of `{longitude},{latitude}` coordinate pairs to visit in order. There can be between `2` and `100` coordinates.
+`profile` | Mapbox Directions路由文件ID <table><tr><th>Profile ID</th><th>Description</th></tr><tr><td>`mapbox/driving`</td><td>行车时间、距离或两者皆包括</td></tr><tr><td>`mapbox/walking`</td><td>步行时间/距离或两者皆包括</td></tr><tr><td>`mapbox/cycling`</td><td>骑车时间/距离或两者皆包括</td></tr><tr><td>`mapbox/driving-traffic`</td><td>交通数据报告的行车时间/距离或两者皆包括</td></tr></table>
+`coordinates` | 可有序访问的一系列分号分隔的 `{longitude},{latitude}`坐标。 可包含`2`到`100`个坐标。
 
-You can further refine the results from this endpoint with the following optional parameters:
+你可以使用下列自选参数继续改善目前为止产生的成果:
 
-Query parameter | Description
+查询参数 | 描述
 --- | ---
-`annotations`<br /> (optional) | Return additional metadata along the route. Possible values are: `duration`, `distance`, and `speed`. You can include several annotations as a comma-separated list. See the [route leg object](#routeleg-object) for more details on what is included with annotations.
-`approaches`<br /> (optional) | A semicolon-separated list indicating the side of the road from which to approach waypoints in a requested route. Accepts `unrestricted` (default, route can arrive at the waypoint from either side of the road) or `curb` (route will arrive at the waypoint on the `driving_side` of the region). If provided, the number of approaches must be the same as the number of waypoints. However, you can skip a coordinate and show its position in the list with the `;` separator. Must be used in combination with `steps=true`.
-`geometries`<br /> (optional) | The format of the returned geometry. Allowed values are: `geojson` (as [LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2)), [`polyline`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) (default, a polyline with precision 5), and [`polyline6`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) (a polyline with precision 6).
-`language`<br /> (optional) | The language of returned turn-by-turn text instructions. See [supported languages](#instructions-languages). The default is `en` (English). Must be used in combination with `steps=true`.
-`overview`<br /> (optional) | The type of returned overview geometry. Can be `full` (the most detailed geometry available), `simplified` (default, a simplified version of the full geometry), or `false` (no overview geometry).
-`radiuses`<br /> (optional) | The maximum distance a coordinate can be moved to snap to the road network in meters. There must be as many radiuses as there are coordinates in the request, each separated by `;`. Values can be a number between `0.0` and `50.00`. Use higher numbers (`20`-`50`) for noisy traces and lower numbers (`1`-`10`) for clean traces. The default value is `5`.
-`steps`<br /> (optional) | Whether to return steps and turn-by-turn instructions (`true`) or not (`false`, default).
-`tidy`<br /> (optional) | Whether to remove clusters and re-samples traces for improved map matching results (`true`) or not (`false`, default).
-`timestamps`<br /> (optional) | Numbers in [Unix time](https://en.wikipedia.org/wiki/Unix_time) that correspond to each coordinate provided in the request. There must be as many timestamps as there are request coordinates, each separated by `;`, in ascending order. For best results, timestamps should have a sample rate of about 5 seconds.
-`waypoint_names`<br /> (optional) | A semicolon-separated list of custom names for coordinates used for the arrival instruction in banners and voice instructions. Values can be any string, and the total number of all characters cannot exceed `500`. The list of `waypoint_names` must be a semicolon-separated list that is the same length as the list of coordinates, but you can skip a coordinate and show its position with the `;` separator.
-`waypoints`<br /> (optional) | Indicates which input coordinates should be treated as waypoints. By default, all coordinates result in a waypoint with arrival and departure events in the [match object's](#match-object) route. Can be an index corresponding to any of the input coordinates, but must contain the first (`0`) and last coordinates' index separated by `;`. Most useful in combination with `steps=true` and requests based on traces with high sample rates.
+`annotations`<br /> (可选择) | 返回路径元数据. 可能的值有: `duration`（持续时间）, `distance`（距离）, 和 `speed`（速度）. 可将数个注释，包含在一份逗号分隔的列表中。 关于注释内的更多细节，见 [route leg object](#routeleg-object)。
+`approaches`<br /> (可选择) | 一份分号分隔的列表，表明要求路线中到达路径点的道路边线。接受 `unrestricted` (默认, 路线可从任意路边到达路径点) 或者 `curb` (路线会从区域的行驶边线`driving_side`到达路径点). 若提供途径approaches的数据，必须和路径点的数量相同。 但是，你可以跳过一个坐标并用`;`分号表示其位置。必须和`steps=true`一起使用。
+`geometries`<br /> (可选择) | 返回几何的形式。允许的值有: `geojson` (as [LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2)), [`polyline`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) (默认, 精准度为5的多段线), 和 [`polyline6`](https://developers.google.com/maps/documentation/utilities/polylinealgorithm) (精准度为6的多段线).
+`language`<br /> (可选择) | 返回的路线规划文字指令的语言。 详见 [supported languages](#instructions-languages). 默认语言是英语 `en` (English)。 必须和 `steps=true`一起使用.
+`overview`<br /> (可选择) | 返回的全览几何的类型. 可以是`full` (最详细的可用几何), `simplified` (默认, 简化的全览几何), or `false` (无全览几何)。
+`radiuses`<br /> (可选择) | 一个坐标可以用来对齐路网的最大移动距离，以米为单位。 Radiuses的数量必须和要求中坐标数量相同并以`;`分隔。值可以是`0.0` 到 `50.00`之间的任意数. 在痕迹杂乱时，用较大的数字(`20`-`50`)；在痕迹干净时，用较小的数字(`1`-`10`)。 默认值为`5`。
+`steps`<br /> (可选择) | 是否返回steps或路线规划指令。是 (`true`) 或否 (`false`, 默认)。
+`tidy`<br /> (可选择) | 是否删除因改善地图匹配结果而产生的群集和重新取样痕迹。是 (`true`)或否(`false`, 默认).
+`timestamps`<br /> (可选择) | 数据以[Unix time](https://en.wikipedia.org/wiki/Unix_time)的格式呈现并与请求中每个坐标关联。时间戳的数量必须和请求的坐标数量相同。同时，用升序排列并用分号`;`分隔。为产生最好的结果，时间戳的取样频率应约为5。
+`waypoint_names`<br /> (可选择) | 一份分号分隔的坐标自定义命名列表，用于横幅和语音指令中的到达指令。值可以是任意字符串，但字符的总数量不能超过500。 `waypoint_names`的列表长度必须和坐标列表长度相同，并以分号分隔。但是，你可以跳过一个坐标并以分号`;`代替它的位置。
+`waypoints`<br /> (可选择) | 表明该输入坐标应被当作路径点。所有在[match object's](#match-object)路线中有到达和出发时间的坐标都会被默认为路径点. 指数可以与任意输入坐标相关，但是必须包含第一个(`0`)和最后一个坐标，并以`;`分隔。与`steps=true`一起使用，并以高取样频率为根据请求将产生最有效的结果。
 
-With clean matches, only one match object is returned. When the the algorithm cannot decide the correct match between two points, it will omit that line and return several sub-matches as match objects. The higher the number of sub-match match objects, the more likely it is that the input traces are poorly aligned to the road network.
+如果匹配成功，只有一个匹配对象会被返回。当算法无法决定两个点中的正确匹配，该线将会被忽略，同时多个次匹配对象将会被返回。次匹配对象的数量越多，越表明输入痕迹与路网的不良匹配。
 
-Some pre-processing tips to achieve the best results:
+预处理的技巧:
 
-- Timestamps improve the quality of the matching and are highly recommended.
-- The Map Matching API is limited to processing traces with up to 100 coordinates. If you need to process longer traces, you can split the trace and make multiple requests.
-- Clusters of points (like a person waiting at a train crossing for a few minutes) often don't add more information to a trace and can negatively impact map-matching quality. We recommend that you tidy the trace (remove clusters and provide a uniform sample rate). You can use the `tidy=true` query parameter or pre-process your traces with external tools like [geojson-tidy](https://github.com/mapbox/geojson-tidy).
-- Map matching works best with a sample rate of 5 seconds between points. If your trace has a higher sample rate, you may want to downsample your trace.
-- With the `waypoints` parameter specified, traces that would normally return with sub-matches will error. We recommend tidying traces before using them with the `waypoints` parameter.  
+- 非常推荐时间戳，因为可以提高匹配的质量。
+- Map Matching API 能处理的痕迹最多只能包括100个坐标。如果需要处理更长的痕迹，可以分离该痕迹并请求多次。
+- 多个点（例如一个人在火车轨道路口等了几分钟）通常不会给痕迹添加信息，并且会负面地影响匹配质量。 因此，建议清理痕迹（清除群集并提供统一的取样频率）。 你可以使用`tidy=true`查询参数，或者使用类似[geojson-tidy](https://github.com/mapbox/geojson-tidy)的外部工具预处理你的痕迹。
+- 当两点间的取样频率在5时，将会产生最好的地图匹配成果。如果你的采样频率高于5，建议降低痕迹的采样频率。
+- 当`waypoints`参数被指定时，痕迹通常会返回错误的次匹配对象。 因此，我们建议在使用`waypoints`参数前清理痕迹。  
 
-#### Example request
+#### 请求的例子
 
 ```curl
-# Basic request that returns a match object with route legs between each waypoint
+# 基本的请求会返回路径点之间的匹配对象
 curl "https://api.mapbox.com/matching/v5/mapbox/driving/-117.17282,32.71204;-117.17288,32.71225;-117.17293,32.71244;-117.17292,32.71256;-117.17298,32.712603;-117.17314,32.71259;-117.17334,32.71254?access_token={your_access_token}"
 
-# Request with the approaches parameter set to 'curb' for each waypoint
+# 包含每个路径点到路边的处理参数
 curl "https://api.mapbox.com/matching/v5/mapbox/driving/-117.17282,32.71204;-117.17288,32.71225;-117.17293,32.71244;-117.17292,32.71256?approaches=curb;curb;curb;curb&access_token={your_access_token}"
 
 
-# Request with various parameters, returns a match object with 1 route leg between the first and last waypoints
+# 包含各种参数的请求，会返回在第一个和最后一个路径点之间的单一匹配对象，且只有一段路线段
 curl "https://api.mapbox.com/matching/v5/mapbox/driving/2.344003,48.85805;2.34675,48.85727;2.34868,48.85936;2.34955,48.86084;2.34955,48.86088;2.34962,48.86102;2.34982,48.86125?steps=true&tidy=true&waypoints=0;6&waypoint_names=Home;Work&banner_instructions=true&access_token={your_access_token}"
 ```
 
 ```python
 service = MapMatcher()
-# input data must be a single GeoJSON-like Feature with a LineString geometry
-# optional coordTimes property should be an array containing timestamps
+#输入数据必须是一个带有LineString 几何的 GeoJSON-like Feature
+# 可自选的coordTimes的性质必须是包含时间戳的数组
 line = {
     "type": "Feature",
     "properties": {
@@ -125,8 +125,8 @@ line = {
             [13.419885635375975, 52.50237416816131],
             [13.420631289482117, 52.50294888790448]]}}
 response = service.match(line, profile='mapbox.driving')
-# response geojson contains a FeatureCollection with a single feature
-# with the new LineString corrected to match segments from the selected profile
+# 回应 geojson应包含一个只有单一特征的FeatureCollection
+# 且包含新矫正的LineString来匹配备选的文件段落
 corrected = response.geojson()['features'][0]
 corrected['geometry']['type']
 'LineString'
@@ -176,7 +176,7 @@ mapMatchingClient
 ```
 
 ```bash
-// Not yet supported.
+// 尚不支持。
 ```
 
 ```java
@@ -294,7 +294,7 @@ let task = directions.calculate(options) { (matches, error) in
 }
 ```
 
-#### Example response
+#### 回应的例子
 ```json
 {
   "matchings": [
@@ -321,19 +321,19 @@ let task = directions.calculate(options) { (matches, error) in
 }
 ```
 
-### The match response object
+### 匹配回应对象
 
-The **match response object** contains one or more [match objects](#match-object), as well as one or more [tracepoint objects](#tracepoint-object).
+**match response object** **匹配回应对象**包含一个或多个匹配对象[match objects](#match-object), 以及一个或多个跟踪点对象 [tracepoint objects](#tracepoint-object)。
 
-Property | Description
+性质 | 描述
 --- | ---
-`code` | A string indicating the state of the response. The potential values are listed in the [Map Matching status codes section](#map-matching-status-codes).
-`matchings` | An array of [match objects](#match-object).
-`tracepoints` | An array of [tracepoint objects](#tracepoint-object) that represent the location an input point was matched with, in the order in which they were matched. If a trace point is omitted by the Map Matching API because it is an outlier, the entry will be `null`.
+`code` | 一个表明回应状态的字符串。 可能的值已被列在[Map Matching status codes section](#map-matching-status-codes)中。
+`matchings` | [match objects](#match-object)的数组.
+`tracepoints` | [tracepoint objects](#tracepoint-object)数组，代表输入点所匹配的位置，按匹配顺序排列。 如果一个跟踪点被Map Matching API忽略，它将显示`null`。
 
-With clean matches, only one match object is returned. When the the algorithm cannot decide the correct match between two points, it will omit that line and return several sub-matches as match objects. The higher the number of sub-match match objects, the more likely it is that the input traces are poorly aligned to the road network.
+如果匹配成功，只有一个匹配对象会被返回。当算法无法决定两个点中的正确匹配，该线将会被忽略，同时多个次匹配对象将会被返回。次匹配对象的数量越多，越表明输入痕迹与路网的不良匹配。
 
-#### Example match response object
+#### 匹配回应对象的例子
 
 ```json
 {
@@ -416,22 +416,22 @@ With clean matches, only one match object is returned. When the the algorithm ca
 }
 ```
 
-### The match object
+### 匹配对象 （The Match Object）
 
-A **match object** is a [route object](#route-object) with an additional confidence field:
+**match object** **匹配对象**是包含额外置信度的[route object](#route-object）:
 
-Property | Description
+性质 | 描述
 --- | ---
-`confidence` | A float indicating the level of confidence in the returned match, from `0` (low) to `1` (high).
-`distance` | A float indicating the distance traveled in meters.
-`duration` | A float indicating the estimated travel time in seconds.
-`weight` | A string indicating the weight in the units described by `weight_name`.
-`weight_name` | A string indicating the weight that was used. The default is `routability`, which is duration-based with additional penalties for less desirable maneuvers.
-`geometry` | Depending on the `geometries` parameter in the request, this is a [GeoJSON LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2) or a [Polyline string](https://developers.google.com/maps/documentation/utilities/polylinealgorithm). Depending on the `overview` parameter in the request, this is the complete route geometry (`full`), a simplified geometry to the zoom level at which the route can be displayed in full (`simplified`), or is not included (`false`).
-`legs` | An array of [route leg objects](#routeleg-object).
-`voice_locale` | The locale used for voice instructions. Defaults to `en` (English). See [supported languages](#instructions-languages). Optionally included if `steps=true`.
+`confidence` | 表明返回匹配置信度的浮点数，从`0` (低) 到 `1` (高)。
+`distance` | 表明旅行距离的浮点数，以米为单位。
+`duration` | 表明估计的旅行时间的浮点数，以秒为单位。
+`weight` | 表明重量的字符串，单位与`weight_name`中所用相同.
+`weight_name` | 表明所用重量的字符串. 默认值为`routability`, 指给予不理想策略，基于持续时间的额外处罚。
+`geometry` | 由请求中的`geometries`参数决定时, 是[GeoJSON LineString](https://tools.ietf.org/html/rfc7946#appendix-A.2)或者[Polyline string](https://developers.google.com/maps/documentation/utilities/polylinealgorithm).由请求中的`overview`参数决定时, 是一个完整的路线几何(`full`),或者是一个在完整几何可见的缩放级别时，被简化的几何(`simplified`),抑或者是不包括(`false`)。
+`legs` | [route leg objects](#routeleg-object)的数组。
+`voice_locale` | 语音指令的区域设置。默认为英语`en` (English). 详见 [supported languages](#instructions-languages).可自选，当 `steps=true`时，会被包含。
 
-#### Example match object
+#### 匹配对象的例子
 
 ```json
 {
@@ -443,19 +443,19 @@ Property | Description
 }
 ```
 
-### The tracepoint object
+### 跟踪点对象 The tracepoint object
 
-A **tracepoint object** is a [waypoint object](#waypoint-object) with 3 additional fields: `matchings_index`, `waypoint_index`, and `alternatives_count`.
+ **tracepoint object** **跟踪点对象**是额外包含`matchings_index`, `waypoint_index`, 和 `alternatives_count` 三个域的路径点对象 [waypoint object](#waypoint-object)。
 
-Property | Description
+性质 | 描述
 --- | ---
-`matchings_index` | The index of the match object in `matchings` that the sub-trace was matched to.
-`waypoint_index` | The index of the waypoint inside the matched route.
-`alternatives_count` | The number of probable alternative matchings for this trace point. A value of `0` indicates that this point was matched unambiguously. Split the trace at these points for incremental map matching.
-`name` | The name of the road or path the coordinate snapped to.
-`location` | An array that contains the location of the snapped coordinate, in the format `[longitude, latitude]`.
+`matchings_index` | 在`matchings`中，次痕迹所匹配的匹配对象的指数。
+`waypoint_index` | 匹配路径中所包含的路径点的指数。
+`alternatives_count` | 该跟踪点可替换的匹配的数量。当值为`0`时，表明该点是被绝对匹配的。适合在这样的点上分离痕迹，以达到增量的地图匹配。
+`name` | 坐标所对齐的道路名称。
+`location` | 包含对齐坐标位置的数组，以经纬度`[longitude, latitude]`的格式呈现。
 
-#### Example tracepoint object
+#### 跟踪点的例子
 
 ```json
 {
@@ -467,32 +467,32 @@ Property | Description
 }
 ```
 
-### Map Matching status codes
+### 地图匹配状况的代码
 
-On error, the server responds with different HTTP status codes.
+当发生错误时, 服务器会回应不同的HTTP状态代码。
 
-- For responses with HTTP status codes lower than `500`, the JSON response body includes the code property, which may be used by client programs to manage control flow. The response body may also include a message property, with a human-readable explanation of the error.
-- If a server error occurs, the HTTP status code will be `500` or higher and the response will not include a `code` property.
+- 当回应的HTTP状态代码小于`500`时,JSON回应主体会包括代码性质，客户程序可以用其来管理控制流。回应主体可能会同时包括信息性质, 是所发生的错误的可读解释。
+- 当服务器发生错误时, HTTP状态代码将会呈 `500` 或更高，同时回应将不会包括代码`code`的性质。
 
-Status code | Description
+状态代码 | 描述
 --- | ---
-`Ok` | Normal case
-`NoMatch` | The input did not produce any matches, or the `waypoints` requested were not found in the resulting match. `features` will be an empty array.
-`TooManyCoordinates` |  There are more than 100 points in the request.
-`InvalidInput` | `message` will hold an explanation of the invalid input.
-`ProfileNotFound` | Needs to be a valid profile (`mapbox/driving`,  `mapbox/driving-traffic`, `mapbox/walking`, or  `mapbox/cycling`).
+`Ok` | 正常
+`NoMatch` | 输入数据没有产生任何匹配，或者请求的`waypoints`没有在匹配成果中找到。`features`将会是空的数组。
+`TooManyCoordinates` | 请求中的点数量大于100。
+`InvalidInput` | `message`将持有无效输入的解释。
+`ProfileNotFound` | 文件配置必须是有效的 (`mapbox/driving`,  `mapbox/driving-traffic`, `mapbox/walking`, 或  `mapbox/cycling`)。
 
-### Using HTTP POST
+### 使用HTTP POST
 
-The Map Matching API supports access via the HTTP `POST` method.  To submit a request using HTTP `POST`, you must make the following changes to the request:
+Map Matching API通过HTTP `POST`的方式支持. 若要使用HTTP `POST`提交请求，必须遵循以下所言改变请求：
 
-  1. The HTTP method must be `POST`
-  2. The `Content-Type` of the request must be `application/x-www-form-urlencoded`
-  3. The coordinate list must be present in the request body as the `coordinates=` parameter, and there must be no coordinates in the URL
-  4. The `access_token` parameter must be part of the `POST` URL, not the body
-  5. All other parameters must be part of the request body
+  1. HTTP的方式必须是`POST`
+  2. 请求的`Content-Type`必须是`application/x-www-form-urlencoded`
+  3. 坐标列表必须在请求主体中以`coordinates=` 参数的方式呈现, 同时URL中不可包含任何坐标
+  4. `access_token`参数不可包含在主体内容中，而应置于 `POST` URL中
+  5. 所有其他的参数必须包含在请求主体内容中
 
-An example `POST` request looks like this:
+`POST`请求的例子如下：
 
 ```
 POST /matching/v5/mapbox/driving?access_token={your_access_token} HTTP/1.0
@@ -502,10 +502,10 @@ coordinates=2.344003915786743,48.85805170891599;2.346750497817993,48.85727523615
 ```
 
 ```curl
-# Basic request using POST interface
+# 在POST界面上的基本请求
 $ curl -d "coordinates=-117.17282,32.71204;-117.17288,32.71225;-117.17293,32.71244;-117.17292,32.71256;-117.17298,32.712603;-117.17314,32.71259;-117.17334,32.71254"
 "https://api.mapbox.com/matching/v5/mapbox/driving?access_token={your_access_token}"
 
-# Request with various parameters, will return a match object with one route leg between the first and last waypoints
+# 包含各种参数的请求，会返回在第一个和最后一个路径点之间的单一匹配对象，且只有一段路线段。
 $ curl -d "coordinates=2.344003,48.85805;2.34675,48.85727;2.34868,48.85936;2.34955,48.86084;2.34955,48.86088;2.349625,48.86102;2.34982,48.86125&steps=true&tidy=true&waypoints=0;6&waypoint_names=Home;Work&banner_instructions=true" "https://api.mapbox.com/matching/v5/mapbox/driving?access_token={your_access_token}"
 ```
