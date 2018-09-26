@@ -294,7 +294,7 @@ let task = directions.calculate(options) { (matches, error) in
 }
 ```
 
-#### 回应的例子 The Example of Response
+#### 回应的例子
 ```json
 {
   "matchings": [
@@ -321,7 +321,7 @@ let task = directions.calculate(options) { (matches, error) in
 }
 ```
 
-### 匹配回应对象 Match Response Object
+### 匹配回应对象
 
 **match response object** **匹配回应对象**包含一个或多个匹配对象[match objects](#match-object), 以及一个或多个跟踪点对象 [tracepoint objects](#tracepoint-object)。
 
@@ -333,7 +333,7 @@ let task = directions.calculate(options) { (matches, error) in
 
 如果匹配成功，只有一个匹配对象会被返回。当算法无法决定两个点中的正确匹配，该线将会被忽略，同时多个次匹配对象将会被返回。次匹配对象的数量越多，越表明输入痕迹与路网的不良匹配。
 
-#### 匹配回应对象的例子 The Example of Match Response Object
+#### 匹配回应对象的例子
 
 ```json
 {
@@ -431,7 +431,7 @@ let task = directions.calculate(options) { (matches, error) in
 `legs` | [route leg objects](#routeleg-object)的数组。
 `voice_locale` | 语音指令的区域设置。默认为英语`en` (English). 详见 [supported languages](#instructions-languages).可自选，当 `steps=true`时，会被包含。
 
-#### 匹配对象的例子 Example match object
+#### 匹配对象的例子
 
 ```json
 {
@@ -455,7 +455,7 @@ let task = directions.calculate(options) { (matches, error) in
 `name` | 坐标所对齐的道路名称。
 `location` | 包含对齐坐标位置的数组，以经纬度`[longitude, latitude]`的格式呈现。
 
-#### 跟踪点的例子 Example tracepoint object
+#### 跟踪点的例子
 
 ```json
 {
@@ -467,7 +467,7 @@ let task = directions.calculate(options) { (matches, error) in
 }
 ```
 
-### 地图匹配状况的代码 Map Matching status codes
+### 地图匹配状况的代码
 
 当发生错误时, 服务器会回应不同的HTTP状态代码。
 
@@ -482,7 +482,7 @@ let task = directions.calculate(options) { (matches, error) in
 `InvalidInput` | `message`将持有无效输入的解释。
 `ProfileNotFound` | 文件配置必须是有效的 (`mapbox/driving`,  `mapbox/driving-traffic`, `mapbox/walking`, 或  `mapbox/cycling`)。
 
-### 使用HTTP POST Using HTTP POST
+### 使用HTTP POST
 
 Map Matching API通过HTTP `POST`的方式支持. 若要使用HTTP `POST`提交请求，必须遵循以下所言改变请求：
 
