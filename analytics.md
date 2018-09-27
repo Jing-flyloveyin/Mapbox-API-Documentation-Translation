@@ -2,7 +2,7 @@
 
 <!-- preview -->
 
-*This API is available for [Commercial and Enterprise](https://www.mapbox.com/pricing/) plans.*
+*这份API适用于[Commercial and Enterprise](https://www.mapbox.com/pricing/)计划。*
 
 The Mapbox Analytics API returns API usage for services by resource. For example, it can calculate the number of geocoding requests made in a week with a specific access token.
 
