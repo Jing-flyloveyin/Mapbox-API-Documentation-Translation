@@ -1,42 +1,34 @@
-## Geocoding
+## 地理编码
 
-The Mapbox Geocoding API does two things: forward geocoding and reverse geocoding.
+Mapbox Geocoding API 提供正向和反向地理编码。
 
-Forward geocoding lets you convert location text into geographic
-coordinates, turning `2 Lincoln Memorial Circle NW` into `-77.050,38.889`.
+正向地理编码将地理位置文本转换成地理坐标，如将 `2 Lincoln Memorial Circle NW` 转换成 `-77.050,38.889`。
 
-Reverse geocoding turns geographic coordinates into place names,
-turning `-77.050, 38.889` into `2 Lincoln Memorial Circle NW`. These place names
-can vary from specific addresses to states and countries that contain
-the given coordinates.
+反向地理编码将地理坐标转换成地点名称。如将 `-77.050, 38.889` 转换成 `2 Lincoln Memorial Circle NW`。地点名称可以是具体的地址，也可能是包含给定坐标的地区或国家。
 
-Swift and Objective-C support for Geocoding is provided by the [MapboxGeocoder.swift](https://github.com/mapbox/MapboxGeocoder.swift)
-library.
+ [MapboxGeocoder.swift](https://github.com/mapbox/MapboxGeocoder.swift) 库提供了对Swift 和 Objective-C语言中地理编码对支持。
 
-**Restrictions and limits**
+**限制条件**
 
-To access the Geocoding API, you'll need an access token. Rate limits are enforced per account and vary by plan as detailed below:
+使用地理编码API，您需要一个访问token。每种账号对速率的限制如下所示：
 
-| Account level | Rate limit |
+| 账号等级 | 速率限制 |
 | ------------- | ---------- |
-| Pay-as-you-go       | 600 requests per minute |
-| Commercial       | 600 requests per minute |
-| Enterprise    | 2,400 requests per minute |
+| 现收现付   | 600 次/分钟 |
+| 商业    | 600 次/分钟 |
+| 企业    | 2,400 次/分钟 |
 
-Exceeding the limits above will result in an `HTTP 429` response. For information on rate limit headers, see [Rate limits](#rate-limits).
+超过上面的限制将会返回`HTTP 429` 响应。有关速度限制的信息请查看 [速率限制](#rate-limits)。
 
-Batch geocoding is only available [with an Enterprise plan](https://www.mapbox.com/enterprise/).
-On all other plan levels, one geocode is permitted per request.
+批量地理编码仅有[企业计划](https://www.mapbox.com/enterprise/)支持，其他计划类型只支持每次请求单个地理编码。
 
-The results from geocoding with the `mapbox.places` mode [must
-  be displayed on a Mapbox map and cannot be stored permanently](https://www.mapbox.com/tos/#%5BYmouYmoq%5D). The `mapbox.places-permanent` mode, available [with an Enterprise plan](https://www.mapbox.com/enterprise/),
-  does not have these licensing restrictions.
+使用 `mapbox.places` 模式得到的地理编码[必须显示在Mapbox地图中且不能被持久化存储](https://www.mapbox.com/tos/#%5BYmouYmoq%5D)。[企业计划](https://www.mapbox.com/enterprise/) 的 `mapbox.places-permanent` 模式则没有此限制。
 
-The [Mapbox Geocoding API coverage map](https://www.mapbox.com/geocoding/#coverage) lists the types of geocoding results supported in each area of the world.
+[Mapbox 地理编码API覆盖地图](https://www.mapbox.com/geocoding/#coverage) 列出全球范围内所有支持的地理编码结果类型。
 
-Queries are limited to either a total of 20 words and numbers separated by spacing and punctuation _or_ 256 characters.
+查询限制为由空格和标点分隔的20个单词或数字，或者256个字符。
 
-If you use the optional bounding box parameter to filter results, note that the bounding box cannot cross the 180th meridian.
+如果使用可选的边界框筛选返回结果，请注意边界框不能跨越子午线。
 
 ```objc
 @import MapboxGeocoder;
@@ -73,147 +65,122 @@ const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const geocodingClient = mbxGeocoding({ accessToken: '{your_access_token}' });
 ```
 
-### Request format
+### 请求格式
 
-Both geocoding and reverse geocoding requests have the same basic format. Since
-the `{query}` parameter can contain any value, it should be URL-encoded UTF-8.
+正向和反向地理编码使用相同的基本格式。由于`{query}` 参数可以包含任何值，所以它需要使用URl编码的UTF-8格式。
 
 ```endpoint
 GET /geocoding/v5/{mode}/{query}.json
 ```
 
-URL Parameter | Description
+URL 参数 | 描述
 --- | ---
-`query` | A location. This will be a place name for forward geocoding or a coordinate pair (longitude, latitude) for reverse geocoding.
-`mode` | Either `mapbox.places` for ephemeral geocoding, or `mapbox.places-permanent` for storing results and batch geocoding.
+`query` | 地点。正向地理编码时它是地点名，反向地理编码时它是经纬坐标 (longitude, latitude)。
+`mode` | `mapbox.places` 为短暂性地理编码，`mapbox.places-permanent` 可存储编码结果和批量编码。
 
-Query Parameter | Description
+
+Query 参数 | 描述
 ----------|------------
-`country` <br /> (optional) | Limit results to one or more countries. Options are [ISO 3166 alpha 2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country codes separated by commas.
-`proximity`<br /> (optional) | Bias local results based on a provided location. Options are `longitude,latitude` coordinates.
-`types`<br /> (optional) | Filter results by one or more feature types. Options are `country`, `region`, `postcode`, `district`, `place`, `locality`, `neighborhood`, `address`, `poi`, and `poi.landmark`. Note that `poi.landmark` returns a subset of the results returned by `poi`. Multiple options can be comma-separated.
-`autocomplete`<br /> (optional) | _Forward geocoding only._ Return autocomplete results or not. Options are `true` or `false` and the default is `true`.
-`bbox`<br /> (optional) | _Forward geocoding only._ Limit results to a bounding box. Options are in the format `minX,minY,maxX,maxY`.
-`limit`<br /> (optional) | Limit the number of results returned. The default is `5` for forward geocoding and `1` for reverse geocoding.
-`language` <br /> (optional) | Specify the language to use for response text and, for forward geocoding, query result weighting. Options are [IETF language tags](https://en.wikipedia.org/wiki/IETF_language_tag) comprised of a mandatory [ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) and optionally one or more IETF subtags for country or script. More than one value can also be specified, separated by commas.
+`country` <br /> (可选) | 限制结果为一个或多个国家。 选项为使用逗号分隔的 [ISO 3166 alpha 2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) 国家代码。
+`proximity`<br /> (可选) | 基于给定位置的局部结果偏置。选项为`longitude,latitude`坐标。
+`types`<br /> (可选) | 根据一个或多个要素过滤结果。选项为 `country`, `region`, `postcode`, `district`, `place`, `locality`, `neighborhood`, `address`, `poi`, 和 `poi.landmark`. `poi.landmark` 返回为 `poi` 类型结果的子集。 多个选项由逗号分隔。
+`autocomplete`<br /> (可选) | _仅正向地理编码使用。_ 是否返回自动完成结果。 选项为 `true` 或 `false` ，默认为 `true`.
+`bbox`<br /> (可选) | _仅正向地理编码使用。_ 限制结果在边界框之内。选项格式为： `minX,minY,maxX,maxY`.
+`limit`<br /> (可选) | 限制返回结果数量。正向地理编码默认为 `5`，反向地理编码默认为  `1`。
+`language` <br /> (可选) | 指定响应文本、正向地理编码、查询结果权重所使用的语言。选项为由[ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 组成的 [IETF language tags](https://en.wikipedia.org/wiki/IETF_language_tag) 并且可选一个或多个IETF子标签。多个值之间使用逗号分隔。
 
-The `{proximity}` parameter biases search results within 5 miles of a specific
-location given in `{longitude},{latitude}` coordinates. Results will not be
-filtered by location or ordered by distance, but location will be considered
-along with textual relevance and other criteria when scoring and sorting
-results.
+`{proximity}`参数偏向于搜索给定 `{longitude},{latitude}` 坐标位置5英里范围内的结果。搜索结果不会根据位置或距离排序，但会根据文本相关性和其他条件排序。
 
-The `{autocomplete}` parameter controls whether autocomplete results
-are included. Autocomplete results can partially match the query. For example,
-searching for `washingto` could include `washington` even though only
-the prefix matches. Autocomplete is useful for offering fast, type-ahead
-results in user interfaces. If your queries represent complete addresses or
-place names, you can disable this behavior and exclude partial matches by
-setting the `{autocomplete}` parameter to `false`.
+`{autocomplete}` 参数控制是否包含自动完成的结果。自动完成可以部分匹配查询条件。例如搜索 `washingto` 结果会包含 `washington` ，即使仅仅匹配了前缀。自动完成对于在用户界面中提供快速的、预键入结果很有用。如果你的查询中使用完整的地址或地方名称，可以通过设置 `{autocomplete}` 为 `false`，从而关闭该行为，执行部分匹配。
 
-The `{limit}` parameter specifies the *maximum* number of results to
-return. For forward geocoding, the default is `5` and the maximum is
-`10`. For reverse geocoding, the default is `1` and the maximum is `5`.
-If a `limit` other than `1` is used for reverse geocoding, a single `types`
-option must also be specified.
+`{limit}`参数指定返回结果的最大数量。正向地理编码的默认值为 `5` ，最大值为`10`。
+反向地理编码默认值为`1`，最大值为`5`。如果反向地理编码的 `limit` 不是  `1`，则必须指定单一 `types` 。
 
-The `{language}` parameter specifies the desired response language for user
-queries. For forward geocodes, results that match the requested language are
-favored over results in other languages. If more than one language tag is
-supplied, text in all requested languages will be returned. For forward
-geocodes with more than one language tag, only the first language will be used
-to weight results.
+ `{language}` 参数指定响应所期望使用的语言。对于正向地理编码，与请求语言相匹配的结果比其他语言更受青睐。如果提供了超过一种语言，将会返回所有请求语言的文本。正向地理编码中使用超过一种语言标签时，第一种语言将会用于加权结果中。
 
-Any valid IETF language tag can be submitted, and a best effort will be made to
-return results in the requested language or languages, falling back first to
-similar and then to common languages in the event that text is not available in
-the requested language. In the event a fallback language is used, the `language`
-field will have a different value than the one requested.
+任何有效的IETF语言标签都可以提交，最好的情形是返回结果所使用的语言与请求语言相同。当请求语言不可用时会首先回退到相似的语言，其次回退到公用语言。如果使用了回退语言，响应中 `language` 字段值将与请求中的值不再相同。
 
-Translation availability varies by language and region:
 
-**Global coverage:** _these languages are almost always present for `country`, `region`, and prominent `place` features_
+翻译可用性因语言和地区而异：
 
-Language | |
+**全球覆盖:** _这些语言总是出现在 `国家`, `地区`, 和 显著的 `地方` 要素中。_
+
+语言 | | | 
+---|---|---
+`de` 德语  | `en` 英语 | `fr` 法语
+`it` 意大利语 | `nl` 荷兰语  |
+
+**局部覆盖:** _这些语言可能缺乏全球性的覆盖，但几乎总是出现在“国家”、“地区”和显著的“地方”要素中，并被广泛使用。_
+
+语言 | | | 
 --- | --- | ---
-`de` German  | `en` English | `fr` French
-`it` Italian | `nl` Dutch   |
+`bs` 波斯尼亚语  | `bg` 保加利亚语 | `ca` 加泰罗尼亚语
+`cs` 捷克语    | `da` 丹麦语    | `el` 希腊语
+`et` 爱沙尼亚语 | `fi` 芬兰语   | `ka` 格鲁吉亚语
+`he` 希伯来语   | `hu` 匈牙利语 | `is` 冰岛语
+`ja` 日语 | `ko` 韩语    | `lt` 立陶宛语
+`lv` 拉脱维亚语  | `mn` 蒙古语 | `nb` 挪威语
+`pl` 波兰语   | `pt` 葡萄牙语| `ro` 罗马尼亚语
+`ru` 俄语  | `sk` 斯洛伐克语    | `sl` 斯洛维尼亚语
+`sr` 塞尔维亚人语  | `sv` 瑞典语   | `tl` 塔加拉族语
+`th` 泰语     | `uk` 乌克兰语 | `zh-Hans` 简体中文
+`zh-Hant` 繁体中文 | | 
 
--------------
 
-**Local coverage:** _these languages may lack global coverage but are almost always present for `country`, `region`, and prominent `place` features where they are widely used_
+**受限覆盖:** _这些语言有时会出现，但覆盖范围往往不一致或受到地域限制。_
 
-Language | |
+Language | | |
 --- | --- | ---
-`bs` Bosnian  | `bg` Bulgarian | `ca` Catalan
-`cs` Czech    | `da` Danish    | `el` Greek
-`et` Estonian | `fi` Finnish   | `ka` Georgian
-`he` Hebrew   | `hu` Hungarian | `is` Icelandic
-`ja` Japanese | `ko` Korean    | `lt` Lithuanian
-`lv` Latvian  | `mn` Mongolian | `nb` Norwegian Bokmål
-`pl` Polish   | `pt` Portuguese| `ro` Romanian
-`ru` Russian  | `sk` Slovak    | `sl` Slovenian
-`sr` Serbian  | `sv` Swedish   | `tl` Tagalog
-`th` Thai     | `uk` Ukrainian | `zh-Hans` Simplified Chinese
-`zh-Hant` Traditional Chinese | |
+`ar` 阿拉伯语  | `es` 西班牙语 | `fa` 波斯语
+`kk` 哈萨克语  | `ms` 马来语   | `sq` 阿尔巴尼亚语
+`tr` 土耳其语 | `uz` 乌兹别克语   | `vi` 越南语
 
--------------
+### 响应对象
 
-**Limited coverage:** _these languages are sometimes present but coverage tends to be inconsistent or geographically constrained_
+由于Mapbox的地理编码数据不断更新和改进，响应对象中的属性值得不到保证，可能在同一个API版本中发生更改。同一版本的属性可能会增加，但不会被删除。地理编码结果格式为[Carmen GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md)。
 
-Language | |
---- | --- | ---
-`ar` Arabic  | `es` Spanish | `fa` Persian
-`kk` Kazakh  | `ms` Malay   | `sq` Albanian
-`tr` Turkish | `uz` Uzbek   | `vi` Vietnamese
 
-### Response object
-
-Because Mapbox's geocoding data is constantly updated and improved, the values of properties in the response object are not guaranteed and may change within the same version of the API. Properties may be added to but will not be removed from the response within the same version. Geocoding results are returned
-in [Carmen GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md) format.
-
-Property | Description
+属性 | 描述
 ----------|----------
-`type` | `"Feature Collection"`, a GeoJSON type from the [GeoJSON specification](https://tools.ietf.org/html/rfc7946).
-`query` | An array of space and punctuation-separated strings from the original query.
-`features` | An array of feature objects.
-`attribution` | A string attributing the results of the Mapbox Geocoding API to Mapbox and links to Mapbox's terms of service and data sources.
+`type` | `"要素集合"`, [GeoJSON specification](https://tools.ietf.org/html/rfc7946)指定的GeoJSON格式。
+`query` | 一个由空格和标点符号分隔的最初查询字符串数组。
+`features` | 要素对象数组。
+`attribution` | 将Mapbox地理编码API的结果赋予Mapbox的字符串，以及指向Mapbox服务条款和数据源的链接。
 
-**Feature object**
+**要素对象**
 
-Each feature object in the `"features"` array may have the properties described below. Forward geocodes return features ordered by `relevance`. Reverse geocodes return features in order of index hierarchy, from most specific features to least specific features that overlap the queried coordinates.
+`"features"` 数组中的要素对象拥有一下属性。正向地理编码返回的要素根据 `relevance`排序。逆向地理编码则由与查询坐标重叠度最高的要素到重叠度最低的要素之间，根据索引层级排序。
 
-Property | Description
+属性 | 描述
 ----------|----------
-`id` | A string feature id in the form `{type}.{id}` where `{type}` is the lowest hierarchy feature in the `place_type` field. The `{id}` suffix of the feature id is unstable and may change within versions.
-`type` | `"Feature"`, a GeoJSON type from the [GeoJSON specification](https://tools.ietf.org/html/rfc7946).
-`place_type` | An array of feature types describing the feature. Options are `country`, `region`, `postcode`, `district`, `place`, `locality`, `neighborhood`, `address`, `poi`, and `poi.landmark`. Most features have only one type, but if the feature has multiple types, all applicable types will be listed in the array. (For example, Vatican City is a `country`, `region`, and `place`.)
-`relevance` | A numerical score from 0 (least relevant) to 0.99 (most relevant) measuring how well each returned feature matches the query. You can use the `relevance` property to remove results that don't fully match the query.
-`address` <br /> (optional) | A string of the house number for the returned `address` feature. Note that unlike the `address` property for `poi` features, this property is outside the `properties` object.
-`properties` | An object describing the feature. The property object is unstable and only [Carmen GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md) properties are guaranteed. Your implementation should check for the presence of these values in a response before it attempts to use them.
-    `properties.address`<br /> (optional) | A string of the full street address for the returned `poi` feature. Note that unlike the `address` property for `address` features, this property is inside the `properties` object.
-    `properties.category`<br /> (optional) | A string of comma-separated categories for the returned `poi` feature.
-    `properties.tel`<br /> (optional) | A formatted string of the telephone number for the returned `poi` feature.
-    `properties.maki`<br /> (optional) | The name of a suggested [Maki](https://www.mapbox.com/maki-icons/) icon to visualize a `poi` feature based on its `category`.
-    `properties.landmark`<br /> (optional) | A boolean value indicating whether a `poi` feature is a landmark. Landmarks are particularly notable or long-lived features like schools, parks, museums and places of worship.
-    `properties.wikidata`<br /> (optional) | The [Wikidata](https://wikidata.org) identifier for the returned feature.
-    `properties.short_code`<br /> (optional) | The [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country and [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) region code for the returned feature.
-`text` | A string representing the feature in the requested language, if specified.
-`place_name` | A string representing the feature in the requested language, if specified, and its full result hierarchy.
-`matching_text`<br /> (optional) | A string analogous to the `text` field that more closely matches the query than results in the specified language. For example, querying "Köln, Germany" with language set to English might return a feature with the `text` "Cologne" and the `matching_text` "Köln".
-`matching_place_name`<br /> (optional) | A string analogous to the `place_name` field that more closely matches the query than results in the specified language. For example, querying "Köln, Germany" with language set to English might return a feature with the `place_name` "Cologne, Germany" and a `matching_place_name` of "Köln, North Rhine-Westphalia, Germany".
-`text_{language}`<br /> (optional) | A string analogous to the `text` field that matches the query in the requested language. This field is only returned when requesting  multiple languages and will be present for each requested language.
-`place_name_{language}`<br /> (optional) | A string analogous to the `place_name` field that matches the query in the requested language. This field is only returned when requesting  multiple languages and will be present for each requested language.
-`language` <br /> (optional) | A string of the [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag) of the query's primary language.
-`language_{language}` <br /> (optional) | A string of the [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag) of the query's fallback language. This field is only returned when requesting multiple languages and will be present for each requested language.
-`bbox` | An array bounding box in the form [minX,minY,maxX,maxY].
-`center` | An array in the form [longitude,latitude] at the center of the specified `bbox`.
-`geometry` | An object describing the spatial geometry of the returned feature.
-    `geometry.type` | `"Point"`, a GeoJSON type from the [GeoJSON specification](https://tools.ietf.org/html/rfc7946).
-    `geometry.coordinates` | An array in the format [longitude,latitude] at the center of the specified `bbox`.
-    `geometry.interpolated`<br /> (optional) | A boolean value indicating if an `address` is interpolated along a road network. This field is only present when the feature is interpolated.
-`context` | An array representing the hierarchy of encompassing parent features. Each parent feature may include any of the above properties.
-
+`id` | 字符串类型的要素id以 `{type}.{id}` 形式出现，`{type}` 是 `place_type` 字段中最低层级的要素。要素id的 `{id}` 后缀还不稳定，将来的版本中可能会改变。
+`type` | `"Feature"`, [GeoJSON specification](https://tools.ietf.org/html/rfc7946) 标准的 GeoJSON 类型
+`place_type` | 描述要素类型的数组。 可选项为 `country`, `region`, `postcode`, `district`, `place`, `locality`, `neighborhood`, `address`, `poi`, 和 `poi.landmark`. 大部分要素只有一种类型，但一旦要素含有多种类型，所有的可用类型必须在数组中列出。（例如, 梵蒂冈是 `country`, `region`, 和 `place`。）
+`relevance` | 一个分数值从0（最低相关）到0.99（最高相关），用以表示返回要素与查询的匹配程度。你可以使用 `relevance` 属性来去除不完全匹配查询条件的结果。
+`address` <br /> (可选) | 返回地址要素的门牌号。与POI要素的 `address` 属性不同，此属性位于`properties` 对象之外。
+`properties` | 描述要素的对象。此属性对象还不稳定，仅仅保证存在 [Carmen GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md) 中的属性。在您的实现中，使用它们之前需要检查该属性是否存在。
+`properties.address`<br /> (可选) |  返回的`poi` 要素完整的街道地址。不同于`address` 要素的 `address` 属性，该属性在 `properties` 对象内部。
+`properties.category`<br /> (可选) | 逗号分隔的 `poi` 要素类别。
+`properties.tel`<br /> (可选) | 表示 `poi` 要素的电话号码的格式化字符串。
+`properties.maki`<br /> (可选) | 建议的 [Maki](https://www.mapbox.com/maki-icons/) 图标名，用于基于类别的 `poi` 要素的可视化。 
+`properties.landmark`<br /> (可选) | 一个布尔值，指示POI要素是否为地标。地标是引人注意或长期存在的场所，如学校，公园，博物馆和礼拜场所。
+`properties.wikidata`<br /> (可选) | 返回要素的 [Wikidata](https://wikidata.org) 标识符。
+`properties.short_code`<br /> (可选) | 返回要素的 [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) 国家码和 [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) 地区码。
+`text` | 表示请求语言中的要素的字符串（如果已指定）。
+`place_name` | 表示所请求语言中的要素的字符串（如果已指定）及其完整结果层次结构。
+`matching_text`<br /> (可选) | 类似于 `text` 字段的字符串，与查询的匹配程度高于指定语言的结果。例如, 使用英语查询 "Köln, Germany" 可能会返回一个 `text` 值为 "Cologne" 和 `matching_text` 值为 "Köln" 的要素。
+`matching_place_name`<br /> (可选) | 类似于 `place_name` 字段的字符串，与查询的匹配程度高于指定语言的结果。 例如, 使用英语查询 "Köln, Germany" 可能会返回一个 `place_name` 值为 "Cologne, Germany" 和 `matching_place_name` 值为 "Köln, North Rhine-Westphalia, Germany" 的要素。
+`text_{language}`<br /> (可选) | 类似于 `text` 文本字段的字符串，与请求的语言中的查询匹配。此字段仅在请求多种语言时返回，并且将针对每种请求的语言提供。
+`place_name_{language}`<br /> (可选) | 类似于 `place_name` 字段的字符串，与所请求语言的查询匹配。此字段仅在请求多种语言时返回，并且将针对每种请求的语言提供。
+`language` <br /> (可选) | [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag) 的字符串，表示查询的主要语言。
+`language_{language}` <br /> (可选) | 使用 [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag)的字符串，代表查询的回退语言。 此字段仅在请求多种语言时返回，并且将针对每种请求的语言提供。
+`bbox` | 一个代表边界框的数组，格式为[minX,minY,maxX,maxY]。
+`center` | 一个 [longitude,latitude] 形式的数组，代表 `bbox` 的中心点。
+`geometry` | 描述要素的空间几何形状的对象。
+`geometry.type` | `"Point"`, [GeoJSON specification](https://tools.ietf.org/html/rfc7946) 标准的 GeoJSON 类型。
+`geometry.coordinates` | [longitude,latitude] 格式的数组，指定 `bbox` 的中心点。
+`geometry.interpolated`<br /> (可选) | 一个布尔值，指示是否沿道路网络插入地址。仅在插入要素时才会显示此字段。
+`context` | 表示包含父要素的层次结构的数组。每个父要素可以包括任何上述属性。
 
 ```json
 {
@@ -479,21 +446,20 @@ Property | Description
 }
 ```
 
-### Search for places
+### 搜索地点
 
-This is often called **forward geocoding**. Request feature data that best matches the input `{query}` text. The response includes one or more results ordered by relevance.
+通常叫做 **正向地理编码**。请求与 `{query}` 文本最匹配的要素数据。响应包含一个或多个按照相关性排序的结果。
 
-This API is used by the [Mapbox.js L.mapbox.geocoderControl](https://www.mapbox.com/mapbox.js/api/v2.3.0/l-mapbox-geocodercontrol/)
-and the [mapbox-gl-geocoder](https://github.com/mapbox/mapbox-gl-geocoder) user interfaces.
+[Mapbox.js L.mapbox.geocoderControl](https://www.mapbox.com/mapbox.js/api/v2.3.0/l-mapbox-geocodercontrol/) 和 [mapbox-gl-geocoder](https://github.com/mapbox/mapbox-gl-geocoder)  用户界面使用此API。
 
-[Try this in the API Playground](https://www.mapbox.com/api-playground/#/forward-geocoding/).
+[试用此API](https://www.mapbox.com/api-playground/#/forward-geocoding/).
 
 
 ```endpoint
 GET /geocoding/v5/{mode}/{query}.json
 ```
 
-#### Example request
+#### 请求示例
 
 ```curl
 $ curl "https://api.mapbox.com/geocoding/v5/mapbox.places/Los%20Angeles.json?access_token={your_access_token}"
@@ -700,33 +666,34 @@ let task = geocoder.geocode(options) { (placemarks, attribution, error) in
 }
 ```
 
-### Retrieve places near a location
+### 检索附近的地点
 
-This is often called **reverse geocoding**. Request feature data located at the input `{longitude},{latitude}` coordinates. The response includes at most one result from each type, unless the `limit` parameter was used in the request.
+通常叫做**逆向地理编码**。请求位于输入 `{longitude},{latitude}` 坐标的要素数据。响应中每种类型至少包含一个结果，除非使用 `limit` 参数。
 
-[Try this in the API Playground](https://www.mapbox.com/api-playground/#/reverse-geocoding/).
+
+[试用此API](https://www.mapbox.com/api-playground/#/reverse-geocoding/).
 
 ```endpoint
 GET /geocoding/v5/{mode}/{longitude},{latitude}.json
 ```
 
-URL Parameter | Description
+URL 参数 | 描述
 ----------|------------
-`mode` | Either `mapbox.places` for ephemeral geocoding, or `mapbox.places-permanent` for storing results and batch geocoding.
+`mode` | `mapbox.places` 为短暂性地理编码，`mapbox.places-permanent` 可存储编码结果和批量编码。
 
-Query Parameter | Description
+查询参数 | 描述
 ----------|------------
-`country`<br /> (optional) |  Limit results to one or more countries. Options are [ISO 3166 alpha 2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country codes separated by commas.
-`types`<br /> (optional) |  Filter results by one or more type. Options are: `country`, `region`, `postcode`, `district`, `place`, `locality`, `neighborhood`, `address`, `poi`, and `poi.landmark`. Multiple options can be comma-separated. Note that `poi.landmark` returns a subset of the results returned by `poi`.
-`limit`<br /> (optional) |  Limit the maximum number of results. The default is `1`, and the maximum is `5`. If using this option, a single `types` is required.
-`language`<br /> (optional) | Specify the language to use for response text. Options are [IETF language tags](https://en.wikipedia.org/wiki/IETF_language_tag) comprised of a mandatory [ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) and optionally one or more IETF subtags for country or script. More than one value can also be specified, separated by commas.
-`reverseMode`<br /> (optional) | Set the factors that are used to sort nearby results. Options are `distance` (default) and `score`.
+`country`<br /> (可选) |  限制结果为一个或多个国家。 选项为逗号分隔的[ISO 3166 alpha 2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) 国家代码。
+`types`<br /> (可选) |  使用一种或多种类型过滤结果。 可选项为: `country`, `region`, `postcode`, `district`, `place`, `locality`, `neighborhood`, `address`, `poi`, 和 `poi.landmark`。多个选项使用逗号分隔。 `poi.landmark` 返回为 `poi` 类型结果的子集。
+`limit`<br /> (可选) |  限制返回结果的最大数量。 默认为`1`，最大值为`5`。使用此选项时必须指定 `types` 。
+`language`<br /> (可选) | 指定响应文本的语言。选项为由ISO 639-1 language code 组成的 IETF language tags 并且可选一个或多个IETF子标签。多个值之间使用逗号分隔。
+`reverseMode`<br /> (可选) | 设置用来排序附近结果的因素。可选项为 `distance`（默认）和 `score` 。
 
-Note that a request that includes a query for coordinates outside of the specified `country` will not throw an HTTP error, but the response will have an empty `features` array.
+如果请求的坐标不在指定的 `country` 范围内，不会抛出HTTP错误，而是响应一个空的 `features` 数组。
 
-The optional `reverseMode` parameter controls whether feature prominence should be considered when returning features for a reverse geocoding query. By default, a reverse geocode returns the nearest feature. When you set `reverseMode=score`, the notability of features within approximately 1 kilometer of the queried point will be considered along with proximity. This option is not available when the `limit` parameter is set to a value greater than 1.
+逆向地理编码中可选的 `reverseMode` 参数控制返回是否考虑显著的要素数据。默认返回最近的要素数据。当设置 `reverseMode=score` 时，查询点1公里内的要素的显著性将于临近性一起纳入考虑范围。当 `limit` 参数设置大于1时，该选项不可用。
 
-#### Example request
+#### 请求示例
 
 ```curl
 curl "https://api.mapbox.com/geocoding/v5/mapbox.places/-73.989,40.733.json?access_token={your_access_token}"
@@ -839,24 +806,17 @@ let task = geocoder.geocode(options) { (placemarks, attribution, error) in
 }
 ```
 
-### Batch requests
+### 批量请求
 
-_This feature is only available with the `mapbox.places-permanent` mode._
+_该要素仅适用于 `mapbox.places-permanent` 模式。_
 
 ```curl
 curl "https://api.mapbox.com/geocoding/v5/mapbox.places-permanent/20001;20009;22209.json?access_token={your_access_token}"
 ```
 
-Batch requests have the same parameters as normal requests, but can include
-more than one query by separating queries with the `;` character. Each
-query should be URL encoded, but the `;` character should not be encoded and
-should be included verbatim.
+批量请求和普通请求的参数相同，但可以包含由`;` 分隔的多个查询条件。每个查询条件需要进行URL编码，但`;` 不需要被编码。
 
-With the `mapbox.places-permanent` mode, you can make up to 50 forward
-or reverse geocoding queries in a single request. The response is
-an array of individual geocoder responses.
-Each query in a batch request counts individually against
-your account's rate limits.
+使用 `mapbox.places-permanent` 模式，单次请求最多可以由50个正向或反向地理编码组成。响应为单独请求结果组成的数组。批量请求中的每个查询条件单独计数您账户中的速率限制。
 
 ```swift
 let options = ForwardBatchGeocodeOptions(queries: ["skyline chili", "gold star chili"])
@@ -878,15 +838,15 @@ let task = geocoder.batchGeocode(options) { (placemarksByQuery, attributionsByQu
 }
 ```
 
-### POI categories
+### POI 类别
 
 <!-- preview -->
 
-POI category search supports forward geocoding requests of `poi` feature types in a queried category. Using the `proximity` query parameter with POI category search returns points of interest local to a provided location; for example, restaurants near a user. Any category that is returned in the `properties.category` property of the response object is supported.
+POI类别搜索支持正向地理编码请求 `poi` 要素类型。使用 `proximity` 查询参数和POI类别，会根据提供的地点返回兴趣点。例如搜索用户附近的餐馆。支持在响应中返回包含POI类别的`properties.category` 属性。
 
-Here are some of the most common POI categories:
+下面是一些常用的POI类别：
 
-Category | | | |
+目录 | | | |
 --- | --- | --- | --- | ---
 bakery | bank | bar | cafe | church
 cinema | coffee | concert | fast food | finance
@@ -894,13 +854,13 @@ gallery | historic | hotel | landmark | museum
 music | park | pizza | restaurant | retail
 school | shop | tea | theater | university
 
-The current list of POI categories is subject to change. A full list of supported categories will be made available in the future.
+当前POI类别可能会更改。未来将提供完整的支持列表。
 
 ```endpoint
 GET /geocoding/v5/{mode}/{category}.json
 ```
 
-#### Example request
+#### 请求示例
 
 ```curl
 $ curl "https://api.mapbox.com/geocoding/v5/mapbox.places/coffee.json?&proximity=-77.032,38.912&limit=10&types=poi&access_token={your_access_token}"
