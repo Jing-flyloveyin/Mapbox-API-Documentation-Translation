@@ -2,66 +2,66 @@
 
 <!-- preview -->
 
-*This API is available for [Commercial and Enterprise](https://www.mapbox.com/pricing/) plans.*
+*此API适用于 [商业与企业](https://www.mapbox.com/pricing/) 计划。*
 
-The Mapbox Analytics API returns API usage for services by resource. For example, it can calculate the number of geocoding requests made in a week with a specific access token.
+Mapbox Analytics API 可以根据资源类型返回服务API的使用情况。例如它可以计算出一周内带有特殊token的地理编码服务的请求次数。
 
 ```python
 from mapbox import Analytics
 ```
-
-### Retrieve analytics
+### 检索分析
 
 Returns the request counts per day for given resource and period.
+返回指定资源或时期的每日请求次数。
 
-* If the `{resourceType}` is `tokens`, the `{id}` is the complete token.
-* If the `{resourceType}` is `styles`, the `{id}` is the Style ID. Not to be confused with the Style _URL_, the id is the alphanumeric segment at the end of the style: the Style URL `mapbox://styles/user/cimdoca6f00` contains the Style ID `cimdoca6f00`, so the analytics request would have the path `/analytics/v1/styles/user/cimdoca6f00`.
-* If the `{resourceType}` is `tilesets`, the `{id}` is a Map ID.
+* 如果 `{resourceType}` 是 `tokens`，则`{id}`为完整的token。
+
+* 如果`{resourceType}` 是 `styles`，则 `{id}` 为样式ID。不要与样式URL混淆，样式URL中id 为尾部的字母数字序列：例如样式URL `mapbox://styles/user/cimdoca6f00` 包含样式ID  `cimdoca6f00` ，所以分析请求的路径为  `/analytics/v1/styles/user/cimdoca6f00`。
+* 如果`{resourceType}` 是 `tilesets`，则  `{id}` 为地图ID。
 
 ```endpoint
 GET /analytics/v1/{resourceType}/{username}/{id}?period={period} analytics:read
 ```
 
-URL Parameter | Description
+URL 参数 | 描述
 --- | ---
-`resourceType` | The resource being requested. Valid resource types are `accounts`, `tokens`, `tilesets` or `styles`.
-`username` | The username for the account that owns the resource.
-`id` <br /> (optional) | The id for the resource. In the case of `accounts` this isn't required.
-`period` <br /> (optional) | 2 comma separated dates as [ISO formatted strings](#dates). The first date must be earlier than the second. The period is inclusive of dates provided. Defaults to last 90 days if not provided. The maximum period is 1 year. If the provided dates are more than 1 year apart, an error will be returned.
+`resourceType` | 被请求的资源类型。有效的资源类型为 `accounts`, `tokens`, `tilesets` 和 `styles`.
+`username` | 资源所有者账户的用户名。
+`id` <br /> (可选) | 资源ID。 当资源类型为 `accounts` 时此选项非必须。
+`period` <br /> (可选) | 两个使用逗号分隔的[ISO 格式字符串](#dates)日期。第一个日期必须早于第二个。时期字段由此日期段指定，默认为90天。最长时期为1年，如果指定的日期超过1年则返回错误。
 
-
-#### Example Request
+#### 请求示例
 
 ```curl
 curl "https://api.mapbox.com/analytics/v1/tilesets/mapbox/mapbox.streets?period=2016-03-22T00:00:00.000Z,2016-03-24T00:00:00.000Z&access_token={your_access_token}"
 ```
 
 ```bash
-# This API cannot be accessed with Mapbox CLI
+# 此API不能使用 Mapbox CLI 访问
 ```
 
 ```javascript
-// This API cannot be accessed with the JavaScript SDK
+// 此API不能使用 JavaScript SDK 访问
 ```
 
 ```python
 analytics = Analytics()
 response = analytics.analytics('accounts', '{username}')
- ```
+```
 
- ```java
-// This API cannot be accessed with the Mapbox Java SDK
+```java
+// 此API不能使用 Mapbox Java SDK 访问。
 ```
 
 ```objc
-// This API cannot be accessed with the Mapbox Objective-C libraries
+// 此API不能使用 Mapbox Objective-C 库访问。
 ```
 
- ```swift
-// This API cannot be accessed with the Mapbox Swift libraries
+```swift
+// 此API不能使用 Mapbox Swift 库访问
 ```
 
-#### Example response
+#### 响应示例
 
 
 ```json
@@ -76,21 +76,22 @@ response = analytics.analytics('accounts', '{username}')
 }
 ```
 
-Responses include arrays of request counts per service.
+响应包含每个服务请求次数的数组。
 
-Property | Description
+属性 | 描述
 --- | ---
-`timestamps` | an array of dates as ISO formatted strings for each day included in the response.
-`period` | a 2 element array with start and end dates as ISO formatted strings for the response period.
-`services` | an object with a key per service the value of which is an array of request counts per day in the same sequence as `timestamps`.
+`timestamps` | 响应中所包含的每一天的ISO格式的日期字符串数组。
+`period` | 响应时期中的起止日期的ISO格式字符串数组。
+`services` | 包含每种服务次数的对象。键值为服务名，值为与 `timestamps` 中的日期相对应的每日请求次数。
 
-Only services applicable to the given resource are returned in the response.
+响应中资源类型与所返回的服务。
 
-Resource type | Services returned in response
+资源类型 | 所返回的服务
 --- | ---
 `accounts` | `mapview` `static` `tile` `directions` `geocode`
 `tokens` | `mapview` `static` `tile` `directions` `geocode`
 `tilesets` | `mapview` `static` `tile`
 `styles` | `mapview` `static` `tile`
 
-For the `styles` resource type, Static & Tile services refer to the [Static API](#static). For `tilesets`, Static & Tile services refer to the [Static (Classic)](#static-classic) and [Maps → Tiles](#retrieve-tiles) APIs.
+
+对于 `styles` 资源类型，Static & Tile 服务请参考[Static API](#static)。对于`tilesets`资源类型，Static & Tile 服务请参考 [Static (Classic)](#static-classic) 和 [Maps → Tiles](#retrieve-tiles) API。
